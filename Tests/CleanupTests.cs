@@ -41,6 +41,14 @@ static class CleanupTests
         T.False(traversal, "a path containing .. is denied");
     }
 
+    [Test] public static void AllowedTarget_DeniesABaseThatSitsUnderAnotherBase()
+    {
+        // On Windows, Temp is %LocalAppData%\Temp: both are bases, so Temp itself must still be refused.
+        var bases = (string[])typeof(Winapp).GetField("AllowedBases", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static).GetValue(null);
+        foreach (var b in bases)
+            T.False((bool)T.Call(typeof(Winapp), "AllowedTarget", b), "base refused: " + b);
+    }
+
     [Test] public static void UrlOk_AllowsHttpsAllowlistedHosts_Only()
     {
         T.True((bool)T.Call(typeof(Updater), "UrlOk", "https://raw.githubusercontent.com/a/b.json"), "https allowlisted host allowed");

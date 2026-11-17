@@ -8,6 +8,9 @@ namespace ArchTweaker
 ### Security
 - **The update-signing key is new.** The old private key was published by mistake on 17 Nov 2026. 3.38.2 holds a new public key, so a manifest signed with the old key is refused. Versions 3.35 to 3.38.1 still trust the old key: install 3.38.2 by hand from the Releases page; do not use their self-update.
 
+### Fixes
+- **The cleaner never empties a whole base folder.** On Windows, Temp sits inside %LocalAppData%, so a cleaning rule could target the Temp folder itself. The check now refuses every base folder, even one inside another. The Windows CI found this; the Linux tests could not.
+
 ## 3.38.1: Home on GitHub
 
 ArchTweaker now has its public home at github.com/arttnomadd/ArchTweaker.
@@ -63,6 +66,9 @@ ArchTweaker now has its public home at github.com/arttnomadd/ArchTweaker.
 
 ### Security
 - **The update-signing key is new.** The old private key was published by mistake on 17 Nov 2026. 3.38.2 holds a new public key, so a manifest signed with the old key is refused. Versions 3.35 to 3.38.1 still trust the old key: install 3.38.2 by hand from the Releases page; do not use their self-update.
+
+### Fixes
+- **The cleaner never empties a whole base folder.** On Windows, Temp sits inside %LocalAppData%, so a cleaning rule could target the Temp folder itself. The check now refuses every base folder, even one inside another. The Windows CI found this; the Linux tests could not.
 
 ## 3.38.1: Home on GitHub
 

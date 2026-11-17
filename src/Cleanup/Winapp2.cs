@@ -251,6 +251,7 @@ namespace ArchTweaker
             if (d.IndexOf("..", StringComparison.Ordinal) >= 0) return false;
             if (Regex.IsMatch(d, @"^[a-z]:\\?$")) return false;                  // drive root
             foreach (var deny in DenySubtrees) if (Under(d, deny)) return false; // Windows + user documents
+            if (AllowedBases.Contains(d)) return false;                          // 3.38.2: never a base itself, even when it sits under another base (Temp is under LocalAppData)
             foreach (var b in AllowedBases)
                 if (d != b && Under(d, b)) return true;                          // under an allowed base, not the base itself
             return false;

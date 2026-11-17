@@ -20,7 +20,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     timeout-minutes: 45
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       # 3.35: /recurse, because the sources sit in feature folders since 3.25 (src\*.cs matched no file)
       - name: Build ArchTweaker.exe (in-box .NET Framework 4.8 compiler)
@@ -126,7 +126,7 @@ jobs:
           "$h  ArchTweaker.exe" | Out-File -Encoding ascii out\SHA256SUMS.txt
           Get-Content out\SHA256SUMS.txt
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v5
         if: always()
         with:
           name: archtweaker-${{ matrix.os }}-${{ github.sha }}
