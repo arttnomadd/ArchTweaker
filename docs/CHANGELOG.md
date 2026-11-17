@@ -6,6 +6,11 @@ Each version groups its changes under these headings, in this order (leave out t
 `### New features` · `### Tweaks` · `### Design` · `### Fixes` · `### Security` · `### Under the hood`.
 A short intro under the version title is fine. The What's new dialog filters by these headings.
 
+## 3.38.2: New update-signing key
+
+### Security
+- **The update-signing key is new.** The old private key was published by mistake on 17 Nov 2026. 3.38.2 holds a new public key, so a manifest signed with the old key is refused. Versions 3.35 to 3.38.1 still trust the old key: install 3.38.2 by hand from the Releases page; do not use their self-update.
+
 ## 3.38.1: Home on GitHub
 
 ArchTweaker now has its public home at github.com/arttnomadd/ArchTweaker.

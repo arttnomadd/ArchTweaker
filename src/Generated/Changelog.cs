@@ -3,7 +3,12 @@ namespace ArchTweaker
 {
     public static class Changelog
     {
-        public const string Text = @"## 3.38.1: Home on GitHub
+        public const string Text = @"## 3.38.2: New update-signing key
+
+### Security
+- **The update-signing key is new.** The old private key was published by mistake on 17 Nov 2026. 3.38.2 holds a new public key, so a manifest signed with the old key is refused. Versions 3.35 to 3.38.1 still trust the old key: install 3.38.2 by hand from the Releases page; do not use their self-update.
+
+## 3.38.1: Home on GitHub
 
 ArchTweaker now has its public home at github.com/arttnomadd/ArchTweaker.
 
@@ -53,30 +58,13 @@ ArchTweaker now has its public home at github.com/arttnomadd/ArchTweaker.
 - **The Russian drift message is shorter** (""Твики (3) вернулись к значениям по умолчанию. Причина — обновление драйвера или Windows либо другая программа."").
 - **The search box hint is translated.** ""Search all tweaks (Ctrl+F)"" showed in English in the Russian interface.
 - **""Check what changed"" on Home fits in Russian** (""Что изменилось""); the longer text was cut off.
-
-## 3.36.0: Precision instrument
-
-A new look for the whole app, in the same black-and-red Carbon style. Nothing about what a tweak does changed.
-
-### Design
-- **Home is now an instrument panel.** The health score is a large read-out over a 20-cell scale, with the main action as the one red button beside it. ""Reset by Windows"" and ""Last cleanup"" sit in the same panel behind hairlines. Pending, Latency and Last apply share one read-out strip.
-- **The latency chain is a pipeline.** The five stages are stations on one track that runs left to right. A finished stage lights its part of the track. The weakest link is the red station, with a soft halo and its label in red.
-- **""This PC right now"" is a spec sheet.** Values are in one column, with a small status dot after a value that is good or needs a look.
-- **Depth everywhere.** Cards, tiles, tweak rows, settings cards and advisor findings are raised surfaces, with a soft shadow, a light top edge in dark schemes and a hairline border. Depth comes from light and edges, not new colours, so every colour scheme and High Contrast keep working.
-- **New buttons.** Every button is drawn by ArchTweaker: rounded, a hairline border, a light top edge, and clear hover and press states. Buttons that open a page show a ""›"".
-- **Numbers read like an instrument.** Scores, counts and measurements use Bahnschrift, the DIN-style face that ships with Windows. Its figures are all the same width, so changing numbers don't jump. Small labels over read-outs are set in capitals.
-- **Sidebar:** the open page and the hovered page are inset rounded pills; the open page has a short red bar. Section names are in small capitals.
-- **No more coloured edge stripes.** Tweak rows, info bars, the Pro bar and advisor findings used a thick coloured stripe on the left. The state now shows in the switch, the title, the chips, the tint, a dot or a hairline.
-- **Table headers** are a step below the panel, with caption labels and one hairline.
-- **One motion moment.** On Home the health score counts up and its scale fills (about 0.6 s). It is off when Windows animations are off.
-- **Small red text stays readable.** Red used as small text (for example ""Weakest link"") is lifted until it is at least 4.5:1 on its panel, in every colour scheme.
-
-### Under the hood
-- New depth tokens in Theme (Line, Raised, Hi, ShadowA, AccentSoft, AccentInk), worked out from the active colours after every colour change. See ADR-0009 and docs/DESIGN.md.
-- Gfx.Surface draws every raised surface; Gfx.Hair draws dividers; Gfx.Segments draws the segmented meter; Theme.Num gives the read-out face, with a fallback when a font lacks the style.
-- FocusButton draws itself from the colours Theme.Btn, Primary and Lead already set, so pages did not change.
 ";
-        public const string All = @"## 3.38.1: Home on GitHub
+        public const string All = @"## 3.38.2: New update-signing key
+
+### Security
+- **The update-signing key is new.** The old private key was published by mistake on 17 Nov 2026. 3.38.2 holds a new public key, so a manifest signed with the old key is refused. Versions 3.35 to 3.38.1 still trust the old key: install 3.38.2 by hand from the Releases page; do not use their self-update.
+
+## 3.38.1: Home on GitHub
 
 ArchTweaker now has its public home at github.com/arttnomadd/ArchTweaker.
 
