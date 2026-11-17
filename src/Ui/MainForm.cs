@@ -192,7 +192,7 @@ namespace ArchTweaker
             // ---- top bar
             // 3.16: less empty height; a page glyph before the title
             var top = new Panel { Dock = DockStyle.Top, Height = 66, BackColor = Theme.Bg, Padding = new Padding(20, 8, 16, 4) };
-            pageTitle = new Label { Font = Theme.FH, ForeColor = Theme.Text, AutoSize = true, Location = new Point(0, 0), AccessibleName = "pageTitle", UseMnemonic = false };
+            pageTitle = new Label { Font = Theme.FH, ForeColor = Theme.Text, AutoSize = true, Location = new Point(0, 0), Name = "pageTitle", UseMnemonic = false };   // 3.38.2: Name gives the UIA AutomationId; screen readers now read the page title, not "pageTitle"
             pageGlyph = new Label { AutoSize = true, ForeColor = Theme.Accent, UseMnemonic = false, Visible = false, Location = new Point(0, 4), AccessibleRole = AccessibleRole.Graphic, Tag = "notr" };
             if (NavItem.IconFont != null) pageGlyph.Font = new Font(NavItem.IconFont.FontFamily, 20f * Theme.Dpi / 96f, GraphicsUnit.Pixel);   // fonts are not part of the DPI scale pass
             // 3.1: the subtitle gets its own full-width line under the title and the toolbar, so it is no longer cut short

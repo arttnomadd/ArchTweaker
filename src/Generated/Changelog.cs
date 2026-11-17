@@ -10,6 +10,7 @@ namespace ArchTweaker
 
 ### Fixes
 - **The cleaner never empties a whole base folder.** On Windows, Temp sits inside %LocalAppData%, so a cleaning rule could target the Temp folder itself. The check now refuses every base folder, even one inside another. The Windows CI found this; the Linux tests could not.
+- **Screen readers read the page title.** The title label had the accessible name ""pageTitle"", so a screen reader said ""pageTitle"" on every page. It now reads the page name. Sidebar items also get a UI Automation ID, so the Windows UI tests can find each page.
 
 ## 3.38.1: Home on GitHub
 
@@ -69,6 +70,7 @@ ArchTweaker now has its public home at github.com/arttnomadd/ArchTweaker.
 
 ### Fixes
 - **The cleaner never empties a whole base folder.** On Windows, Temp sits inside %LocalAppData%, so a cleaning rule could target the Temp folder itself. The check now refuses every base folder, even one inside another. The Windows CI found this; the Linux tests could not.
+- **Screen readers read the page title.** The title label had the accessible name ""pageTitle"", so a screen reader said ""pageTitle"" on every page. It now reads the page name. Sidebar items also get a UI Automation ID, so the Windows UI tests can find each page.
 
 ## 3.38.1: Home on GitHub
 

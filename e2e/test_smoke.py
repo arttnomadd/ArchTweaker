@@ -1,5 +1,5 @@
 # ArchTweaker E2E smoke tests. Navigate every page and confirm the app stays alive and responsive.
-# Locators use AccessibleName (WinForms maps it to UIA AutomationId): nav items expose their page name,
+# Locators use the UIA AutomationId, which WinForms takes from Control.Name: nav items set Name to their page name,
 # and the header label exposes AutomationId "pageTitle".
 import pytest
 

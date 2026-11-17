@@ -51,7 +51,7 @@ namespace ArchTweaker
             tips.SetToolTip(this, L.T(page));
             SetStyle(ControlStyles.UserPaint | ControlStyles.AllPaintingInWmPaint | ControlStyles.OptimizedDoubleBuffer | ControlStyles.ResizeRedraw | ControlStyles.Selectable, true);
             Size = new Size(196, Theme.Slim ? 34 : 30); Margin = new Padding(0, 1, 0, 1); Cursor = Cursors.Hand; TabStop = true; Font = Theme.F;
-            AccessibleRole = AccessibleRole.PageTab; AccessibleName = page;
+            AccessibleRole = AccessibleRole.PageTab; AccessibleName = page; Name = page;   // 3.38.2: UIA AutomationId comes from Control.Name (e2e finds pages by it)
             if (page == DangerZone.CAT) Margin = new Padding(0, Theme.S(10), 0, 1);   // 3.4: set apart from the ordinary pages
         }
         Color GlyphColor { get { return Page == DangerZone.CAT ? Theme.Risk : active ? Theme.Accent : Theme.Muted; } }
