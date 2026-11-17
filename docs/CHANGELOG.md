@@ -1,0 +1,1450 @@
+# ArchTweaker changelog
+
+Newest first. The app shows this text in What's new and the version history (`tools/gen_changelog.py`).
+
+Each version groups its changes under these headings, in this order (leave out the ones a version does not have):
+`### New features` · `### Tweaks` · `### Design` · `### Fixes` · `### Security` · `### Under the hood`.
+A short intro under the version title is fine. The What's new dialog filters by these headings.
+
+## 3.38.1: Home on GitHub
+
+ArchTweaker now has its public home at github.com/arttnomadd/ArchTweaker.
+
+### Fixes
+- **Update checks go to the real project.** The app read its update offer from a placeholder address. It now reads the signed `latest.json` from github.com/arttnomadd/ArchTweaker, and each new version comes from that project's Releases page.
+- **Release downloads are not blocked.** GitHub now sends release files from release-assets.githubusercontent.com. The updater and the manifest signer allow that GitHub address, so a self-update no longer stops with "Redirected to a host that is not allowed".
+
+### Under the hood
+- **The README explains the project in full:** download, requirements, safety and undo, updates and their signature, building on Windows and Linux, tests and the folder layout.
+
+## 3.38.0: Hosts blocker list check
+
+### New features
+- **Each list shows its own date.** After a download, the Hosts blocker reads the date the list's maintainer wrote into the file ("list dated 2026-11-16") and shows it next to the size. When a list has not been updated for more than half a year, its card says so in amber: it still works, but new ad and tracking servers are missing.
+
+### Fixes
+- **List sizes are current.** Every list was checked on 16 Nov 2026. All 15 download addresses work. StevenBlack (≈76,000 domains, updated 15 Nov 2026) and HaGeZi (Light ≈164,000, Windows/Office ≈780, DoH ≈4,000, updated 13–16 Nov 2026) are maintained daily. The sizes shown before the first download now match.
+- **WindowsSpyBlocker says how old it is.** Its spy list last changed in May 2022. The card now says so and points to HaGeZi Windows/Office, which gets updates every day. The list stays for anyone who wants it.
+
+### Design
+- **The list cards are raised surfaces**, like the rest of the app since 3.36. The coloured stripe on the left is gone; the switch shows whether a list is on.
+
+### Under the hood
+- **HaGeZi Multi (≈404,000) and Pro (≈518,000) were not added.** In a Windows hosts file, lists of that size make the DNS Client use a lot of CPU, even at 9 names per line. Light stays the largest HaGeZi choice.
+
+## 3.37.0: Fewer, clearer colour choices
+
+### Design
+- **Four colour schemes instead of eleven:** Carbon dark (the default), Carbon light, OLED black and Custom. Slate, Rose, Blossom and the four design packages (Carbon Performance, Carbon Strict, Fluent Native, Gaming HUD) were near copies of Carbon dark with another accent, and the accent picker already does that. If you used one of them, ArchTweaker opens in Carbon dark (Blossom, the light one, opens in Carbon light). Your accent stays as it was.
+- **A colour scheme no longer changes your accent.** Before, picking Carbon Strict, Fluent Native, Gaming HUD, Rose or Blossom also switched the accent.
+- **Eight accents instead of ten:** Red, Blue, Teal, Graphite, Pink, Neon cyan, Windows and Custom. The old Red and Blue were near copies of Carbon red and Carbon blue, which are now simply called Red and Blue. A saved accent keeps its colour.
+- **The accent row fits the View panel again.** With ten accents, Custom was cut off at the right edge.
+
+### Under the hood
+- Theme.SchemeFromKey and Theme.AccentFromSaved move saved settings from every earlier version to the new lists (AccentV 4). Tests cover each old value.
+
+## 3.36.2: Pro notice no longer covers the toolbar
+
+### Fixes
+- **The Pro notice no longer covers the first toolbar row.** On Power tuner, Interrupt tuner, Tuning assistant and other Pro pages, the "Expert area (Pro)" bar could be drawn over the Game, Seconds per sample and Rounds controls. The page was laid out as if the bar were not there. The bar now docks at window level, like the update and drift bars, so the page always starts below it.
+- **Page notes show all their text.** The short explanations under the buttons (for example on the tuner pages) had a fixed height. At bigger text sizes or in a narrow window the second line was cut. A note now grows to fit its text.
+
+## 3.36.1: Long notices fit
+
+### Fixes
+- **Long warnings no longer push their buttons off the window.** The "tweaks went back to their default" bar and the "changed outside ArchTweaker" bar put the message and the buttons in one row. In Russian the message is longer, so "Review first" and "Dismiss" were cut off. The buttons now stay on the right, the message wraps onto as many lines as it needs, and the bar grows to fit.
+- **The Russian drift message is shorter** ("Твики (3) вернулись к значениям по умолчанию. Причина — обновление драйвера или Windows либо другая программа.").
+- **The search box hint is translated.** "Search all tweaks (Ctrl+F)" showed in English in the Russian interface.
+- **"Check what changed" on Home fits in Russian** ("Что изменилось"); the longer text was cut off.
+
+## 3.36.0: Precision instrument
+
+A new look for the whole app, in the same black-and-red Carbon style. Nothing about what a tweak does changed.
+
+### Design
+- **Home is now an instrument panel.** The health score is a large read-out over a 20-cell scale, with the main action as the one red button beside it. "Reset by Windows" and "Last cleanup" sit in the same panel behind hairlines. Pending, Latency and Last apply share one read-out strip.
+- **The latency chain is a pipeline.** The five stages are stations on one track that runs left to right. A finished stage lights its part of the track. The weakest link is the red station, with a soft halo and its label in red.
+- **"This PC right now" is a spec sheet.** Values are in one column, with a small status dot after a value that is good or needs a look.
+- **Depth everywhere.** Cards, tiles, tweak rows, settings cards and advisor findings are raised surfaces, with a soft shadow, a light top edge in dark schemes and a hairline border. Depth comes from light and edges, not new colours, so every colour scheme and High Contrast keep working.
+- **New buttons.** Every button is drawn by ArchTweaker: rounded, a hairline border, a light top edge, and clear hover and press states. Buttons that open a page show a "›".
+- **Numbers read like an instrument.** Scores, counts and measurements use Bahnschrift, the DIN-style face that ships with Windows. Its figures are all the same width, so changing numbers don't jump. Small labels over read-outs are set in capitals.
+- **Sidebar:** the open page and the hovered page are inset rounded pills; the open page has a short red bar. Section names are in small capitals.
+- **No more coloured edge stripes.** Tweak rows, info bars, the Pro bar and advisor findings used a thick coloured stripe on the left. The state now shows in the switch, the title, the chips, the tint, a dot or a hairline.
+- **Table headers** are a step below the panel, with caption labels and one hairline.
+- **One motion moment.** On Home the health score counts up and its scale fills (about 0.6 s). It is off when Windows animations are off.
+- **Small red text stays readable.** Red used as small text (for example "Weakest link") is lifted until it is at least 4.5:1 on its panel, in every colour scheme.
+
+### Under the hood
+- New depth tokens in Theme (Line, Raised, Hi, ShadowA, AccentSoft, AccentInk), worked out from the active colours after every colour change. See ADR-0009 and docs/DESIGN.md.
+- Gfx.Surface draws every raised surface; Gfx.Hair draws dividers; Gfx.Segments draws the segmented meter; Theme.Num gives the read-out face, with a fallback when a font lacks the style.
+- FocusButton draws itself from the colours Theme.Btn, Primary and Lead already set, so pages did not change.
+
+## 3.35.1: Tidy-up
+
+A tidy-up release. No tweak was added, removed or changed. The interface works as in 3.35.0, with the fixes below.
+
+### Fixes
+- **39 interface texts were in English in the Russian interface.** They are now translated: the Bake into ISO steps and messages, the Live overlay status, the Tuning assistant progress, the Drivers backup line, and the RESTART, SIGN-OUT and PRESETS chips on tweak rows.
+- **Report tooltips with an apostrophe broke.** The system report used its own HTML escaping, which left quotes as they were, and that text goes into tooltips. Every HTML report now uses the same escaping.
+- **The repair chain stops DISM fully on a timeout.** It stopped only dism.exe and left its DismHost.exe helpers running. It now stops the whole process tree, as Bake into ISO does.
+- **A finished tool can no longer hang Bake into ISO.** When a helper process kept the output pipe open after the tool ended, ArchTweaker could wait for ever. It now waits at most 5 seconds for the last lines.
+
+### Under the hood
+- **One process runner.** Shell.RunLines runs a tool with a timeout and passes each output line on. Bake into ISO and the repair chain used their own copies; LiveOverlay now uses the shared hidden-start settings. Every process now starts through Shell, so the System32 path rule applies to all of them.
+- **Category names in one place.** The new Cat class holds the 14 category names; the tweak lists, the sidebar dictionaries, Home and the Tuning assistant use Cat.X instead of typing the text again. A typo is now a compile error, not a tweak without a page.
+- **The Windows UI smoke test opens every page.** e2e/test_smoke.py missed 7 pages (Boot times, Hardware audit, Interrupt tuner, Mouse polling, Power tuner, Results, Tune everything) and named "Tools & backup", which is not in the sidebar. In Lite mode the 12 Pro-only pages are skipped with a reason; any other missing page fails. A test keeps that Pro list in step with the app.
+- **New checks that keep the project in step.** A test fails when interface text has no Russian line, when the e2e page list and the sidebar differ, or when a source file is missing from the CLAUDE.md map. On a CI machine these checks fail, not skip, when the sources are missing.
+- Shell.RunLines tells "could not start" apart from a tool that exits with -1, logs a failed stop, and its tests also run on Windows (cmd.exe).
+- **CLAUDE.md names every source file.** 4 files were missing (Cat, ProofStore, WhyArchTweaker, StatTiles) and 36 were named only by short names. The Generated row is back inside the table.
+- **51 unused Russian lines removed** (texts of removed or renamed features). Lines that can still match text built while the program runs (patterns, pieces, plural forms) stay.
+- **The build and test scripts are in the project.** tools/build-win.sh (with the .NET 4.5 call audit), tools/mkres.py (manifest, icon, version) and tools/run-tests.sh. Before, they lived outside the zip.
+- Two writing-rule fixes in new text (a semicolon, "requires" now "needs").
+
+## 3.35.0: Signed updates and review fixes
+
+A safety and correctness release from a code review of 3.34. No tweak was removed or changed.
+
+### New features
+- **Forget this result.** A measured result on the tweak details now has a "Forget this result" link, for a run that went wrong (a game or a download busy in the background). The tweak itself is not changed. The proof file stays append-only: a forget is one more line.
+
+### Fixes
+- **Proofs no longer go stale for no reason on PCs with two GPUs.** ArchTweaker took the first display adapter Windows listed, and that order can change (a CPU's graphics next to an NVIDIA or AMD card, or a Parsec / Spacedesk / OBS virtual display). It now picks the real GPU in a fixed order: NVIDIA, AMD, then Intel.
+- **Proofs are saved with a fixed date format.** On a PC with a non-Gregorian calendar (for example Thai), a saved result could not be read back and was lost.
+- **The Proven chip reads "+3.2%"**, as in the 3.34 notes, not "+3.2 %".
+- **"Why ArchTweaker" shows the real size of the program.** It said 2.7 MB; the exe is about 4 MB. The text now reads the size of the exe itself.
+- **README tweak count.** It said 276 tweaks; the catalog has 280. tools/DumpTweaks.cs now writes the count into README.md when it writes docs/TWEAKS.md.
+
+### Security
+- **Updates must be signed.** The update manifest (latest.json) must now carry an RSA-3072 signature made with the maintainer's private key. The exe holds only the public key. Before, the manifest's SHA-256 only proved that the download arrived intact: whoever controlled the manifest could also choose the exe. Now a changed version, download link, hash, notes or overlay entry fails the check and the update is refused. tools/sign_manifest.py writes a signed manifest. See ADR-0008.
+- **The tweak overlay is refused unless the manifest is signed.**
+- **Old manifests can't be replayed.** The signed manifest has a serial number. ArchTweaker refuses a manifest older than one it has already seen, so nobody can roll an update offer or an overlay back with an old signed file.
+- **The manifest is read strictly.** Keys are case-sensitive, and a key that appears twice counts as missing, so what is signed is exactly what is used.
+- **The overlay can no longer set more keys that start programs or switch off protection:** User Shell Folders and Shell Folders (the Startup folder), SecurityProviders, NetworkProvider, Windows Defender, Environment, Policies\System, Credential Providers, WMI Autologger, Keyboard Layout, BootVerificationProgram, Windows Installer and Windows Update policies, Remote Desktop, browser policies (Edge, Chrome, Firefox, Brave), PowerShell, Safer and AppLocker, credential delegation, SMB client and server, Device Guard and code integrity, Internet Settings (proxy), attachment and Office security, certificate stores and cryptography, Windows Script Host and WinRM. Value names that name a program or a DLL (Dll, Command, Program, Exe and others) and proxy values are refused too.
+- **The update helper refuses a folder name with % ^ & " ! < > |.** The swap script puts the path into cmd text, and these characters change what cmd runs.
+
+### Under the hood
+- **CI builds again.** windows.yml compiled src\*.cs, which matches no file since the sources moved into feature folders in 3.25, and it named Tests\UnitTests.cs, which no longer exists. It now uses /recurse, like build.bat.
+- **A test no longer changes the real Windows build number.** BuildLimits_HideObsoleteTweaks wrote HKLM\...\CurrentVersion\CurrentBuildNumber (and into the undo journal). A test killed half-way left Windows reporting a wrong build. Tests now use OSInfo.BuildOverride.
+- A failed background task writes the error type and the line where it failed to the log, not only the message.
+- New tests: manifest signature (good, changed field, no signature, other key, bad base64), serial replay, duplicate and wrong-case keys, the swap-path guard, the new overlay refusals, GPU pick, chip text, and a record-then-forget round trip through the proof file.
+- **Removed two duplicate Russian lines.** The second one would have renamed Tuning assistant to a different Russian term than the rest of the interface uses.
+
+## 3.34.0: Proven on this PC
+
+### New features
+- **Measured proof per tweak.** When you A/B test a tweak, or the Tuning assistant tests it, ArchTweaker stores the result against that tweak: the measured change (1 % low FPS, or timer wake-up delay), the date and the number of runs. A tweak that measurably helped shows a green **Proven +3.2%** chip instead of a generic expected gain.
+- **Proof on the tweak details.** The details pane has a "Measured on this PC" line. When a tweak has no measurement yet, it says so and offers a one-click "Run an A/B test"; when it has one, "Re-test on the A/B page". Opening the A/B page from there picks that tweak for you.
+- **"Proven here" filter** in the More-filters menu, to show only the tweaks you have proven on this PC.
+- **Stale proof guard.** A stored result is tied to the Windows build and GPU driver it was measured on. When either changes, the result is marked "stale, re-test", so ArchTweaker never shows a measurement it can no longer stand behind.
+- **"Why ArchTweaker" panel** on Home: measured, exactly undoable, offline with no account, small, and open about risk. Plain facts, no other app named.
+
+### Under the hood
+- New Measure/ProofStore.cs stores proofs in ProgramData\ArchTweaker\proof.tsv (one line per measurement, latest per tweak wins). Tests cover parsing, the win / worse / within-noise verdicts and the stale check.
+
+## 3.33.1: Pro notice no longer covers buttons
+
+### Fixes
+- **The Expert area (Pro) notice covered the top row of a page** (Apps, Deep clean, the tuners), so you could not click those buttons. It happened on the first visit to a page and went away after you switched pages. The first visit scales a page for your display, and Windows did not move the page below the notice after that. ArchTweaker now lays out the notice, the filter chips and the page in one pass, and again after the scaling. If a page still starts under a bar, ArchTweaker lays it out again and writes a line to the log.
+
+## 3.33.0: Calmer interface
+
+### Design
+- **Change history in groups.** Each apply is one row with its time and how many tweaks and values it changed. Click it to open or close it. The newest apply starts open. A tweak name shows once, not on every value. A search box finds a tweak, key or value. A value that did not change is grey.
+- **Fewer chips on tweak rows.** A row shows the risk (Moderate and up), Experimental, Restart, No undo, Covered and a wrong Windows edition. PRO, Undocumented, the evidence badge and "Restores defaults" are now in the details pane.
+- **Home:** one wide score card shows the health score, the speed tweaks applied and the main action. Reset by Windows and Last cleanup stay next to it. Restart now shows only in the restart bar. Quick actions no longer repeat the score card's action.
+- **Filter chips:** All, Not applied, Applied and Pending, plus Changed outside when something was. Gain and restart filters are in More filters ▾. The chip shows the filter in use.
+- **Page summary as tiles:** Applied, Need a restart, Moderate or advanced, Waiting for Apply.
+- **Bottom bar:** with nothing ticked, the main button says "Nothing to apply". The status line uses the rest of the bar, so less of it is cut off.
+- **Sidebar:** in the slim sidebar, the tooltip of each page shows its applied count. The Danger zone icon is magenta, like the rest of the high-risk colours.
+
+## 3.32.0: Tidier code, smaller backup folder
+
+### Fixes
+- **Old large registry snapshots are deleted once.** Versions before 3.31.1 saved snapshots of about 30 MB each. At the first start of 3.32, ArchTweaker deletes snapshots larger than 1 MB and writes how much it freed to the log. Undo uses the journal, not these files.
+
+### Under the hood
+- Core holds only the tweak engine now. Services, Store apps and Startup code moved to Cleanup. Reports moved to Measure. Repairs, Windows tools, scheduled maintenance and Undo everything moved to Safety. Foreground boost moved to Power.
+- One copy of each small helper: .reg text (RegText), sizes as text and System32 paths (Units). The registry snapshot, the recovery kit and the Pro undo file all write .reg values with the same function.
+- The five largest files are split: Engine.cs (Reg, Journal, ShellRun, SvcInfo), CoreTweaks.cs (two list parts), Theme.cs (colour data, theme controls), Benchmark.cs (report, page) and IsoBake.cs (page). The tweak list is the same, in the same order.
+- ADR-0007 records why registry snapshots hold only the values an apply touches.
+
+## 3.31.1: Faster Change history
+
+### Fixes
+- **Change history opens fast.** A registry snapshot used to copy each key the apply touched with every subkey, so a value directly under ...\Control saved about 30 MB. The page then read the whole file each time it opened. Snapshots now save only the values the apply touches: a few KB.
+- The page reads an older large snapshot only for the keys it shows, about 8 times faster, and keeps the result. Opening the page again with no new apply shows the list at once.
+- The page loads in the background, so the rest of the window stays usable.
+
+### Under the hood
+- A value that did not exist is saved as "name"=-, so double-clicking a snapshot deletes it again. A key that did not exist is only a comment: importing a snapshot never deletes a key.
+
+## 3.31.0: Tidier pages and code
+
+### Design
+- **New Settings page** under Tools & backup in the sidebar. It has language, colour scheme, progress bars, the notification area icon, Lite / Pro mode and the Pro PIN, What's new, the tour and the command line. Tools & backup keeps maintenance, backups, the recovery kit, fixes and Windows shortcuts.
+- **One Recovery kit card** on Tools & backup. It used to show twice.
+- **Measure page:** the network tests have their own row.
+- The command palette (Ctrl+K) finds the buttons on Settings too.
+
+### Under the hood
+- Ghost devices, Leftover tweaks, Foreground boost and App settings share one dialog base, so they look and behave the same.
+- Every dialog is in Ui/Dialogs, and the Danger zone banner and gate are in Ui/DangerUi.cs. Engine folders no longer hold dialogs: 20 engine files no longer use WinForms.
+- Pc.cs is split into HwProbe.cs, Advisor.cs, HwTweaks.cs, LatencyTest.cs and PlanFiles.cs.
+- Removed Tools.RepairSystem, which nothing used after 3.30.
+
+## 3.30.0: Ideas from the Paragon comparison
+
+### New features
+- **Bufferbloat test** on the Measure page. ArchTweaker pings 1.1.1.1 at rest, while it downloads and while it uploads, then grades the extra latency from A+ to F. Each phase shows min, 25 %, median, 75 %, 95 % and max, and the speed it reached.
+- **Foreground boost picker** (Tools & backup → Performance). It lists all 12 Win32PrioritySeparation values with what each one does, marks the current one, and can put back the Windows default. Undo everything puts back the value you had before.
+- **Repair Windows** now runs a ChkDsk online scan, SFC, DISM RestoreHealth and SFC again. Each step has a time limit, and a step that runs too long is skipped. The status line shows the step that runs.
+- **Repair WMI** checks the WMI repository and salvages it when it is inconsistent.
+- **Install game runtimes** installs Visual C++ 2005 to 2022, DirectX and the .NET 8 and .NET 10 desktop runtimes from Microsoft with winget.
+- **App settings** (Apps page) changes settings inside Discord, Firefox and Spotify files: start with Windows, hardware acceleration, and Firefox telemetry. ArchTweaker refuses while the app runs and keeps a copy of each file. Put back the originals restores the copies.
+- **Restore points with your own name.** If System Protection is off, ArchTweaker turns it on first.
+
+### Tweaks
+- **Unbind the QoS Packet Scheduler** is a separate Advanced tweak now. It is not in a preset.
+- **Turn off Control Flow Guard (CFG) system-wide** in the Danger zone. It changes only the CFG bits of MitigationOptions, and undo puts back the value before.
+- **Stop Chrome running in the background** and **Stop Brave running in the background**: the same policies as the Edge tweak. They show only when the browser is installed.
+- **No Bluetooth adapter:** the PC advisor suggests turning off the Bluetooth services, and the Services page marks them Safe.
+
+### Fixes
+- **Unbind unused network protocols** did not bind the Network Adapter Multiplexor (ms_implat) again on undo. Undo now binds every protocol that the tweak unbound. The tweak no longer unbinds the QoS Packet Scheduler. If an older version unbound it, undo binds it again.
+
+### Security
+- **Windows asks before it shuts down** while ArchTweaker applies, undoes or repairs something. The message names the task.
+- App settings never write through a link in your user profile. They restore only copies that ArchTweaker made itself.
+
+### Under the hood
+- New files: Core/ForegroundBoost.cs, Core/Repairs.cs, Network/Bufferbloat.cs, Cleanup/AppSettings.cs. Tests cover the grade bands, the CFG bits, the text edits for app files and the net_bindings undo.
+
+## 3.29.0: Four design packages
+
+### Design
+- **Carbon Performance is the new default look.** It uses Carbon's Gray 100 colours (#161616 background, #262626 cards) with Carbon red. If you never changed the colours, ArchTweaker switches to it once. If you picked a scheme or an accent, ArchTweaker keeps your choice.
+- **Three more packages in View → Colour scheme.** Carbon Strict uses pure Carbon with Carbon blue. Fluent Native uses Windows 11 dark surfaces with your Windows accent colour. Gaming HUD is the darkest, with neon cyan. Each package brings its own accent, and you can still change the accent afterwards.
+- **New accents:** Carbon red, Carbon blue, Neon cyan and Windows (your Windows accent colour).
+- **Red now means the brand only.** High-risk chips (Advanced, Danger) and the Danger zone banner are magenta. Errors stay red. Experimental chips are purple. The PRO chip is grey.
+- **Lite and Pro look different.** In Lite mode, a red accent shows as Carbon blue. Pro mode keeps red. The Lite / Pro switch uses the accent colour.
+
+### Security
+- **Expert notice in Pro.** Pro-only pages and the Danger zone show a bar: "Expert area (Pro). These changes can affect stability."
+- **Experimental tweaks ask once more.** Before Apply, ArchTweaker lists the experimental tweaks and asks you to confirm, because nobody has proven that they help.
+
+### Under the hood
+- docs/DESIGN.md describes the four packages and the colour roles. docs/palettes.py checks all 11 schemes with every accent: 0 contrast failures.
+- Rounded corners (Fluent), Mica and glow effects (Gaming HUD) are left out on purpose. GDI paints over Mica, and glow needs blur that WinForms cannot draw fast.
+
+## 3.28.0: What's new by category
+
+### New features
+- **Show one kind of change.** The What's new window has buttons for All changes, New features, Tweaks, Design, Fixes, Security and Under the hood. Each button shows the number of changes. Click one to see only that kind of change, from every version. The version list then shows only the versions that have such a change.
+
+### Design
+- **Every version is sorted by category.** In What's new, the changes of each version are under the same headings, in the same order. A red mark starts each heading. All 73 older versions are sorted too.
+
+### Fixes
+- **Quick tour.** The tour step for the sidebar still said "Analyse". It now explains Diagnostics, Measure & test, Tune and History.
+
+### Under the hood
+- docs/CHANGELOG.md uses the six category headings. A test checks that each change is under one of them.
+
+## 3.27.1: Fixes from a security and reliability review
+
+Three reviewers read the code of 3.24 to 3.27 for security, correctness and errors that stay hidden. These are the real problems they found, now fixed.
+
+### Fixes
+**Errors you could not see before**
+- **Device tweaks.** If Windows did not enable a device again on undo, ArchTweaker deleted its note of the devices it had disabled. Now the note stays, so the next undo tries again, and the undo shows the error. A device disable that fails is now an error, not "applied".
+- **Recovery kit.** A Danger zone tweak is not applied when the kit cannot save its original values. The backfill no longer saves a tweak's own value as the "original". It counts only the tweaks it saved, and says which it could not save.
+- **Power tuner.** It checks that powercfg really took each value. It keeps the backup lines that did not go back, so Put back can try again. If ArchTweaker closes in the middle of a test, the next start puts the value back. It stops before it changes anything if it cannot save the originals. "powercfg did not answer" is no longer shown as "not on this plan".
+- **Put back everything the tuners changed** says which values did not go back.
+- **System Protection.** "Turn it on" now says what failed, instead of "Restore points work now". The services change through the Service Control Manager, so no restart is needed.
+- **Drift guard** follows the new window after a theme, language or mode change. It shows a set again if the notice could not be shown. It checks after the PC wakes from sleep. It says so when it fails three times in a row.
+- **Timer wake-up delay.** It no longer switches quietly to a Sleep(1) measurement in ms in the middle of a run. If the high-resolution timer is missing, the run stops and says why. A wait that does not end by the timer is not counted.
+- **Boot times** says when it could not read the log, instead of "Windows has no boot timings yet".
+- **Ghost devices** removes devices without freezing the dialog. It says how many devices it did not remove, and its list no longer looks complete when Windows stopped listing early.
+- **Tune everything** says why a step was skipped. **Results** says which tool's runs it could not read.
+- **Audio enhancements off** needs an active playback device. If no device key could be written, the apply fails with the reason.
+Checked and not changed: report HTML is already escaped everywhere. Ghost device removal and the drift guard's file checks need no change. The interrupt tuner's progress marker in HKCU can only point at a device that has an administrator-owned backup line.
+
+### Security
+- **Recovery kit folder.** The folder C:\ArchTweaker-Recovery took the drive root's permissions, so any user could change the files that Windows Recovery runs with full rights. ArchTweaker now locks the folder (administrators and SYSTEM can write, users can only read) and removes a junction planted in its place. It reads the kit ledger only when an administrator owns it, and accepts only the rows it writes itself (bcdedit /set or /deletevalue, and .reg values under the offline keys). A registry value with a line break goes into undo.reg as hex, so it cannot add lines.
+- **Tuner backups.** The Interrupt tuner and Power tuner read their backup files only when an administrator owns them. The Power tuner accepts only its own four settings from the file.
+- **Report paths.** Delete and Open report accept only an .html file in the reports folder. Before, a changed run file could point them at any file.
+- **Boot times** reads the event log XML without DTDs, like the rest of the app.
+
+## 3.27.0: Tidier repo, docs and tests
+
+### Design
+- **Sidebar in Pro.** The Tweaks section starts closed the first time you use Pro, so the tools below it show without scrolling. ArchTweaker remembers when you open or close a section.
+
+### Fixes
+- **Fix: one tweak had no page.** "Audio threads get high scheduling priority" (3.24) was in a category without a sidebar page, so you could not see it. It is now in GPU & Devices, next to Audio enhancements. A new test checks that every tweak's category has a page.
+
+### Under the hood
+- **Shorter README.** It now says what ArchTweaker is, how to run it, Lite and Pro, and the sidebar. The version history moved to docs/CHANGELOG.md. What's new in the app shows the same text.
+- **Current tweak list.** docs/TWEAKS.md lists all 276 tweaks with mode, risk, impact and expected gain. ArchTweaker makes it from the catalog, so it stays correct. The old list in the README was from 2.x.
+- **Source.** The large files are split: one file per control (Ui/Kit), one file per page (Ui/Pages), the tweak model apart from the tweak list, and services, apps, startup, cleanup and hosts each in their own file. The four tuner reports share one style. Nineteen drop-down lists, ten status labels and six status updaters use one shared helper each. The two compiler warnings are fixed.
+- **Tests.** The 1,960-line test file is now one file per area (App, Catalog, Cleanup, Core, Hardware, Iso, L10n, Measure, Modes, Network, Power, Safety, Ui).
+- **Repo.** License files are in docs/licenses, and an old screenshot is in docs/screenshots. The git history was packed from 24 MB to 2 MB.
+
+## 3.26.0: Tune everything, Results, drift guard while running, page filter
+
+### New features
+- **Tune everything (new page, Pro, Tune).** It runs the Interrupt tuner (network, USB and audio devices), the Power tuner and the Tuning assistant (5 untested tweaks), one after another. Each step keeps only what measurably helps. At the end, one report shows what each step kept and links the three tool reports.
+- **Results (new page, History).** Every saved run of Latency, Benchmark, Measure, Mouse polling and the three tuners is in one list, newest first. Open report opens the HTML report of a run. "Put back everything the tuners changed" writes back the interrupt settings and power values from before the first tuner run.
+- **Power tuner report.** Each Power tuner run now writes an HTML report, like the other tuners. The log also says when you stop a run, and which settings the active plan does not have.
+- **Drift guard while ArchTweaker runs.** Every 30 minutes, ArchTweaker checks if a driver or a Windows update installed. If one did, or every 3 hours anyway, it checks the applied tweaks again. A new set of tweaks that went back shows the bar and a message. It never checks during an apply or a tuner run.
+- **Russian:** 89 more strings translated (Live overlay, Bake into ISO, overlay corners, Results, Tune everything).
+
+### Design
+- **Find a page.** A box at the top of the sidebar filters the pages by name. Enter opens the first match, and Esc clears the box.
+
+### Fixes
+- **Fix: recovery kit message at every click.** A Pro tweak with nothing to save on this PC (for example, a service that is not installed) was added to the recovery kit again and again. Now it gets a marker once, and the backfill runs once per start.
+
+## 3.25.0: Tidier sidebar and source
+
+### Design
+- **Sidebar.** Analyse had 15 pages. It is now four sections: Diagnostics (PC advisor, System scan, Hardware audit, System info, Boot times), Measure & test (Latency, Benchmark, Measure, A/B test, Live overlay, Mouse polling), Tune (Tuning assistant, Interrupt tuner, Power tuner) and History (What changed, Change history). Every page stays. In Lite mode, a section whose pages are all Pro does not show.
+- **Quick tour.** The tour step for these sections now explains Diagnostics, Measure & test, Tune and History.
+
+### Under the hood
+- **Source by feature.** The source files no longer have release names such as V321.cs or Ui30.cs. They are now in folders by feature: App, Core, Catalog, Modes, Safety, Measure, Power, Hardware, Network, Cleanup, Iso and Ui. The main window is in six files instead of one 1,400-line file. CLAUDE.md has the new map.
+- **Less duplicate code.** Device enable/disable and Ghost devices use one set of Windows device functions. Six pages use one toolbar label style. Four functions that nothing called are gone. No tweak and no feature changed.
+
+## 3.24.0: Power tuner, drift guard, boot times, restore point check, audio tweaks
+
+### New features
+- **Restore point check.** Before the first apply, ArchTweaker checks that restore points can work. If the Volume Shadow Copy service is disabled, a policy turns System Restore off, or System Protection is off for the system drive, a dialog tells you. "Turn it on" fixes it and then makes the restore point. Tools & backup → Fixes also has "Turn on System Protection".
+- **Drift guard.** At start, ArchTweaker checks the tweaks you applied. If a driver update, a Windows update or another program set some of them back, a bar shows how many. "Re-apply them" sets them again. "Dismiss" hides the bar for this set.
+- **Boot times (new page, Analyse).** It shows how long each start took from the Windows Diagnostics-Performance log: in total, until the desktop and after the desktop. It also shows what Windows found slow at the last start, and a chart of the starts.
+- **Power tuner (new page, Pro).** It tries values of four processor power settings on the active power plan: the performance time check interval (5, 15 and 5000 ms), the increase and decrease thresholds (10/8 and 30/60 %), the latency hint and the minimum processor state. It compares each value with the current one in turns, measured with a game (1 % low FPS) or without one (timer wake-up delay). It keeps a value only when the value measurably helps. "Put back the original values" restores the values from before the first test.
+
+### Tweaks
+- **Two audio tweaks.** "Audio enhancements off" turns off driver sound effects on every active playback device. "Audio threads get high scheduling priority" sets the MMCSS Audio and Pro Audio tasks to High.
+- NVIDIA: forced VSync off, high-performance texture filtering, Ansel off and Resizable BAR were already in the NVIDIA tweaks, so 3.24 adds no new NVIDIA settings. The disconnected-device cleaner is still on the Drivers page (Ghost devices).
+
+### Fixes
+- **Tuning assistant measures better without a game.** Before 3.24, it measured how long Sleep(1) takes. That value stays at about 2 ms on most PCs, so it could not show a difference. Now it measures the timer wake-up delay (99th percentile, in µs) with a high-resolution timer. Small changes in latency now show.
+
+## 3.23.1: Uninstaller list fix
+
+### Fixes
+- **Uninstaller and other lists stayed white.** When a list was created, ArchTweaker right-aligned its number columns (such as Size) at that moment. On some Windows builds, including 26H1, Windows refuses the change there ("ColumnInfo cannot be set"), and the error broke the whole list. ArchTweaker now aligns the columns just after the list exists, and a refused change no longer breaks anything.
+
+## 3.23.0: Recovery kit for every Pro tweak, PIN lock, export, Optimize safely
+
+### New features
+- **First start asks: Lite or Pro.** After the setup guide, a new user chooses a mode. Pro still needs the warning.
+- **Lite: Optimize safely.** A button on Home selects the recommended safe tweaks for this PC and applies them after one confirmation, with a restore point first.
+- **Pro tools** (Tools & backup): export the ticked tweaks (or the applied ones) as a .reg file and a .cmd file, and the command-line options.
+
+### Design
+- **Lite shows what Pro adds.** Each tweak page says how many more tweaks Pro mode has there, with a link to switch.
+- **Pro: PRO chip.** Tweaks that Lite never shows have a red PRO chip.
+
+### Security
+- **Recovery kit for all Pro tweaks.** Before 3.23 only Danger zone tweaks went to the recovery kit. Now every Pro tweak does. Before it is applied, its original values go to <system drive>\ArchTweaker-Recovery as an offline .reg file and recovery.cmd. If Windows does not start, run recovery.cmd from the Command Prompt in Windows Recovery: it loads the offline registry, puts the values back and undoes boot settings.
+- The kit takes each original from the undo journal, so it restores the value from before ArchTweaker first changed it. Pro tweaks applied before 3.23 are added at the next start. Tools & backup → Recovery kit shows how many tweaks it holds, opens the folder and updates it.
+- **Lite: restore point always on.** The "Create restore point before first apply" box can't be unticked in Lite.
+- **PIN lock for Pro mode.** Tools & backup → App mode → Lock Pro mode with a PIN. For a PC you set up for someone else. The PIN is stored as a salted hash.
+
+## 3.22.0: Lite and Pro mode
+
+### New features
+- **Two modes in one app.** The Lite / Pro switch sits at the bottom of the sidebar. Tools & backup → App mode has it too.
+- **Lite** (the default) shows the 171 tweaks with Safe risk that are not experimental, and every read-only page: Benchmark, Latency, Measure, Live overlay, Mouse polling, Hardware audit, PC advisor, System scan, What changed, Change history, System info, Cleanup, Disk space, Uninstaller, Startup and Context menu.
+- **Pro** shows all 274 tweaks (Moderate and Advanced risk, experimental, Command tweaks, Danger zone) and the tools that change devices, drivers, services, apps, power internals or Windows images: Tuning assistant, Interrupt tuner, A/B test, Deep clean, Services, Apps (UWP), Power settings, Hosts blocker, Drivers and Bake into ISO.
+- **Pro needs a warning first.** It says what Pro mode changes, that a wrong choice can stop Windows from starting, that undo and restore points do not always work, which repair skills you need (Safe Mode, WinRE, System Restore, .reg import, drivers, reinstall), and that you use it at your own risk with no warranty. "Turn on Pro mode" stays off until you tick that you understand and accept. Enter never turns it on.
+- **The mode only changes what you see.** Applied tweaks stay applied in both modes. Undo last, Undo everything, Change history and the startup recovery work the same. Presets, the advisor and search in Lite only pick Lite tweaks. When Lite hides applied Pro tweaks, ArchTweaker says how many.
+
+## 3.21.1: Interrupt tuner finds devices on new Windows builds
+
+### Fixes
+- **Interrupt tuner.** On new Windows builds (26H1, some 24H2 installs) the device keys have no Class value, only ClassGUID, so the tuner found no devices. ArchTweaker now reads the class from ClassGUID too. When it still finds none, the log says how many PCI keys it saw.
+- The tuner's notes no longer get cut off.
+
+## 3.21.0: Hardware audit and nine new tweaks
+
+### New features
+- **Hardware audit** (Analyse). One list of what Windows reports about your hardware, sorted by Fix, Check, Info and Good. Select a row to see how to fix it. Copy as text puts the list on the clipboard. The audit changes nothing.
+  - PCIe link of the graphics card and each NVMe drive: generation and lanes against what the device supports (a card at x8 in an x16 slot is a Fix).
+  - Resizable BAR: from the size of the GPU's largest memory window (over 256 MB = on).
+  - RAM speed against the module's own rating (XMP/EXPO off or a BIOS limit).
+  - Each display's refresh rate against the best rate at its resolution.
+  - GPU driver age, NVMe firmware, HAGS, MPO, Game Mode, VBS and Memory integrity, core parking of the active plan, the timer resolution now, and a checklist of BIOS settings Windows can't read.
+
+### Tweaks
+- **New tweaks** (from the synez list and the ALLSHI packs, the ones the catalog did not have):
+  - Tasks & Services: background disk scans off (Chkdsk ProactiveScan, Data Integrity Scan), automatic low-disk cleanup off (SilentCleanup), speech model downloads off, recovery environment check off (VerifyWinRE), UPnP device discovery off (SSDPSRV, upnphost), Windows Image Acquisition off (stisvc), Cellular time off.
+  - Input & Latency: timer coalescing interval 0 (kernel, Session Manager and Power keys; experimental, unproven).
+  - Internet & Network: DNS doesn't cache network failures (NetFailureCacheTime 0).
+- Left out on purpose: Scheduled defrag stays on (it also sends TRIM to SSDs). Placebo values from the packs (made-up environment variables, invented NVIDIA "Disable*" names) are not added.
+
+## 3.20.0: Interrupt tuner and mouse polling test
+
+### New features
+- **Interrupt tuner** (Analyse). Tick network, USB, audio or graphics devices. For each one, ArchTweaker tries MSI mode, high interrupt priority and two fast cores for its interrupts (core 0 is skipped). It compares each setting with the current one in turns: the device restarts with pnputil, then a kernel trace records the device driver's time per DPC and ISR. A setting stays only when the driver is at least 5 % faster, Welch's t-test agrees, and its worst call is not over 25 % slower. Kept settings stay while the next one is tested. An HTML report opens at the end.
+- The original values of each tested device go to irq-tune-backup.tsv. Put back the original settings restores them exactly, and Undo everything also covers them. If ArchTweaker closes during a test, the next start puts that device back.
+- The graphics card is not ticked by default: its restart closes running games. Storage controllers are never changed: a boot drive that loses its interrupt mode does not start. Needs Windows 10 version 2004 or newer (pnputil /restart-device).
+- **Mouse polling test** (Analyse). Move the mouse for 5, 10 or 20 s. ArchTweaker reads every report with Raw Input on a high-priority thread and shows the real polling rate, the rate it is set to, jitter, the 99th percentile gap, late reports (over 1.5 periods) and the longest gap while moving, with a histogram. Stops over 50 ms are left out. Saved tests let you compare before and after a tweak, a USB port or a mouse setting.
+
+### Fixes
+- **Live overlay fix.** The overlay now shows on the monitor of the game, not always on the main monitor.
+
+## 3.19.0: Live overlay, tuning assistant, bake into ISO
+
+### New features
+- **Live overlay** (Analyse). A small always-on-top box in a screen corner over your game: FPS of the last second and 1 % low of the last 10 s (PresentMon), the newest frame time, % DPC and % ISR time (all cores and the busiest core), interrupts per second and the timer resolution. It updates once a second, ignores the mouse and never takes focus. Ctrl+Shift+F10 hides and shows it. It follows the active window, or one game you pick. Without PresentMon it shows latency only. It works over borderless and windowed games; exclusive full screen hides every other window.
+- **Tuning assistant** (Analyse). Finds tweaks that are off, take effect at once and can matter for games (no restart, no Danger zone, no experimental ones), then tests each on this PC: off, on, off, on… With a game it compares 1 % low FPS; without one, the 99th percentile of Sleep(1). A tweak stays on only when Welch's t-test says it helped by at least 1 %; otherwise it goes back off. Kept tweaks stay on while the next one is tested. The kept set is one entry in the history, so Undo last takes it back. Stop puts the current tweak back. An HTML report opens at the end.
+- **Bake into ISO** (Windows tools). Pick a Windows setup ISO, the editions and the tweaks (the applied ones are ticked). ArchTweaker copies the ISO's files, turns install.esd into install.wim when needed, mounts each edition with DISM, writes the tweaks into its SOFTWARE, SYSTEM and default-user hives, then saves the image. With oscdimg.exe (Windows ADK Deployment Tools, or Choose oscdimg.exe…) it builds a new bootable ISO for BIOS and UEFI; without it the patched folder is ready for Rufus. The original ISO and this PC stay as they are. The image also gets ArchTweaker-baked.txt at its root and the list in HKLM\SOFTWARE\ArchTweaker\BakedTweaks.
+- **Version history.** What's new (after an update, and in Tools & backup) now shows every version from 1.2 to this one, newest first. The list on the left jumps to a version.
+**Left out on purpose**
+- Tweaks that run commands, or change power plans, scheduled tasks, devices or the NVIDIA profile, are not baked: an offline image can't run them. The page lists the applied ones that stay out.
+- No first-boot script (SetupComplete.cmd): it would run changes on a machine ArchTweaker has never seen, with no undo journal.
+- The tuning assistant skips tweaks that need a restart or a sign-out: they can't be switched during a measurement.
+- No overlay inside exclusive-full-screen games: that needs code injected into the game, which anti-cheat treats as cheating.
+
+## 3.18.0: One-click benchmark and PresentMon frame-time capture
+
+### New features
+- Benchmark page (Analyse). Pick the running game and click Run benchmark. ArchTweaker measures timer precision, Sleep(1) and scheduling jitter, records driver DPC and ISR times for 10, 30 or 60 s, then captures 30, 60 or 120 s of frame times with PresentMon. With no game, it measures system latency only. A benchmark changes nothing.
+- HTML report. Each run writes a report to ProgramData\ArchTweaker\reports and opens it. The report has cards with the change against the previous run of the same game, a frame-time chart with a hover read-out, percentiles, the 10 slowest drivers, your specs and the applied tweaks.
+- Saved runs. The page shows the newest run against the previous one, a chart of 1 % low FPS (or worst DPC/ISR) over runs, and a list of all runs. Double-click a run to open its report. ArchTweaker keeps 30 runs. The driver scan also goes to the Latency page history.
+- New frame numbers: 0.1 % low, 99th and 99.9th percentile frame time, stutters (frames longer than 2.5 times the median), CPU and GPU busy per frame and display latency when PresentMon gives them.
+- Choose PresentMon.exe. Pick the PresentMon console program once; ArchTweaker copies it to its protected bin folder. It also finds a release name such as PresentMon-2.3.0-x64.exe next to ArchTweaker.exe.
+
+### Fixes
+- PresentMon 2.x and newer work now. ArchTweaker reads the FrameTime and MsBetweenAppStart columns, not only MsBetweenPresents, and uses the new double-dash options with a fall-back for 1.x. It keeps the swap chain with the most frames, so an overlay in the same game does not mix in. The Measure and A/B test pages use the same capture.
+
+## 3.17.1: Latency counters fix
+
+### Fixes
+- Latency page. When the processor counters fail, the page shows a Fix counters button and "No counter data". The page tries the counters again each time you open it, so a rebuild works without a restart of ArchTweaker.
+- Fall-back counters. When the "Processor" counters (PerfOS) do not load, the page reads the same values from "Processor Information".
+- Rebuild performance counters (Tools & backup) now also removes "Disable Performance Counters" from every service that has it. Debloated Windows images often set this value, and lodctr /R does not clear it. The rebuild also runs lodctr /E for PerfOS, PerfProc, PerfDisk and PerfNet and winmgmt /resyncperf. Then it tests the counters and writes the result to the log.
+
+## 3.17.0: Evidence badges, change history, trend charts, What's new and a tour
+
+### New features
+- **Change history** (Analyse). Every value each apply wrote, newest first, with the value before that apply and the value written. Before comes from the registry snapshot taken just before the apply (the 10 newest are kept). Select a row and click Undo this apply. Copy as text puts the whole list on the clipboard.
+- **Trend charts.** Latency and Measure show a chart of every saved run under the comparison cards. Point at a dot to see that run.
+- **What's new.** After an update, ArchTweaker shows the changes of the latest versions once. Tools & backup has a button for it.
+- **Quick tour.** Five short steps about where things are. It shows once after the setup guide, and Tools & backup has a button for it.
+
+### Design
+- **Evidence badges.** 30 tweaks now show where their effect comes from: **Documented** (Microsoft or the vendor documents it), **Measured** (a named tester measured it) or **Unproven**. The details pane names the source and links to it. Tweaks without a named source get no badge.
+
+## 3.16.0: Design pass
+
+### Design
+- **Tables.** Every list (Drivers, Startup, Uninstaller, Apps, Latency drivers, Power settings, What changed and the others) is drawn in the colour scheme. Rows are 30 px, with hover, the selection colour, a themed tick box and an accent edge on the row with keyboard focus. Status columns (Status, Verdict, Change, Effect) show coloured tags. In a warning row, only the tag carries the colour, so the rest stays readable. Number columns are right-aligned in a monospace font, so digits line up. Services shows its status as a tag too.
+- **Empty states.** A list with nothing to show has a glyph, a short title and one sentence, not grey text.
+- **Loading.** While a list loads, grey placeholder rows keep its shape.
+- **Cleanup rows.** A ticked row stays neutral; the tick box shows the choice. Sizes use the monospace font.
+- **Page header.** Less empty height, the sidebar glyph before the title, and a 1 px rule with an accent segment under the title only. The segment slides to the new title width when you change page.
+- **Tooltips** use the colour scheme. Windows drew light boxes on dark schemes.
+- **Filter chips** switch to short labels when the full ones do not fit on one row.
+- **Dialogs** have a severity glyph before the title.
+- **Motion** (off when Windows animations are off): notifications slide in, the header segment slides, and a sidebar group shows its pages one after another when it opens. Each takes 150 ms.
+- **Sidebar footer.** It shows the version, or an amber "Restart needed" badge on every page while a restart is pending. Click the badge to see the restart notice again.
+- **Tags** for risk, restart, sign-out, experimental and covered have a glyph before the text.
+- **Tweak rows** show a chevron at the top right on hover, on focus and while open.
+- **Narrow windows.** The details pane folds away when the window is too narrow for it and a readable tweak list. Each row still opens in place.
+
+## 3.15.0: Four new tweaks and two new leftover checks
+
+No tweak was removed or changed. The new tweaks are in no preset.
+
+### New features
+- **Leftovers.** The scan now finds `ThreadDpcEnable` = 0 (Microsoft: ordinary DPCs increase latency) and `DisableLowQosTimerResolution` (withdrawn by its source after blue screens), and offers to remove them.
+
+### Tweaks
+- **Audio devices: no idle power-down** (GPU & Devices). Sets `PerformanceIdleTime` and `ConservationIdleTime` to 0 under each audio device's `PowerSettings` key. Sound then starts at once after silence. Microsoft documents 0 as "disable idle detection". A driver update writes the vendor values back.
+- **Network adapter: RSS on a fast core, two queues** (Internet & Network, experimental). Sets `*RssBaseProcNumber` = 2 and `*NumRssQueues` = 2 where the driver has them. Network DPCs leave CPU 0 and stay off the E-cores.
+- **Background raw-mouse rate: 50 Hz** (Input & Latency, Windows 11). Sets `RawMouseThrottleDuration` = 20 ms. Background apps use less CPU with a 4000 or 8000 Hz mouse. The focused game always gets the full rate.
+- **Kernel: reserve the E-cores** (Input & Latency, experimental, hybrid CPUs only). Writes `ReservedCpuSets` with the mask of every E-core. Windows then puts a thread on an E-core only when the program asks for it. Multithreaded work gets slower, so measure before you keep it.
+
+## 3.14.0: Tool pages, Measure runs, System info cards, scan after apply
+
+### New features
+- **Measure.** ArchTweaker saves every run (the newest 20). The baseline now survives a restart, so you can measure, apply tweaks that need a restart, and compare. Four cards show timer resolution, Sleep(1) average, Sleep(1) 99th percentile and scheduling jitter against the baseline. An empty page says what to do.
+- **Scan after each apply (optional).** A new switch on the Latency page. When it is on, ArchTweaker records driver activity for 30 seconds after each apply that needs no restart. The result shows in a notification, on the Home tile, on the Latency page and on the apply history line. It is off by default.
+
+### Design
+- **One accent button.** The main action of a tool page (Clean selected, Find slow drivers, Measure baseline and the others) now has an accent outline. Only Apply and the confirm button of a dialog are filled, so a view never shows two filled buttons.
+- **Cleaner header.** The preset list and Select preset show only on tweak pages, Search, Home and PC advisor. Other pages can't use them.
+- **Themed check boxes.** Every check box is now drawn in the colour scheme. Before, Windows drew a white box on dark schemes. Three filters that act at once are switches: "Show only services with notes", "Hidden only" and "Show Windows built-in entries".
+- **Readable width.** The Cleanup list and the PC advisor cards stop at 1040 px. Tables stay full width.
+- **System info as cards.** Windows, processor and memory, graphics, storage and network each have a card with its own Copy button. Copy all is in the toolbar.
+
+### Fixes
+- **Fix: 125–150 % display scale.** Settings cards, the jump bar and three drop-downs on Tools & backup were scaled twice, so they were too large. The latency cards, Home tiles and apply history are now also safe from the second scale.
+- **Fix: System info.** A name longer than its column no longer runs into its value.
+
+## 3.13.0: Latency before and after, apply history, Home status
+
+### New features
+- **Latency before and after.** ArchTweaker saves every "Find slow drivers" scan (the newest 20). Under the buttons, four cards compare the newest scan with the one before it: worst DPC, worst ISR, spikes of 500 µs or more per minute, and time in DPC/ISR per second. A change smaller than 10 % shows as "≈", because scans vary that much on their own. If the two scans have a different length or power plan, a warning says so.
+- **Apply history.** A new card on Tools & backup lists the last 8 apply sessions. Each session has its own Undo. When you undo an older session, ArchTweaker keeps every tweak that a later apply changed again, and the confirmation says how many. Point at a line to see all its changes.
+- **Home status tiles.** Three tiles under the health strip show what it doesn't: Pending (click to review and apply), Latency (the newest scan and the change since the scan before) and Last apply (click to open the apply history).
+- The review before Apply stays as it was. It already lists every change, the exact values, the Danger zone acknowledgement and the restore point.
+
+### Fixes
+- **Fix: sidebar counts.** The tweak catalog could be read by a background count while it was still being built. A page could then show the wrong total, for example 0/31 or 0/65 instead of 0/32. The catalog is now built once, and other threads wait for it.
+
+## 3.12.0: Sidebar groups, filter chips and status bars
+
+### New features
+- **Changed outside ArchTweaker.** A new filter and an information bar find tweaks that ArchTweaker applied and that Windows, a driver or another tool turned back. The bar can re-apply them, show only them, or go away for this session.
+
+### Design
+- **Sidebar groups.** System and More are now three short groups: Analyse, Clean & apps and Windows tools. Tools & backup is pinned under the list, so it is always one click away.
+- **Pending badges.** A page with changes that wait for Apply shows an amber "+N" badge next to its applied count. A collapsed group shows the total for its pages. In the slim sidebar, a dot marks the page.
+- **Filter chips.** Chips above the tweak list replace the Show drop-down: All, Not applied, Applied, Pending, Changed outside, Medium+ gain, High gain and Needs restart. Each chip shows its count for the page. Arrow keys move between chips, and Enter or Space picks one.
+- **Status bars.** The restart notice and the Windows update notice use one information bar design: a coloured edge, an icon and a light tint. The words carry the meaning, so colour is never the only cue.
+- **Search results** stop at the same 1040 px width as the tweak pages.
+
+## 3.11.0: Design tokens, title bar and clearer pending state
+
+### Design
+- **Title bar.** Windows 11 draws the window with small rounded corners. The border shows the accent colour only while the window is active, and the title text dims when it is not. Every dialog, the command palette and Cleanup preview now match the colour scheme too. With a high-contrast theme, Windows keeps its own colours.
+- **Type.** ArchTweaker uses Segoe UI Variable Text on Windows 11 and Segoe UI on older or stripped images. Small text is now 12 px and titles are 14 px semibold, the Windows minimums. Tags and badges share one font.
+- **Spacing and motion tokens.** One spacing scale (2–48 px) and one set of motion durations (70–400 ms) replace loose values in the cards and switches. The longest animation is now 400 ms, and all motion still stops when Windows animations are off.
+- **Readable width.** Tweak lists and settings cards stop at 1040 px on wide windows, so each switch stays near its title.
+- **Pending chip.** A tweak that waits for Apply shows a "Pending" chip next to its other tags, not only an amber colour. Screen readers hear "Pending: turns on when you click Apply" or the applied state.
+- **Card icons.** The Tools & backup cards have a Segoe Fluent Icons glyph before the title.
+- **Accessibility.** The focus ring scales with DPI. The Appearance flyout tells screen readers which choice has focus and if it is selected. Corner radii are DPI-scaled and never more than 4 px.
+
+## 3.10.5: A tidier Tools & backup page
+
+### Design
+- **Cards.** Each group on the Tools & backup page is now a rounded card with a title, a short description and its buttons in one row that wraps. The Maintenance groups use the same cards.
+- **Switches.** The tray, close-to-tray, boot safety net, weekly cleanup and scheduled maintenance options are switches instead of check boxes. The notes under them line up with the switch text.
+- **Jump bar.** Buttons at the top of the page scroll to Appearance, Maintenance, Backup & restore, Fixes & diagnostics and Shortcuts.
+- **New sections.** Restore points and profiles, Drivers, NVIDIA profile, Leftovers and Recovery kit are under Backup & restore. Self-test, Fixes, Performance and Power plan files are under Fixes & diagnostics. Windows shortcuts and a new Command line card are under Shortcuts.
+- **Descriptions.** Every group now has one or two sentences that say what it does. All are in Russian too.
+- **Calmer buttons.** "Check for updates" and "Re-assert profile now" are normal buttons. Only Apply changes stays in the accent colour.
+
+### Fixes
+- **Fix.** A long description in a card now wraps to a second line. Before, the second line could be cut off.
+
+## 3.10.4: Appearance flyout and a shorter View menu
+
+### Design
+- **Click View** to open the Appearance flyout:
+  - A live preview at the top shows the scheme, accent or progress colour under the pointer.
+  - Colour schemes are cards in a 4 × 2 grid.
+  - Accents and progress bars are rows of swatches. The current one has a tick or an outline, and the name of the swatch under the pointer shows after the section title.
+  - Text size is a 100 / 115 / 130 % switch.
+  - Compact rows, Slim sidebar and Follow Windows theme are toggles.
+  - Sort order has four buttons.
+  - After a change, the window refreshes and the flyout opens again. Arrow keys, Tab, Enter and Esc work inside it.
+- **Enter or Space on View, or a right-click**, opens the View menu. It now has 10 lines instead of about 35:
+  - Each setting opens a submenu, and the line shows the current value ("Accent colour: Red").
+  - Every swatch item marks the current choice the same way: a tick badge and bold text.
+  - "Custom…" items show a colour ring with the colour you picked, so they no longer look like a second red or grey.
+  - The default choice says "default" at the right, in muted text.
+  - "Dark theme" is now "Switch dark / light" (Ctrl+Shift+L).
+
+## 3.10.3: colour scheme in the View menu
+
+### Design
+- The View menu at the top lists every colour scheme (Carbon dark, Carbon light, OLED black, Slate, Rose, Blossom, Custom…). The current one has a tick.
+
+## 3.10.2: custom background colour
+
+### Design
+- New colour scheme **Custom…** (Settings → Colour scheme, or the command palette). Pick any background colour. ArchTweaker builds the panels, sidebar, borders, text, status colours and accent tints from it. A dark colour gets light text, a light colour dark text.
+- Every result keeps the Carbon contrast rules: text 7:1, muted text 4.5:1, accent and status colours 3:1. If a mid-tone colour can't reach them, the background moves slightly darker or lighter, and the log says so. A unit test checks 12 very different colours with every accent.
+- The Dark/Light switch in the header goes from a custom dark scheme to your last light scheme, and back.
+
+## 3.10.1: log closed at start
+
+### Design
+- The log panel is closed every time ArchTweaker starts. "Show log" opens it for the session. It still opens by itself when a list needs it.
+
+## 3.10: pink theme and progress bar colours
+
+### Design
+- **Rose** (dark) and **Blossom** (light): a pink pair of Carbon colour schemes, in Settings → Colour scheme. Picking one also selects the new **Pink** accent, unless you chose an accent yourself. The Dark/Light switch moves between Rose and Blossom.
+- **Pink** accent, available with every scheme (View → Accent colour).
+- **Progress bar colour:** Green (default), Accent, Pink, Blue, Purple or Custom, in Settings → Progress bars or the View menu. It colours the sidebar page tracks and the category cards on Home. Toggles and "applied" marks stay green. A custom colour that would be hard to see on the card is lightened or darkened to 3:1.
+- Every scheme, accent and progress colour passes `python3 docs/palettes.py` (text ≥ 7:1, muted text ≥ 4.5:1, accents and bars ≥ 3:1).
+
+## 3.9: hardware checks and safer defaults
+
+From an audit of a real 12900K / RTX 3080 Ti PC and the research behind it.
+
+### New features
+**New checks on Home**
+- **Intel VMD / RST:** if `iaStorVD` runs the NVMe, the check says so (the NVMe power tweaks can't reach the drive) and gives the safe-mode steps to turn VMD off.
+- **Old network driver:** a NIC on the driver built into Windows (not `oemNN.inf`), or on a driver older than three years.
+- **Process Lasso running:** turn off its power-plan automation, or it undoes the ArchTweaker plan.
+- **RivaTuner frame limit:** RTSS caps every game. If the NVIDIA cap is also on, two limiters add latency.
+- **Intel Platform License Manager:** new tweak `svc_plm_manual` sets it to Manual. It often times out after 45 s at every boot.
+**Cleanup**
+- After network tweaks, ArchTweaker scans the network drivers for 10 s, 60 s after the next start. If one has DPC/ISR spikes of 500 µs or more, a message names it.
+
+### Tweaks
+**Defaults changed**
+- "Network adapter: no flow control or packet batching" (`net_nicadv`) no longer turns off interrupt moderation. The driver default (usually Adaptive) stays.
+- New measure-first tweak "Network adapter: interrupt moderation off" (`net_itr_off`). Intel says lower moderation costs CPU, and in djdallmann's tests Off gave about 4× more interrupts. If you applied the old `net_nicadv`, this new tweak shows as on, and reverting it restores the driver value.
+- C-states off (`pp_idle`), dynamic tick off (`cmd_dynamictick`) and forced ReBAR for all games (`dz_nv_rebar`) are now measure-first: still available, but in no preset and never picked automatically. The timer check on Home recommends only the 0.5 ms timer.
+
+### Fixes
+**Cleanup**
+- Fixed: every start could leave a 2 MB `at-*.tmp` file in `ProgramData\ArchTweaker\bin` when a scheduled task was running the program copy. ArchTweaker now skips identical copies, renames a running copy instead of deleting it, and removes the leftovers.
+
+### Under the hood
+**Cleanup**
+- Registry snapshots: only the newest 10 stay. Undo uses the journal, not these files.
+
+## 3.8.4: Interrupts page removed
+
+### New features
+- The Interrupts page (MSI mode and CPU pinning per device) is gone. It had no measurable effect. MSI mode for the GPU and for USB and storage controllers stays as tweaks. Values set on the old page are in the undo journal, so "Undo everything" still restores them.
+
+## 3.8.3: device power saving stays off after a restart
+
+### Fixes
+- "Devices: no power saving (PCI, ACPI and 'allow turn off')" showed as off after a restart. Many drivers don't save "Allow the computer to turn off this device to save power", so Windows ticks it again at every boot. The tweak now adds a SYSTEM task (`ArchTweaker\DevicePower`) that unticks it again 30 s after each start. Reverting the tweak removes the task.
+- Devices whose driver refuses the change no longer keep the tweak at off. The log names them.
+- Fixed: "Undo everything" didn't tick "Allow the computer to turn off this device" again.
+
+## 3.8.2: fixes from a real log
+
+### Fixes
+- "Turn off background trace sessions (autologgers)" failed with "Access to the registry key `...\WMI\Autologger\NetCore` is denied". Some keys don't let administrators write. When Windows denies a write, ArchTweaker now writes the value again with the backup/restore privilege, which every administrator has. Undo uses the same path. The log shows each value written this way.
+- "NVIDIA: no Ansel, FXAA, Smooth Motion or CUDA P2 clocks" failed with "NvAPI SetSetting failed (-104)". -104 means this driver or GPU doesn't have the setting (Smooth Motion needs RTX 40 or newer). ArchTweaker now skips such a setting, logs it, and applies the others. A skipped setting counts as done.
+
+## 3.8.1: plain English (ASD-STE100 rules)
+
+### Design
+- All English text in the app now follows the main writing rules of ASD-STE100 (Simplified Technical English): short sentences (20 words for instructions, 25 for descriptions), active voice, no semicolons that join two sentences, and approved words ("need", not "require"; "through", not "via"). About 260 texts changed. The Russian translation keeps the same meaning.
+
+### Fixes
+- Fixed: the cleanup message said "1 file is in use and were skipped". The A/B test confirmation is now one sentence that translates correctly.
+
+### Under the hood
+- `tools/ste_check.py` checks every English string. CI fails if a new string breaks a rule. Run `python3 tools/ste_check.py --list` to see the findings.
+
+## 3.8: Windows CI, slow-driver advice, recovery kit, auto-resume, startup trace
+
+### New features
+- **Slow drivers (Latency page).** Pick 10, 30 or 60 seconds, then "Find slow drivers". New columns: count over 500 µs, count over 1 ms, and what the driver is. Double-click a driver for advice and the tweaks that may help; one button selects them. "Copy report" puts the table on the clipboard. If another program holds the kernel trace, the app offers to stop it and scan.
+- **Restart A/B test continues by itself.** The test adds a one-time logon task ("ArchTweaker resume") so it carries on after the restart. The task removes itself.
+
+### Security
+- **Recovery kit.** Before a Danger zone tweak is applied, the app writes `C:\ArchTweaker-Recovery` with `undo.reg`, `recovery.cmd` and `README.txt`. If Windows does not start, open the Command Prompt in Windows Recovery and run `recovery.cmd`: it loads the offline registry, restores the old values and boot settings, and unloads it. Reverting the tweak or "Undo all" removes its entry. Tools has a button to open the folder.
+
+### Under the hood
+- **Windows CI.** `.github/workflows/windows.yml` builds and tests on real Windows Server 2022 and 2025. It runs `/selftest read`, then the full self-test, and fails on any FAIL line not listed in `tools/ci-selftest-known.txt`. It also records a startup trace. Reports are uploaded as the build artifact. Push the repo to GitHub to start it.
+- **`/trace`.** `ArchTweaker.exe /trace` writes a startup timeline (every command it runs and how long it took) to `ProgramData\ArchTweaker\trace-*.txt`. `/trace exit` closes the app when done.
+
+## 3.7: full self-test, Windows 24H2/25H2 check, device power merge, restart A/B test
+
+**Full self-test** (Tools & backup → Self-test, or `ArchTweaker.exe /selftest`).
+
+### Tweaks
+- **What it tests:** every tweak that can be undone exactly is applied, checked, undone and put back exactly. That covers registry values and keys, services, scheduled tasks, power-plan settings, NVIDIA profile settings, device registry and DirectX tokens. Service start types are restored to the value you had, not to the tweak's undo value.
+- **What it only reads:** tweaks that run commands, disable devices or change network adapters. The report says how each one is detected.
+- **Read-only mode:** "Check tweak states only" or `/selftest read` changes nothing.
+- **Report:** opens in Notepad when the test ends.
+**Checked against Windows 11 24H2/25H2 and Windows 10 22H2.**
+- **Removed:** Wi-Fi Sense (gone since Windows 10 1803), the legacy-Edge `AllowPrelaunch` value and `BingSearchEnabled` (ignored since Windows 10 2004).
+- **Hidden where they no longer work, with the reason shown:**
+  - Chat icon: Windows 11 21H2–22H2 only.
+  - Cortana and the Copilot policy and button: up to 23H2.
+  - Recall: 24H2 and newer.
+  - 0.5 ms timer service: Windows 11 only (on Windows 10 a program can only raise the timer for itself).
+- **Changed:**
+  - Recall also sets `AllowRecallEnablement = 0`, which removes the Recall component.
+  - DNS over HTTPS uses the `DoHPolicy` policy instead of the old Insider `EnableAutoDoh`.
+  - Widgets writes `EnableFeeds` only on Windows 10.
+  - The MPO description notes that NVIDIA R610+ on build 26100.7705+ no longer needs it.
+- **Edition notes:** the row shows a "Pro / Enterprise" or "Enterprise / Education" chip, amber when your edition is below it. The details explain what your edition ignores. This covers telemetry level 0, the Start Recommended policy, the lock screen, Recall, Windows Update and Store policies.
+- **Undocumented label:** 17 tweaks with no Microsoft or vendor documentation get an "Undocumented" chip and are out of the Recommended preset. Examples: NVIDIA and AMD driver keys, kernel timer values, FSO, DLSS overrides.
+**Device power: 9 tweaks → 4.**
+- Network adapters: the device registry, the driver's power-down offloads and Windows' adapter power management in one tweak.
+- USB & HID: driver-wide and per-device in one tweak.
+- PCI / ACPI plus "allow turn off on every device" in one tweak.
+- Device wake stays separate.
+- Old ids in saved profiles load as the tweak that replaced them.
+**Covered by.** Disabling hibernation covers Fast Startup. UAC off covers "don't dim". IPv6 off covers "prefer IPv4".
+- The covered tweak shows a "Covered" chip while the other is on.
+- Presets and lists skip it.
+- These pairs are no longer "can't be on together".
+**Exact undo.** Values the tweak sets to the Windows default (keyboard repeat speed, font smoothing, MMCSS GPU priority) now restore exactly what you had. HKCU values are included.
+**Restart A/B test** (A/B test page). For tweaks that need a restart and for experimental tweaks; no game needed.
+1. ArchTweaker restarts and measures DPC time, interrupt time and Sleep(1) precision while the PC is idle (3 runs).
+2. It applies the tweak, restarts again and measures once more.
+3. It says per metric whether the tweak is better, worse or no real change (Welch t-test), and offers to undo it.
+Tweaks that work without a restart are measured in one go.
+**One post-build pipeline** (`PostBuild` in V37.cs) runs every catalog pass in a fixed, documented order.
+
+## 3.6.4: faster start
+
+### Under the hood
+- **One state read per tweak.** The health score, Home stages, advisor and rows used to read the same tweak states in parallel. Each state is now read once and shared.
+- **No powercfg storm.** If `powercfg /qh` failed, every power setting started its own powercfg process (≈290 at start). A failed read is now retried at most every 30 s.
+- **No powercfg for the active plan.** The active plan comes from the power API.
+- **No schtasks on every start.** The old game-profile task is looked up as a file first.
+- **Multicore JIT.** Startup code compiles in the background from a saved profile (`startup.jitprofile`), so the second and later starts are faster.
+- **Measured** (Mono, Linux test build): 302 → 9 external processes in the first 6 s. The first window paint went from 1.8 s to about 0.6 s.
+
+## 3.6.3
+
+### Under the hood
+- The duplicate-power-plan state check is cached for 15 s. Before, every page refresh started two powercfg processes.
+
+## 3.6.2: audit fixes
+
+### New features
+- **Russian:** the "Experimental" chip, the Tools "Leftovers" group, "Open hosts in Notepad", "Open in Explorer" and "hosts file" are translated.
+
+### Tweaks
+- **"Turns off" on every risky tweak.** All 23 Danger-zone tweaks and the Moderate / Experimental ones that lacked it now say what they switch off. Tweaks that only change a setting say "Nothing switched off: …". A test enforces it for every non-Safe tweak.
+- **Real state for two command tweaks.**
+  - "netsh: enable TCP Fast Open" reads `netsh int tcp show global`. On Windows that isn't in English, it falls back to the remembered state.
+  - "powercfg: delete duplicate power plans" shows as done when no two plans share a name. Built-in and active plans are always kept, and a protected plan is kept in place of its copy.
+- **Undo notes.**
+  - TRIM, auto-tuning, RSS and the timer cleanup put Windows defaults back. They now carry a "Restores defaults" chip and a "NOTHING TO UNDO" line in the details panel.
+  - The duplicate-plan cleanup carries a "No undo" chip and a "CAN'T BE UNDONE" line.
+- **3D Objects (Windows 10):** if no .reg backup exists, Undo now re-creates the folder entry instead of giving up.
+- "NVIDIA: turn off telemetry and update checks" has its own gain text.
+
+## 3.6.1: duplicate tweaks removed, contradicting pairs
+
+A full cross-check of all 267 tweaks by what each one writes (registry value, service, task, power setting, NVIDIA setting, device, command).
+
+### Tweaks
+**Duplicates removed**
+- "Disable background apps" (System) is gone: "Stop UWP apps running in the background" (Privacy) already wrote the same two values, plus the Search toggle.
+- "Disable non-essential services" no longer touches the Geolocation service (`lfsvc`). "Disable location access" owns it, so undoing one no longer undoes the other.
+- "USB: never selectively suspend (driver-wide)" merged into "USB hubs, HID and USB audio drivers: no power saving".
+- "bcdedit: don't force HPET" merged into "bcdedit: remove old timer overrides" (now removes useplatformclock, useplatformtick and tscsyncpolicy; in the Gaming preset).
+- Saved profiles with the old ids still load: they are read as the tweak that replaced them.
+**Contradicting pairs.** Switching one on switches the other off, with a log line. The details panel lists the pair under "CAN'T BE ON TOGETHER WITH". The command line skips a tweak whose opposite is applied. No preset or automatic pick contains both.
+- Kernel: spread timer expiry across cores / serialize timer expiration.
+- NVIDIA: frame cap for G-SYNC / V-Sync and G-SYNC forced off.
+- Prefer IPv4 over IPv6 / disable IPv6 (Danger zone).
+- UAC: don't dim the desktop / disable UAC entirely (Danger zone).
+**Renamed.** "Hide recommended / recent items in Start" is now "Start & Quick Access: no recent files", so it isn't confused with "Start: hide the Recommended section".
+**New test:** fails if any two tweaks write the same target.
+
+## 3.6: what each tweak turns off and can break, Hardening, experimental tweaks
+
+### New features
+**Tools & backup**
+- **NVIDIA profile (.nip):** import a Profile Inspector file into the global profile (only Base Profile DWORDs; each changed value is backed up first), export the global profile, undo the last import.
+- **Compare a .pow with the active plan:** lists every setting that differs, plugged in and on battery.
+- **Leftover tweaks from other packs:** finds values that other tweak packs leave behind. Harmful ones are ticked: no page file, Defender or updates blocked by policy, TDR or DPC watchdog off, fake DPC rates, LargeSystemCache, GPU scheduler and DWM overrides, Modern Standby watchdogs. Placebo ones are listed too: invented environment variables and kernel values Windows doesn't read. Values owned by a tweak you applied here are skipped. Every fix is journaled, so "Undo everything" brings the old values back. PC advisor warns when harmful leftovers are found.
+
+### Tweaks
+**Every tweak now says what it costs.**
+- **Turns off:** one line naming the Windows feature, service or power saving the tweak switches off. Shown on the row (grey rule) and in the details panel ("WHAT IT TURNS OFF").
+- **Can break:** one line naming what may stop working. Amber for Moderate tweaks, red for Advanced and Danger-zone tweaks. Shown on the row and in the details panel ("WHAT IT CAN BREAK").
+- Every Moderate, Advanced, Danger-zone and Experimental tweak has a "Can break" line. Every tweak whose title starts with Disable / Turn off / Remove / Hide / Block has a "Turns off" line. Tests enforce both.
+**How tweaks are graded**
+- **Safe:** no feature you would miss; in the presets.
+- **Moderate (amber):** turns off something some people use; read "Can break" first.
+- **Advanced (red):** costs power, heat, compatibility or security; only when you know you need it.
+- **Danger zone:** locked page; can break boot, games or networking.
+- **Experimental (new chip):** effect not proven. In no preset, never picked automatically and not counted in the health score. Measure it on the A/B test page before keeping it.
+**New page: Hardening.** Closes old protocols and remote entry points. Makes the PC safer, not faster. LLMNR, SMBv1, NetBIOS, mDNS, Remote Assistance and WPBT moved here, plus 7 new tweaks:
+- NTLMv2 only (no LM / NTLMv1);
+- TLS 1.2+ only (SSL 2/3, TLS 1.0/1.1 off; Moderate);
+- DNS: no smart multi-adapter resolution and no parallel A/AAAA (stops lookups leaking past a VPN);
+- ignore ICMP redirects;
+- block incoming Remote Desktop;
+- no AutoRun / AutoPlay for any drive;
+- don't use the LMHOSTS file.
+Blocking *all* outgoing NTLM went to the Danger zone: it breaks NAS and shared-folder sign-in at home.
+**New tweaks (tier 1)**
+- **Privacy:** turn off about 15 background trace sessions (autologgers). The original value of each is saved and restored exactly.
+- **GPU & Devices:**
+  - USB hub, HID and USB-audio drivers without power saving (driver-wide);
+  - disable unused virtual system devices (NDIS virtual bus, RDP redirector bus, kernel debug adapter, PC speaker). Undo enables only the devices ArchTweaker disabled;
+  - disable the NVIDIA Virtual Audio Device;
+  - laptop panel: no self-refresh, dynamic refresh or display power saving (laptops only);
+  - NVIDIA: always use the latest DLSS model, and an optional DLSS on-screen indicator.
+- **AMD ULPS off** is now offered only for GPUs older than RX 7000. On RX 7000 / 9000 it hurts hardware GPU scheduling.
+**Experimental tweaks (tier 3, in no preset)**
+- Kernel: serialize timer expiration.
+- Power: lowest latency tolerance for devices and graphics.
+- AMD driver: Anti-Lag on, no clock deep sleep, no memory stutter.
+- NVIDIA driver: GPU PCIe power saving off, per-core DPCs (Danger zone).
+- Disable the HPET device (Danger zone).
+
+## 3.5: network adapters, interrupts, NVIDIA groups, service tiers, tools
+
+### New features
+**PC advisor** now checks for:
+- Killer network software;
+- RAID / RST storage drivers;
+- audio effect services (Nahimic and similar);
+- an idle Wi-Fi adapter while you're on a cable;
+- many leftover (ghost) devices.
+It also shows a BIOS checklist for Intel or AMD.
+**Tools**
+- **Ghost devices** (Drivers page, Tools & backup). Lists devices Windows remembers but that aren't connected, and removes the ones you tick. ROOT\ software devices and System, Computer and Processor class devices are never offered.
+- **Network test** (Measure page). Sends 60 pings to the router and 60 to 1.1.1.1, shows average, jitter and loss, and says whether a problem is on your network or past the router.
+- **Self-test** (Tools & backup, or `ArchTweaker.exe /selftest`). Every plain registry tweak that isn't applied yet is applied, checked, undone, and then its exact original values are written back. The report goes to `C:\ProgramData\ArchTweaker\selftest-*.txt`.
+
+### Tweaks
+**New tweaks (19)**
+- **Internet & Network**
+  - **Network adapter latency settings (moderate).** Turns off interrupt moderation, flow control, LSO, RSC and buffer bloat, turns RSS on, and sets jumbo frames to the driver minimum.
+  - **Network adapter power settings.** Turns off the ARP/NS sleep offloads, selective suspend, sleep on disconnect, automatic gigabit-off, PME wake and the speed drop on power-down.
+  - Both read each driver's own list of settings (`Ndi\Params`), write only values the driver accepts, skip VPN, capture and virtual adapters, and restore every original value on undo.
+- **GPU & Devices**
+  - **MSI mode for USB and storage controllers.**
+  - **No device can be turned off to save power.** Sets WMI `MSPower_DeviceEnable` to off on every device. The drift check offers to re-apply it if a driver update switches it back on.
+  - **NVIDIA profile groups:**
+    - texture filtering for speed;
+    - no Ansel, FXAA, Smooth Motion or CUDA P2 clock cap;
+    - V-Sync and G-SYNC forced off (competitive only).
+- **Input & Latency:** mouse acceleration off for the sign-in screen and new users (`HKU\.DEFAULT`).
+- **Tasks & Services:** a "safe tier" of about 30 rarely used services (from synez's 2026 pack). Each service's own startup type is saved for undo, and per-user `_xxxx` service copies are found automatically.
+- **Privacy:** Phone Link and cross-device off; no account or backup nags; no tips or typing insights; websites can't read your language list; PowerShell telemetry off; and per-group Store-app permissions (personal data, files, device).
+- **Danger zone:** the "warning" service tier (breaks file shares, VPN, Windows Hello and hotspot) and forced Resizable BAR for every game.
+**Interrupts.** "Use suggested settings" now follows synez's layout:
+- core 0 stays free;
+- the GPU, USB, network card and audio each get their own fast core;
+- the network card's receive queues (RSS) start on its core;
+- USB and storage controllers get MSI mode when the driver offers it.
+
+### Fixes
+**Safety and engineering**
+- Live state for the RSC and timer-override command tweaks (PowerShell and `bcdedit` probes), instead of ArchTweaker's own record.
+
+### Security
+**Safety and engineering**
+- Re-asserting a profile, and "re-apply after a Windows update", skip Danger zone tweaks while the zone is locked. From the command line, `/reassert /danger` includes them.
+- Fixed: the 3.4 `/danger` guard had landed on the auto-preset command instead of `/apply <profile>`.
+
+### Under the hood
+**Safety and engineering**
+- New Windows E2E tests: the Danger zone stays locked until confirmed, and the new tools are reachable.
+
+## 3.4: Danger zone and new tweaks
+
+**Danger zone.** Every known-dangerous tweak now lives on one page at the end of the tweak list (red warning icon in the sidebar). It replaces "Security (advanced)".
+
+### Tweaks
+- **Each tweak says what it can break**, as a red "Can break:" line on the row, in the details panel and in the review.
+- **Moved here:** Defender, Windows Firewall, UAC off, SmartScreen, Memory Integrity / VBS, Spectre / Meltdown, DEP, unsigned drivers, the hypervisor, disk write-cache flushing, the native NVMe driver, IPv6 off, CPU idle states off, Modern Standby off, and the Windows / Alt key lockout.
+- **New here:** Smart App Control off (one-way on most builds), BitLocker / device encryption off, and OEM audio effect services off (Nahimic, Waves, Dolby, Sonic Studio and others).
+- "UAC: don't dim the desktop" moved to System as a moderate tweak.
+**New tweaks (24).**
+- **Input & Latency:** kernel timers spread across cores (DistributeTimers).
+- **GPU & Devices:** driver-wide USB selective suspend off, and audio devices with no power saving.
+- **Gaming:** MMCSS without lazy mode, with games marked latency-sensitive; a fix for the "ms-gamebar" pop-up after Game Bar is removed.
+- **Interface:** no Snap layout pop-ups, Start's Recommended section hidden, the Copilot button hidden, Dynamic Lighting off, and no Alt+Shift / Ctrl+Shift layout switching.
+- **Privacy:** no cloud search results, no Paint AI, no lock-screen Spotlight or tips, no lock-screen notifications, no device metadata downloads, and Windows Ink Workspace off.
+- **System:** no automatic archiving of unused apps, no automatic Store updates, and "Stay on this Windows version" (security updates continue).
+- **Power Plan:** idle-resiliency deep sleep off.
+- **Network and commands:** more TCP ports with faster reuse, RSC off, and removal of old `useplatformtick` / `tscsyncpolicy` overrides.
+- **Tasks & Services:** Killer Network services off. Only shown when a Killer adapter is installed.
+
+### Security
+- **Locked by default.** You can read every tweak, but the switches stay locked until you click *Unlock for this session…* and tick "I understand". ArchTweaker locks the page again every time it starts.
+- **Never picked for you.** Danger zone tweaks are in no preset, no "This PC (auto)" pick and no health score. A profile or list skips them while the page is locked. `/apply` from the command line skips them unless you add `/danger`.
+- **Apply needs a confirmation.** The review lists each Danger zone change with what it breaks. *Apply* stays off until you tick "I understand what these break". A restore point is always created first, even if the restore-point box is off.
+
+## 3.3: polish
+
+### Design
+- **Program icons.** Startup, Uninstaller and Apps (UWP) show each program's own full-colour icon (the exe's icon, the uninstall entry's DisplayIcon, or the Store app's logo), so long lists can be scanned by eye.
+- **Switches slide.** A tweak switch moves its knob and fills in over about 140 ms when you click it. Applies and re-reads still snap. Off when Windows' "Show animations" setting is off.
+- **Home: the chain explains itself.** The paragraph above the latency chain moved into the ⓘ tooltip next to "Latency chain". After a change, one short glow runs along the chain to the stage that improved.
+- **Headings** use Segoe UI Variable Display on Windows 11 (built in); Windows 10 keeps Segoe UI Semibold.
+- **Custom accent** now starts from copper instead of violet. A violet that was only stored as the old default is replaced; a custom colour you picked yourself is kept.
+
+## 3.2.1: security and reliability
+
+An independent code review and a security review of the whole app found the issues below. All are fixed.
+**Security** (ArchTweaker runs as administrator and installs SYSTEM tasks, so files it trusts must not be writable by other users)
+
+### Fixes
+**Fixes from the code review**
+- Restart summary lists only changes that were applied (not failed ones); the restart line is cut with "…" instead of being clipped.
+- "Recommended" badges appear in windows rebuilt while the PC check was still running.
+- Theme changes from Windows no longer pop the window out of the tray; the setup guide can't be closed by a rebuild; your dark scheme (OLED, Slate) is remembered while following Windows.
+- Undo in the result pop-up keeps working when ArchTweaker is busy (it waits instead of being used up), and only a left click triggers it.
+- "Results only" in the log shows results live; no log lines are lost or doubled when the window rebuilds.
+- Smaller fixes: the page summary keeps its scroll position, Page Up/Down in the tweak list, a GDI font leak, tooltips in the slim sidebar.
+
+### Security
+- `C:\ProgramData\ArchTweaker` is now locked to SYSTEM and Administrators; standard users can neither write nor read it (undo data holds old registry values). Before, a standard user could plant files there. A junction planted in its place is removed.
+- Files there are trusted only when SYSTEM, Administrators or TrustedInstaller owns them, not merely your own account, so a program running as you without elevation can't plant one either. An untrusted undo journal is renamed `undo.journal.untrusted-<date>` (kept, not deleted); untrusted caches and settings are deleted and rebuilt.
+- Undo data (the undo journal and `.reg` backups), the tweak overlay, hosts-blocker settings and caches, the cleaning-rules cache, the "What changed" snapshot and PresentMon are only used when an administrator owns the file. A file somebody else planted is set aside and logged. A program copy for SYSTEM tasks that an earlier version left unprotected is replaced at start-up.
+- The program copy used by the scheduled tasks and the timer service is installed through one hardened path, and the timer service is pointed back at it if it already existed.
+- Updates: downloads that are redirected to a host outside the allowlist are refused, and the update helper checks the SHA-256 again right before it replaces the exe.
+- The overlay can no longer write keys or values that start programs (Run keys, Image File Execution Options, services, Winlogon and similar), and it is only loaded if it matches the hash recorded when it was downloaded. An overlay downloaded by an older version is ignored until you download it again (Tools & backup).
+- Cleanup and Deep clean delete a file only if the file that actually opens is inside the folder being cleaned, so a junction swapped in can't redirect a delete. ArchTweaker's own folder and Windows folders under Program Files are never cleaned.
+- Per-user uninstall entries show their command and ask again before running as administrator.
+- "SHA-256 hash" in the right-click menu now uses `certutil`, so a crafted file name can't run PowerShell code. Re-apply that tweak to update it.
+
+## 3.2: easier to use
+
+### New features
+- **Page summary.** Opening a tweak page shows a summary in the details panel: applied count, what is waiting for Apply, risky and restart tweaks, the picks for this PC that are not applied yet, and the high-gain tweaks still off. One button selects the recommended ones.
+- **Review before Apply.** The review lists every change with its risk and restart need; "Show exact values" adds each registry value, service, task and command, as applied value and what undo restores.
+- **Apply bar.** The Apply button shows the count ("Apply 6 changes"). Discard and Undo last apply only appear when they can do something.
+- **Undo right after Apply.** The result pop-up has an Undo button for 12 seconds (or press Ctrl+Z). It undoes that apply without a second question.
+- **Restart summary.** The restart bar names the changes that need a restart, keeps them through theme or language switches, and drops the ones you undo.
+- **Sort and filter.** View → Sort tweaks: catalog order, highest gain first, not applied first, A–Z. New filter: "High gain only".
+- **First-run setup guide.** Three steps the first time: restore point, a starting point (the picks for this PC, Safe, Gaming, Privacy, or nothing), and what happens next. Skip on every step; nothing is applied by the guide. Run it again from the command palette (Ctrl+K).
+- **Log filter.** All messages, results only, or problems only, plus "Copy for support" (version, Windows build and the filtered log, ready for a bug report). The whole session's log now survives theme and language switches.
+
+### Design
+- **Home fits the window.** The latency cards wrap to a second row on narrow windows instead of scrolling sideways. The Home tile actions have a `›` chevron and underline on hover, so they read as clickable.
+- **Slim sidebar.** View → Slim sidebar shows icons only; the tooltip has the page name and the applied count.
+- **Keyboard.** In a tweak list, Up/Down move between rows, Home/End jump to the first/last row, Page Up/Down move 8 rows, Space switches, Enter shows details.
+- **"Recommended" badge** on the PC advisor's picks for this hardware that are not applied yet.
+- **Follow Windows theme** (View menu) switches between light and dark with Windows. A Windows high-contrast theme now replaces every colour with the system colours.
+- **Text size** (View menu): 100 %, 115 % or 130 %, on top of the display scale.
+
+## 3.1: calmer design
+
+### Design
+- **Dark scrollbars.** The sidebar, tweak list and log now get dark native scrollbars on Windows 10 1903+ and Windows 11 (the app tells uxtheme it follows the app theme, not only the window theme).
+- **Less red.** Red is kept for the brand, the selected page and the main action. Switched-on toggles, applied rows and fully tuned categories ("12/12") use green. Section titles, sidebar headers and the health score are neutral; the weakest link in the latency chain is amber.
+- **Gain meter.** One neutral scale: more bars means more gain, and only High gain is green. Low gain is no longer drawn in red.
+- **Header.** The Dark/Light switch moved into **View → Dark theme** (shortcut Ctrl+Shift+L). The page subtitle has its own full-width line, so it is no longer cut short.
+
+## 3.0.1: fixes
+
+### Fixes
+- **Changing the language (or the colour scheme) no longer shows "Something went wrong" and no longer needs a restart.** The drop-downs now react only when you pick an item. The window is rebuilt after the drop-down has finished closing, so its parent page is never destroyed under it.
+- **The tweak counters beside each category in the sidebar no longer disappear or load slowly.** This happened after changing the language, the colour scheme or compact rows: only the first window of a session counted them. Every rebuilt window now counts them as soon as it opens.
+- **Health score → "Select the picks for this PC" now lists every selected tweak in the log**, with its category and expected gain. Tweaks that were already selected are marked "already selected". The log opens automatically.
+  - The count in the message is now correct: it was computed before the selection had finished, which is why it sometimes said 0.
+- If a window rebuild ever fails, ArchTweaker keeps the current window and says the new setting will be used at the next start.
+
+## 3.0: Russian, latency tools, safety net
+
+### New features
+**Language**
+- New **Language** setting in More → Tools & backup → Appearance: English or Русский. Every page, dialog, tooltip, tweak title, description and expected gain is translated.
+- On a Russian Windows the app starts in Russian. The log file and the exported reports stay in English, so support can read them.
+- For translators: the text lives in `lang/ru.tsv` (English<TAB>Russian). Run `python3 tools/gen_l10n.py` to compile it.
+  - Pieces joined in code use `{0}` patterns.
+  - Russian plurals use `{0|one|few|many}`.
+**New pages**
+- **Latency** (More): live DPC and interrupt load for every core, with fast cores (P-cores) shaded.
+  - The current timer resolution is shown too.
+  - **Find slow drivers** records 10 seconds of every DPC and ISR with the Windows kernel trace (as LatencyMon does) and names the driver behind each one.
+  - The Measure page now also records DPC and ISR load before and after.
+  - **Use suggested settings** puts the GPU and the network card on separate fast cores, away from CPU 0.
+  - The settings are journaled, so Undo everything restores them.
+- **Drivers** (System): old driver versions left in the driver store.
+  - Only versions that no device uses, and that aren't the newest, can be removed.
+  - Each one is exported to the backup folder first.
+- **What changed** (More): compares the PC with your last apply. It shows tweaks Windows reset, services whose start type changed, and new or removed startup programs. **Fix** puts tweaks and services back.
+- **Disk space** (System): a read-only map of what takes space. Click a box to go into a folder; right-click to open it in Explorer.
+- **NVIDIA: turn off telemetry and update checks**: a new tweak in GPU & Devices.
+**Safety**
+- **Boot safety net** (on by default; Tools & backup → Maintenance). After an apply that needs a restart, ArchTweaker counts the next starts. If Windows twice fails to reach the desktop, the last apply is undone at the next start.
+**Cleanup**
+- **Preview…** lists the biggest folders and files in each ticked item. Untick anything you want to keep: it is excluded from now on.
+- **Weekly cleanup** (Tools & backup → Maintenance) runs on Saturdays when there is more than the threshold to free (500 MB by default), then shows a notification.
+**Faster to use**
+- **Ctrl+K** opens the command palette. It finds any page, tweak or Tools & backup action, plus theme and language switches.
+- **Home** has a health strip:
+  - a score out of 100;
+  - speed tweaks applied;
+  - tweaks reset by Windows;
+  - whether a restart is pending;
+  - the last cleanup.
+  Each tile has a one-click action.
+- **Notification-area icon** with a menu to switch power plans, re-assert your active profile and clean temp files. Optionally, closing the window keeps ArchTweaker running there.
+
+### Tweaks
+**Safety**
+- **Source and evidence** in the tweak details. It says where each tweak comes from (Microsoft policy, public tests, community guide, FR33THY Ultimate) and links to the documentation or source.
+
+### Design
+**Faster to use**
+- **Custom accent colour**: View → Accent colour → Custom…. The colour you pick is adjusted until text and buttons pass the same contrast checks as the built-in accents.
+
+### Security
+**Release**
+- The Windows CI signs ArchTweaker.exe with Authenticode when a certificate is configured (secrets `SIGN_PFX_BASE64` and `SIGN_PFX_PASSWORD`). It always publishes `SHA256SUMS.txt`.
+- **Verify a download:** run `Get-FileHash ArchTweaker.exe -Algorithm SHA256` in PowerShell and compare the result with `SHA256SUMS.txt`.
+
+### Under the hood
+**Release**
+- CI also runs the UI tests in Russian and, on its throwaway VM, applies the Recommended preset and then Undo everything.
+
+## 2.10: colour schemes, Maintenance moved into Tools & backup
+
+### Design
+- **Two new colour schemes:** *OLED black* (true black, saves power on OLED screens) and *Slate* (a softer blue-grey dark). Pick one from the **Colour scheme** drop-down in More → Tools & backup → Appearance. The choice is saved in `HKCU\Software\ArchTweaker\Theme` (`dark`, `light`, `oled`, `slate`).
+- The header Dark/Light switch still works. It goes to Carbon light, and back to the last dark scheme you used.
+- Every scheme is checked with every accent colour: text ≥ 7:1, muted text and status colours ≥ 4.5:1, accent on surfaces ≥ 3:1.
+- **Maintenance is now part of Tools & backup.** It has the same updates, keep-applied profile, scheduled tasks and diagnostics as before. The page has three sections: Appearance, Maintenance and Tools & backup. Maintenance is no longer a separate item in the sidebar.
+- Tools & backup now uses the Maintenance (wrench) icon.
+
+## 2.9.1: Cleanup and Deep clean fixes
+
+### New features
+- **Select all / Select none buttons**, and a live "Selected" total that updates as you tick items.
+
+### Design
+- **New list rows on both pages.**
+  - Bigger 20 px check boxes in the Carbon style.
+  - The whole row is clickable.
+  - Selected rows get an accent edge.
+  - Sizes are right-aligned, rows fill the window width and scale with DPI.
+  - Up/Down and Space keys work, and rows have a focus ring.
+
+### Fixes
+- **User temp files now really get cleaned.**
+  - When ArchTweaker is elevated with a different admin account, `%TEMP%` pointed at that admin's profile, so the signed-in user's own temp folder was never touched. Cleanup now also cleans the temp folder of the user who owns the desktop (explorer.exe).
+  - Empty sub-folders are now removed. Before, one unreadable folder stopped every other folder from being removed.
+  - Files held open by running programs are skipped and counted. They are no longer skipped silently.
+- **You now see the result.** After a clean, a pop-up shows the space freed and how many files were in use. Before, the result went only to the log.
+- Deep clean says so when no leftovers are found, and warns if you press Clean with nothing selected.
+
+## 2.9: compact rows, result pop-up, accent colours
+
+### Design
+- **View menu** (top bar, next to Dark). Holds the accent colour and Compact rows. Both are remembered.
+- **Compact rows.** Each tweak is one line: switch, title, gain and risk chips. The selected row, by click or keyboard, opens to show its description and gain. While you search, every match shows in full, so highlights stay visible. About twice as many tweaks fit on screen.
+- **Result pop-up.** After Apply, Undo last apply or Undo everything, a small notice appears bottom-right, for example "5 changes applied · 1 needs a restart". It has a red edge for failures, amber when a restart or sign-out is needed, and the accent colour otherwise. It closes after 6 s or on click. Screen readers announce it, and the status line shows the same text.
+- **Accent colours.**
+  - Red (Carbon default), Blue, Teal and Graphite. Switch thumbs and the theme switch knob use the matching text colour (black on teal and graphite).
+  - Every accent passes the same contrast rules in dark and light: text on the accent ≥ 4.5:1, accent on every surface ≥ 3:1, text on pending/selected rows ≥ 4.5:1. `docs/palettes.py` and a unit test check this.
+  - Amber was left out because it would look like the warning colour.
+- **Menus.** The new View menu uses the Carbon colours (`CarbonMenuRenderer`).
+
+## 2.8: interface polish
+
+### Design
+- **Status line shows only results.** For example "5 changes applied · 1 needs a restart", "Last apply undone (3 changes)", or presets and failures. Internal details (power aliases, probes, API fallbacks) stay in the log. Long messages end in "…", and hovering shows the full text.
+- **Sidebar.**
+  - Short labels: "Explorer & menus", "Security". Hovering a page shows its full name and how much is applied.
+  - One icon per page from Windows' own icon font (Segoe Fluent Icons on Windows 11, Segoe MDL2 Assets on Windows 10). It turns red on the open page.
+  - Count pills: grey when nothing is applied, a red progress track when some is, solid red when the whole page is applied.
+- **Subtitle under every page title.** Tweak pages show "22 tweaks · 3 applied". Other pages say what they're for, and hovering shows more.
+- **Loading and empty states.** Uninstaller, Apps, Startup, Services, System scan, Power settings and Context menu show "Loading…" while reading, then a clear message if the list is empty or the search has no matches.
+- **List headers.** Every list uses the same dark header. The last column fills the width, so the light strip on the right of the Uninstaller and other lists is gone.
+- **Title bar.** On Windows 11 it uses the top-bar colour with a thin red frame; Windows 10 gets a dark title bar.
+- **Search highlighting.** Matched words are highlighted in tweak titles, descriptions and gain text, on each page and in Search results.
+- **No horizontal scrollbar** under tweak lists any more.
+- **Apply button** (unchanged, already in place): shows the count ("Apply 5 changes") and is red only when something is pending.
+
+## 2.7.3: registry scan removed
+
+### New features
+- **Removed: Registry scan** (page, `RegScan.cs`, its tests and safe-list entries). Even widened in 2.7.2, it found nothing useful on real PCs.
+- **Nothing else changes:**
+  - The **Uninstaller**'s leftover scan keeps its own registry check and the protected-key list (`SafeLists.RegistryBlocked`).
+  - **Deep clean**, **Startup** and **Undo everything** are untouched.
+  - Entries an earlier version's registry scan removed can still be restored: their `.reg` backups and journal records are kept, and Undo everything still replays them.
+
+## 2.7.2: registry scan actually finds things
+
+### New features
+- **Still never touched:** COM/CLSID, shell extensions and services. Too many of those are valid references that look dead.
+- **Undo:** whole keys are exported to `.reg` first, and the delete is refused if the export fails. Single values are journaled, so Undo everything brings them back.
+- **Results:** sorted by type, with a count per type. Hover over an entry to see its full registry path. The log shows how many each check found.
+
+### Fixes
+- **Why it found nothing before:** an uninstall entry only counted if it had an install folder set, and that folder, the uninstaller and the icon were all gone. Most leftover entries have no install folder recorded. MSI entries were skipped completely. Apart from that, only App Paths were checked. On a normal PC the result was almost always "No dead references found".
+- **What it checks now:** entries that point at a file or folder that no longer exists, on a connected drive.
+  - **Uninstall:** the uninstaller file is gone, and so are the folder and icon if those are recorded.
+  - **Uninstall (MSI):** Windows Installer reports the product code as unknown (`MsiQueryProductState`).
+  - **App Path:** HKLM, WOW64 and HKCU.
+  - **Startup:** Run / RunOnce, HKLM, WOW64 and HKCU.
+  - **Shared DLL:** reference counts for missing files.
+  - **Installer folder:** Windows Installer folder records.
+  - **Font:** registrations whose font file is missing.
+  - **Application:** "Open with" registrations under `Classes\Applications`.
+
+## 2.7.1: game configs and game profiles removed
+
+### New features
+- **Removed: Game configs** (the Unity `boot.config` tuner from 1.5). Any `boot.config` you changed keeps your edits; the originals are still in `C:\ProgramData\ArchTweaker\backup\` (`boot.config_…`) if you want to copy one back.
+- **Removed: Game profiles** (2.7). The first start of 2.7.1 deletes its sign-in task ("ArchTweaker Game profiles") and its game list. Its power-plan, timer and priority changes only lasted while a game ran, so nothing else needs undoing.
+
+### Tweaks
+- The Game DVR and fullscreen-optimization tweaks (GameConfigStore registry values) are ordinary tweaks and stay.
+
+## 2.7: NVIDIA driver settings, A/B testing
+
+### New features
+- **NVIDIA driver profile** (GPU & Devices). These are the global 3D settings from NVIDIA Control Panel, changed through NVIDIA's own driver API (NvAPI DRS) using the IDs from NVIDIA's public SDK. Every change saves the previous value first; undo restores it, or the driver default.
+  - Power management mode = Prefer maximum performance
+  - Low latency mode = On (1 pre-rendered frame)
+  - Shader cache size = Unlimited
+  - Frame-rate cap at refresh − 3 for G-Sync / FreeSync (Moderate risk: only for variable-refresh displays)
+  - "Ultra" low latency isn't in NVIDIA's public SDK, so it isn't offered.
+- **A/B test** (More). Pick a tweak and your running game. ArchTweaker switches the tweak off and on in turn and captures frame times with PresentMon each time. It then says whether average fps, 1 % lows and 0.1 % lows changed by more than the run-to-run noise (Welch's t-test). The tweak ends as it was.
+- **Windows feature update report.** When the Windows build number changes, ArchTweaker checks the tweaks it had applied. A notice offers to re-apply the ones the update reset, or to select them for review.
+- **Tweak updates without a new exe** (Maintenance → Download tweak updates). An `overlay.xml` published with the update manifest and checked by SHA-256. It can only add registry DWORD/string tweaks under policy and settings keys, or patch and hide existing ones; it can't run commands.
+- **Export diagnostics** (Maintenance). One zip on the desktop: log, undo journal, health report and system details. Nothing is uploaded.
+- **Removed: Compact OS.** Whether compressing Windows is worth it depends on each PC, so it isn't a tweak any more. If you applied it before, Windows stays compressed. Run `compact /compactos:never` to undo it by hand.
+
+### Fixes
+- **Fixes from a code review of 2.6:**
+  - Tweak states are no longer cached while an apply is running.
+  - Changes outside the tweak list (power explorer, services, undo) now clear the cached states.
+  - States refresh when you come back to the window, at most every 30 s.
+  - Presets no longer freeze the window while they check states.
+  - A display-scale change waits until an apply finishes before rebuilding the window.
+  - Power-plan values that a plan doesn't set itself are read correctly.
+  - Leaks fixed in the search page and drop-downs.
+
+### Under the hood
+- **Targets .NET Framework 4.8** (built into Windows 10 1903+ and 11). This turns on the 4.7.1–4.8 WinForms accessibility fixes and system-default TLS.
+- **Code layout:** `UI.cs` is split into `Theme.cs`, `UiTweakList.cs`, `UiSystemPages.cs` and `UI.cs` (main window). New: `NvDrs.cs`, `Ui27.cs`, `StateCache.cs`.
+- **Windows CI:** `.github/workflows/windows.yml` builds the exe with the C# compiler built into Windows, then runs the 89 unit tests and the pywinauto UI tests on `windows-latest`.
+
+## 2.6: faster, sharper, fully Carbon
+
+### Design
+- **Each tweak row is one drawn control.** It used to be a panel of about 11 child windows, so about 2,300 window handles across all tweaks became about 200. Scrolling, searching and theme switches are smoother, with no half-drawn rows. Keyboard and screen-reader behaviour is unchanged: Tab, Space toggles, Enter shows details, and each row reports its on/off state.
+- **Real DPI scaling.**
+  - Layout is written once in 96-dpi units and scaled with `Theme.S()`. Fonts follow the window's monitor.
+  - Moving the window to a monitor with a different scale (`WM_DPICHANGED`) rebuilds it at the new size, the same way a theme switch does. That fixes cramped rows and clipped chips at 125–200 %.
+- **Stock controls restyled in Carbon.**
+  - Drop-downs: owner-drawn items, Carbon frame and chevron (no light system button in dark mode).
+  - Search box: rounded frame with a magnifier icon; the frame turns accent-coloured when focused.
+  - Checkboxes: flat, accent fill when ticked.
+  - Data grids and list headers: Side background, Muted semibold headers, tokenised rows.
+
+### Under the hood
+- **Power-plan tweaks use the Windows power API (powrprof) instead of `powercfg.exe`.**
+  - Before, each setting started `powercfg` 2–3 times (about 60 process starts for the Power Plan page).
+  - Now `powercfg /qh` runs once per session, only to learn the setting aliases (no GUIDs are hardcoded). Values are read and written with `PowerRead/WriteAC/DCValueIndex`.
+  - The plan is re-activated once after the whole batch instead of after every tweak.
+  - If the API refuses a write, that setting falls back to `powercfg`.
+- **Tweak states are read in the background.**
+  - Pages draw straight away; switches show "…" until their state is known, then fill in. Checks share one cache, which is cleared on every apply or undo.
+  - Device-tweak key lists are cached for 30 s, and scheduled-task XML is cached by file time.
+  - Fix: the sidebar counts, presets and the search page no longer read states on the UI thread.
+
+## 2.5: accessibility, clearer wording, design system
+
+### Design
+- **Keyboard and screen readers.**
+  - Every switch, sidebar entry, section header and the Dark/Light switch can be reached with Tab and shows a clear 2 px focus ring.
+  - ↑/↓ move through the sidebar.
+  - Tabbing to a tweak's switch opens its details and scrolls it into view.
+  - Tab order follows the screen: sidebar → top bar → page → details → Apply bar.
+  - Screen readers hear each switch's name, on/off state, what it does, its gain, risk and whether it needs a restart. They also hear which page is selected and whether a section is expanded.
+  - Every input and list now has a name.
+- **Contrast.**
+  - Off switches are now outlined with a dark knob (like Windows 11), so they're visible in light mode.
+  - Light-mode green/amber/red text is darker, so chips and gain labels pass WCAG contrast.
+  - A disabled Apply button turns grey instead of staying red.
+- **Dialogs.**
+  - Every question uses a new Carbon dialog whose buttons say what they do ("Remove 3 apps" / "Cancel", "Undo 5 changes" / "Keep changes") instead of Yes/No.
+  - The title asks the question and the body says what happens and how to undo it. Long lists go in a scrollable box.
+  - Destructive dialogs start with the focus on Cancel.
+  - Errors say what happened and what to do next.
+- **Wording.**
+  - Vague buttons are renamed ("Open Device Manager", "Scan registry", "Clear results", "Discard changes").
+  - "&" in buttons is replaced with "and"; it was swallowed as a keyboard shortcut marker.
+  - Empty and error states now say how to fix them.
+  - "restart" is used everywhere instead of "reboot".
+- **Dark scrollbars and list headers** (Windows 10 1809+).
+
+### Fixes
+- **Fix: duplicate "Optimizations for windowed games".** It existed twice (GPU & Devices and Gaming). The Gaming copy overwrote the whole DirectX settings string, which wiped VRR and Auto HDR when applied after them. There's now one tweak that edits only its own setting. 197 tweaks.
+- **Fix: GDI handle leak.** Fonts created while drawing the sidebar and tiles are now cached instead of created on every repaint.
+
+### Under the hood
+- **`docs/DESIGN.md`**: the Carbon tokens, components, states, keyboard, accessibility and copy rules. `docs/palettes.py` re-checks every colour pair.
+
+## 2.4 / 2.4.1: Carbon design system
+
+### Design
+- One design system across every page: a single font scale (Segoe UI / Segoe UI Semibold, Cascadia Mono → Consolas for logs), one 4px corner radius, one primary/secondary button pair with hover and press states.
+- Carbon palette (black & red dark, light variant) re-tuned so every text/accent pair passes WCAG contrast (text ≥ 7:1, muted ≥ 4.5:1, text on accent ≥ 4.5:1).
+- 2.4.1: Carbon chosen as the app's only style; the Instrument/Studio styles and the style picker were removed. The Dark/Light switch stays.
+
+## 2.3: Power settings explorer, Context menu manager, protected-location safelists
+
+Built from what the other tools you use do (PowerSettingsExplorer, Reg Organizer), reimplemented the ArchTweaker way — journaled and reversible.
+
+### New features
+- **Power settings** (System). Every setting of every power plan, including the ones Windows hides, with subgroup, GUID, description, AC/DC value and allowed values/range. Search, "hidden only" filter, set AC/DC values (enum drop-downs or range spinners, validated against the setting's min/max), hide/unhide in Power Options, open the key in Regedit, copy the equivalent `powercfg` commands, open the plan in Power Options. Uses `powrprof.dll` directly. The first original value of anything you edit is remembered, so **Revert my edits** — and Undo everything — put it back exactly.
+- **Context menu** (System). Right-click entries added by programs: shell extensions and static commands for files, folders, folder background, drives and desktop. Untick → Apply → Restart Explorer. Uses Windows' own switches (`Shell Extensions\Blocked`, `LegacyDisable`) — nothing deleted, all journaled. Windows built-in entries are hidden by default and warn before being turned off. On Windows 11 they live under "Show more options".
+
+### Security
+- **Protected-location safelists.** Curated "never touch" lists (system state, security products like Defender/Kaspersky/ESET/Dr.Web/COMODO, browser profiles and extensions, shell state that looks orphaned but isn't) are now enforced by the uninstaller's leftover scan, the registry scan and deep clean, on top of their existing guards.
+Not carried over: power-slider overlays and adding new "possible values" to power settings (rarely useful, easy to misuse), and Reg Organizer's per-cookie-domain keep list (Winapp2 cleans whole cookie databases, so per-domain keeping isn't possible — deep-clean entries are opt-in instead).
+
+## 2.2: screen & image tweaks; Program rules removed
+
+**Nine new tweaks (198 total)** — all reversible through the undo journal:
+
+### Tweaks
+- **Interface — Standard font smoothing instead of ClearType** (`FontSmoothingType` 1): fixes colour fringing on OLED / BGR panels.
+- **Interface — Fix blurry apps on scaled displays** (`EnablePerProcessSystemDPI`).
+- **Interface — Full-quality wallpaper** (`JPEGImportQuality` 100): no 85 % JPEG recompression banding.
+- **GPU & Devices — Optimizations for windowed games** (Win11, `SwapEffectUpgradeEnable`): flip-model presentation for borderless/windowed DX10/11 games — lower latency, VRR/Auto HDR outside exclusive fullscreen. *Gaming preset.*
+- **GPU & Devices — Variable refresh rate for all games** (`VRROptimizeEnable`). *Gaming preset.*
+- **GPU & Devices — Auto HDR for DX11/12 games** (Win11, `AutoHDREnable`).
+- **Explorer — Show icons instead of thumbnails** (`IconsOnly`): big photo/video folders open instantly.
+- **Explorer — Larger icon cache** (`Max Cached Icons` 4096).
+- **Explorer — No thumbs.db on network folders** (`DisableThumbsDBOnNetworkFolders`).
+The three DirectX settings share one Windows value (`DirectXUserGlobalSettings`, a `key=value;` string). A new `DxTokenOp` edits only its own token, so applying or reverting one never wipes the others you set in Windows Settings.
+Not added, on purpose: Night light / adaptive colour (stored in an opaque CloudStore binary blob — no clean reversible edit), forcing a custom DPI via `LogPixels` (can make the desktop unusable; use Settings), and cursor shadow (already covered by *Visual effects: best performance*). Menu delay, mouse acceleration, thumbnail-cache cleanup and icon-cache rebuild were already in the app.
+**Program rules removed.** The page and its IFEO code are gone. Any rule an older version wrote (an `.exe` blocked or forced to a CPU priority) is cleaned up by **Undo everything** — it removes only keys carrying ArchTweaker's own `ArchTweakerRule` marker.
+
+## 2.1: engineering maturity (tests, E2E, docs, charts)
+
+No new tweaks and no behavior changes — 2.1 builds the safety net and documentation around the app that the code reviews flagged as missing. New in the package:
+
+### New features
+- **Charted health report.** The HTML report now draws an "applied by category" bar chart (single-hue, direct `applied/total` labels, per-bar hover) alongside the existing specs/drift/cleanup sections.
+The product build still passes the Mono/.NET-4.5 call audit with zero violations, and `tools/run-tests.sh` is green.
+
+### Under the hood
+- **Headless unit test suite** (`Tests/UnitTests.cs`, `tools/run-tests.sh`). 19 tests / 35 assertions over the pure logic that can't be eyeballed: Winapp2 parsing + path-safety (traversal rejection, exact mask matching, ExcludeKey), the self-update URL allowlist and version guards, uninstaller command parsing and strict MSI-GUID handling, registry-scan path extraction, PresentMon frametime parsing, and catalog integrity (no duplicate tweak ids). A lightweight Mono-compatible runner — no dotnet/xUnit needed. It already caught a real cross-platform path-trimming nit.
+- **Windows UI smoke tests** (`e2e/`). pywinauto + UI Automation: launch the real exe, navigate every sidebar page, assert the header updates and the app stays responsive. Locators use the controls' `AccessibleName`. Runs on Windows from an elevated shell; see `e2e/README.md`.
+- **Architecture Decision Records** (`docs/adr/`). The five load-bearing decisions written down: the Mono/.NET-4.5 build path, the exact-undo model, the allowlisted file-only cleaner, the conservative registry scanner, and the self-update trust model (with the Authenticode gap stated honestly).
+- **Repo onboarding** (`CLAUDE.md`). Build/test commands, the critical C#-5 / no-Mono-overload constraints, a source map, and how to add a tweak — so a new contributor (or AI session) is productive without re-deriving the toolchain.
+
+## 2.0.1: security & correctness hardening
+
+A focused pass over the 1.9/2.0 code that runs elevated (cleaner, uninstaller, registry scan, self-update, SYSTEM scheduled tasks), after an independent C#, security, and silent-failure review. No features removed; no tweaks changed. Highlights:
+
+### Fixes
+- **No more silent success.** Deep clean, leftover removal, registry scan, scheduling, update staging, and measurement now surface failures (counts or dialogs) instead of logging quietly and reporting "done". PresentMon capture has a hard timeout so a stuck run can't freeze the UI.
+The build passed the Mono/.NET-4.5 call audit with zero violations, and the hardened path/exclude parsing, updater URL/version guards, and frametime parser are covered by headless tests.
+
+### Security
+- **Deep clean (Winapp2) — path safety.** Rules are now canonicalized and checked against an **allowlist** of cache roots (LocalAppData, AppData, LocalLow, Temp, ProgramData, Public, Program Files) — never the Windows tree, never user document folders, never a drive root. Any rule containing `..` is rejected outright, junctions/symlinks are not followed, file masks match **exactly** (so `*.log` no longer also deletes `.log1`), `ExcludeKey` rules are now honored, the downloaded `Winapp2.ini` is size-capped, content-checked, and written atomically, and deletes that fail are counted and reported instead of silently skipped.
+- **Uninstaller.** MSI removal only accepts a strict product-GUID (no argument injection); the command parser handles unquoted spaced paths and expands environment variables; system tools resolve to `System32` (no binary planting); the protected-path guard is canonicalized and covers Program Files (x86), ProgramData, user document folders and junctions; leftover matching is now **exact** (no publisher-only or prefix matches that could move live shared folders), only the recorded install folder is pre-checked, and leftovers on another drive back up via copy-then-delete with a restore manifest. Leftover cleanup is skipped if the program is still registered after the uninstaller runs.
+- **Registry scan.** Unquoted spaced paths parse correctly (no more false "dead" on real programs), entries on an offline/removable drive are skipped, and the bogus `App Paths\Path` check was removed.
+- **Self-update.** Manifest + download are **https-only to an allowlisted host**; the manifest URL override moved to **HKLM** (a non-admin user can no longer redirect an elevated update); a missing SHA-256 now **fails closed**; the version string is validated (no path-traversal into the staging path); staging uses random names under ProgramData, keeps a `.bak`, and restores it if the swap fails.
+- **Reversible-delete guarantees enforced.** `DeleteTreeBackedUp` and the per-apply registry snapshot now **verify the `.reg` export actually wrote** before deleting (or before claiming a backup exists) — the "reversible with Undo" promise can't silently break.
+- **SYSTEM scheduled tasks.** The `ProgramData\ArchTweaker\bin` folder is created with an **admin-only ACL** (SYSTEM + Administrators write, Users read-only) so a standard user can't plant an exe a SYSTEM task would run; scheduling aborts if the folder can't be secured or the checkbox reverts on failure. Re-assert now runs as the interactive user (correct HKCU/profile hive), and the active-profile pointer lives in HKLM so the task can find it.
+
+## 2.0: measure, trust, maintain
+
+2.0 changes what the app *is* — from "applies changes" to "measures, verifies, and keeps them applied." No tweaks were removed; everything from 1.9 is here (189 tweaks, Deep clean, Uninstaller, Registry scan, hosts blocker, game configs, PC advisor).
+
+### New features
+- **Measure (new page).** Turns the "gains" from claims into numbers measured on *your* machine: timer resolution, Sleep(1) precision (avg / p99 / max), and scheduling jitter. Run a baseline, apply tweaks, measure again, and see the delta. Optional frametime capture: drop `PresentMon.exe` next to `ArchTweaker.exe`, name your game's process, and it reports avg / 1% low / 0.1% low FPS from real presents.
+**Maintenance (new page).**
+- **Self-update:** checks a version manifest online, verifies the download's SHA-256, swaps the exe and relaunches. Manifest URL is overridable at `HKCU\Software\ArchTweaker\Update\ManifestUrl` for self-hosting.
+- **Keep tweaks applied:** set an *active profile*, then **re-assert** it — re-applies any tweak Windows reset (feature updates love doing this). Drift check tells you how far you've drifted.
+- **Scheduled maintenance:** one-click Scheduled Tasks for weekly re-assert, monthly deep clean, and weekly restore point (run as SYSTEM, headless).
+- **Health report:** a self-contained HTML page — specs, every applied tweak, profile drift, cleanup potential. Good for sharing or support.
+- **Portable profiles.** Exported `.atp` profiles are stamped with a hardware fingerprint (`#hw:` line). Importing on a different machine warns you before applying.
+- **Adaptive advisories.** The apply preview now flags obvious mismatches — an NVIDIA tweak with no NVIDIA GPU, a Windows 11-only tweak on Windows 10 — without blocking you.
+- **New CLI (for the scheduler and headless use):**
+```
+ArchTweaker.exe /reassert       re-apply the active profile's tweaks that drifted
+ArchTweaker.exe /verify         report which active-profile tweaks aren't applied
+ArchTweaker.exe /deepclean [/dry-run]
+ArchTweaker.exe /report         build + open the HTML health report
+ArchTweaker.exe /measure        print timer/Sleep(1)/jitter
+ArchTweaker.exe /restorepoint   create a System Restore point
+ArchTweaker.exe /update         check + install an update
+```
+(plus the existing `/preset`, `/apply`, `/clean`, `/hostsupdate`, `/undo`; add `/silent` for no pop-ups.)
+
+### Security
+**Trust infrastructure.** Every apply now:
+- writes a **registry snapshot** — a single `.reg` export of every key the apply will touch, saved to `ProgramData\ArchTweaker\snapshots\` before anything changes (belt-and-suspenders over the undo journal; double-click to restore).
+- runs **verify-after-apply** — re-reads each changed value and logs anything that didn't take (restart-pending items aren't counted as failures).
+
+### Under the hood
+- **Honest limits.** Scheduling jitter is a sampling proxy, not kernel DPC latency (that needs a signed driver). Frametime capture needs PresentMon present. Self-update needs a manifest you host. Registry defrag/compress is still deliberately out — it can't be done live or reversibly.
+
+## 1.9: cleanup, uninstall and registry tools (Reg Organizer–class features, built the ArchTweaker way)
+
+Three new pages under **System**, plus six new tweaks. Everything destructive is reversible: files are moved to the backup folder or deleted only after you review them, and every registry change is exported to a `.reg` file first and is covered by Undo.
+
+### New features
+- **Deep clean** — leftover-file cleanup powered by the community **Winapp2** ruleset (github.com/MoscaDotTo/Winapp2, CC-BY-SA-4.0). The ruleset is downloaded and cached to `C:\ProgramData\ArchTweaker\winapp2\` (and reused offline). It knows ~3,700 applications' cache, log and crash-dump locations; the app shows only the ones detected on your PC, grouped by category with a measured size next to each. **Only file rules are used — never registry keys** — and Windows/Program Files/user-profile roots are hard-protected. Deleted files do not go to the Recycle Bin, so you review the list first.
+- **Uninstaller** — classic Win32 programs (the ones not covered by the UWP "Apps" page), read straight from the Uninstall registry hives (both 64- and 32-bit, plus per-user), with publisher, version and size. It runs the vendor uninstaller (MSI products get a silent `/x`), then does a **leftover scan**: the install folder if it survived, per-user/per-machine data folders whose name matches the product or publisher, and the publisher's `Software` registry branches. Leftover folders are **moved to the backup folder** (not hard-deleted) and registry branches are exported to `.reg` first — all reversible.
+- **Registry scan** — a deliberately **conservative** dead-reference scanner. It flags only two high-signal, low-risk cases: orphaned Uninstall entries (the program folder *and* the uninstaller are both gone) and `App Paths` entries pointing at a missing `.exe`. Microsoft and MSI entries are skipped. It does **not** sweep CLSID/InprocServer32 or shell extensions — that's where registry cleaners break things. Each removal is exported to a `.reg` backup and is undoable.
+
+### Tweaks
+**Six new tweaks (189 total)** — mined from a Reg Organizer tweak set, keeping only the ones that are genuinely new, safe, reversible and still relevant on Windows 10/11:
+- **Responsiveness — Stop the "low disk space" pop-up** (`NoLowDiskSpaceChecks`).
+- **Responsiveness — Stop broken-shortcut network search** (`LinkResolveIgnoreLinkInfo` + `NoResolveSearch` + `NoResolveTrack`): removes the multi-second Explorer hang when a shortcut's target has moved.
+- **Responsiveness — Enlarge the client DNS cache** (`CacheHashTableSize`/`BucketSize`, `MaxCacheEntryTtlLimit`, `MaxSOACacheEntryTtlLimit`).
+- **Responsiveness — Re-enable automatic registry backups** (`EnablePeriodicBackup`, off by default since Windows 10 1803) so recovery has a recent hive copy.
+- **Privacy — Don't keep a recent-documents history** (`NoRecentDocsMenu`).
+- **Privacy — Remove web/Store lookup from "Open with"** (`NoInternetOpenWith`).
+Every one deletes its value(s) on revert (back to Windows defaults). None change average FPS; they're annoyance, privacy and recovery fixes. The ones with a real effect — shortcut-resolve hangs and DNS caching — are noted as such.
+**What was intentionally left out of the registry cleaner:** CLSID/COM and shell-extension sweeps, "optimize/defrag the registry" by rewriting hives, and anything that deletes keys it can't prove are dead. Those are the classic sources of registry-cleaner damage, and they don't fit ArchTweaker's "every change is reversible" rule.
+
+## 1.8: Ultimate-guide tweaks ported in
+
+Nine new tweaks adapted from FR33THY's "Ultimate" guide (github.com/FR33THYFR33THY/Ultimate, MIT), each re-implemented with ArchTweaker's exact-undo model instead of the original's safe-boot / delete-the-whole-key approach. 183 tweaks total.
+
+### Tweaks
+- **GPU & Devices — Hardware composed: force immediate flip** (`ForceFlipTrueImmediateMode`). Undo deletes only this value, keeping the rest of the Scheduler key.
+- **GPU & Devices — Intel iGPU: async flip + low-latency mode** (only shows if an Intel GPU is present).
+- **Input & Latency — Lock out Windows & Alt keyboard shortcuts** (anti-alt-tab for fullscreen; Esc remapped to '='; media keys off; clean revert).
+- **Responsiveness — Disable prefetch & app pre-launch** (the SuperFetch features memory-compression doesn't cover).
+- **Privacy — Stop UWP apps running in the background.**
+- **Security (advanced) — Disable Windows Firewall, Disable DEP, Allow unsigned drivers (WHQL bypass), Disable UAC entirely.** All clearly marked Advanced, in no preset, with honest risk notes and exact reverts.
+- **Merged into the existing "Network adapters" tweak:** also clears S5 Wake-on-LAN, Wake-on-Link and modern-standby WoL.
+**Cross-checked against what was already in the app:** the Ultimate "FSE / exclusive fullscreen" script turned out to be identical to ArchTweaker's existing `Disable fullscreen optimizations`, and its memory-compression and timer-resolution scripts match tweaks already here, so those weren't duplicated. Spectre, NVMe, MPO, ULPS, MSI mode, HDCP, P0, NIC power, write-cache and power-plan values were already present.
+**Deliberately NOT ported** (they can't be cleanly undone, which breaks the app's guarantee): the full ~270-service disable, the Start/Search/Shell file-move removal, and the safe-boot Defender disable (it removes Defender's definitions via DISM). The app keeps its own reversible Defender-policy, VBS and SmartScreen tweaks instead.
+**Fix:** a page that was fully populated could still show "Nothing on this page matches the filter" — the row count was read before the window finished opening. Corrected.
+
+## 1.7.2: merged and cross-checked release
+
+This merges 1.7 and 1.7.1 into one version, checked file by file and down to the compiled code.
+
+### Fixes
+- **Undo everything now really undoes everything.** Before, it replayed the registry journal only, so 53 tweaks that change things outside the registry stayed applied: the power plan and its 19 settings, bcdedit boot options, netsh/PowerShell network commands, scheduled tasks, hibernation, the 0.5 ms timer service and others. It now reverts each of those first (only the ones ArchTweaker applied, never Windows' own defaults), then restores every registry value from the journal, removes the hosts block and clears the apply history.
+
+### Under the hood
+- **Confirmed from the compiled code:** besides the `TrimStart()` / `TrimEnd(char)` / `Stack<T>` calls fixed in 1.7.1, the 1.7 exe also had **24 calls to `String.Split(char, StringSplitOptions)`**, a .NET Core/Mono-only overload. They were in power-plan detection, the system scan, services, cleanup and the hosts reader. 1.7.1 and 1.7.2 bind all of them to `Split(char[])`, which .NET Framework has.
+- Verified: all 174 tweaks are listed in the table below, the sources are identical to 1.7.1 apart from the undo fix, and the build is compiled against the .NET Framework 4.5 reference assemblies.
+
+## 1.7.1: fix
+
+### Fixes
+- **Fixed "Method not found: System.String.TrimStart()"** when downloading and applying hosts lists. The 1.5–1.7 exe was compiled against Mono's libraries, which have overloads .NET Framework doesn't have (`TrimStart()`, `TrimEnd(char)`, and `Stack<T>` in the wrong assembly). The same problem also broke the folder scan in **Cleanup**. The exe is now compiled against the official .NET Framework 4.5 reference assemblies, and every build is checked for Mono-only calls. The source code itself was unchanged; `build.bat` on Windows was never affected.
+
+## What's new in 1.7: online hosts blocklists
+
+The Hosts blocker (sidebar → System → Hosts blocker) now downloads and merges well-known public blocklists. Toggle the lists you want and click **Download lists & apply**.
+| Group | List | Size (Nov 2026) | Source |
+|---|---|---|---|
+| Ads & trackers | AdAway default *(on by default)* | 6.5k | raw.githubusercontent.com/AdAway |
+| | Peter Lowe's ad & tracking servers *(on)* | ≈3.8k | pgl.yoyo.org |
+| | Dan Pollock's hosts *(on)* | ≈11.7k | someonewhocares.org |
+| | StevenBlack unified (adware + malware) | 78k | github.com/StevenBlack/hosts |
+| | HaGeZi Multi Light | 171k: very large | github.com/hagezi/dns-blocklists-legacy |
+| Windows & Office telemetry | ArchTweaker telemetry starter (built in) | 20 | |
+| | WindowsSpyBlocker: spy | 347 | github.com/crazy-max/WindowsSpyBlocker |
+| | HaGeZi Windows/Office tracker | 749 | hagezi legacy repo |
+| Malware & phishing | URLhaus malware domains, online only *(on)* | small | malware-filter (abuse.ch URLhaus) |
+| | Phishing domains | varies | malware-filter |
+| | Block browsers' encrypted DNS (DoH) | 4k | hagezi legacy repo |
+| Categories | Gambling / Social media / Fake news / Adult | 6.7k / 3.8k / 2.2k / 77k | StevenBlack extensions |
+
+### New features
+- **Every list is parsed, merged and de-duplicated.** The parser understands hosts files, plain domain lists and simple adblock rules. Cosmetic rules, IP addresses and localhost entries are skipped.
+- **Compact file:** 9 domains per line (the trick HostsMan and HaGeZi's "compressed" lists use). Same blocking with about 9× fewer lines.
+- **Size meter** with two thresholds: 50k is comfortable; above 150k, Windows' DNS Client service can use high CPU loading the file, and lookups can stall. Big lists carry an amber warning.
+- **Always-allowed safety list,** so a list can never break Windows Update, the network-status icon (msftconnecttest), Microsoft sign-in/activation or the list downloads themselves.
+- **Game launcher safe list** (on by default): Steam, Epic, Battle.net, Riot, EA, Ubisoft, Xbox Live, Discord, FACEIT, BattlEye, EAC.
+- **Your allowlist** (covers subdomains) and **your own block list** (beats allowlists).
+- **Check a domain:** tells you whether a site is blocked now, which list has it, or which allowlist lets it through.
+- **Microsoft domains:** counted after each build. Windows Defender reports Microsoft domains in hosts as `SettingsModifier:Win32/HostsFileHijack`. If it does, choose *Allow on device*, because *Remove* resets the whole hosts file. Or tick **Leave out Microsoft domains** and use the Privacy tweaks for telemetry instead.
+- **Works offline:** each download is cached. If a list can't be reached, its last copy is used. *Apply from saved copies* rebuilds without the internet.
+- **Weekly auto-update** (optional): a scheduled task runs `ArchTweaker.exe /hostsupdate` every Sunday, but only while the block is active. *Remove block* and *Undo everything* delete the task.
+- Your own lines in the hosts file are never touched, and the first original hosts file is backed up to `backup\hosts.original`.
+- If a blocked site still loads in Chrome, Edge or Firefox, the browser may be using its own secure DNS. Turn that off in the browser, or enable the DoH list.
+- **Note:** HaGeZi moved its Hosts-format files to the `dns-blocklists-legacy` repo in 2026. ArchTweaker uses the new location.
+
+## What's new in 1.6: easier and prettier
+
+**Home dashboard** (the new start page)
+
+### New features
+- **Latency chain:** Input → CPU & power → Windows → GPU & display → Network. Each stage shows how many of its tweaks with a real speed effect are applied. The **weakest link** is outlined in red. Click a stage, or use arrow keys + Enter, to open its tweaks.
+- **This PC right now:** live vitals with a status dot. Power plan, timer resolution, dynamic tick, HAGS, background recording, VBS, network link, memory speed vs rating, display refresh.
+- **Quick actions:** select the picks for this PC, measure Sleep(1) (the last result is remembered), open PC advisor, scan the PC.
+**Safer, clearer applying**
+- **Review before applying:** a dialog lists every change, sorted with risky ones first, and flags restarts and advanced tweaks.
+- **Restart banner:** after applying anything that needs a reboot, *Restart now / Later*.
+- **Undo last apply:** reverts only your most recent batch. The last 30 batches are kept in `history.txt`. *Undo everything* still restores the full pre-ArchTweaker state.
+**Finding things**
+- **Global search:** type in the search box on any tweak page and it searches all 174 tweaks, grouped by category. Multi-word search works ("usb power").
+- **Filter:** show all / not applied yet / medium or high gain / not applied with medium+ gain. Remembered between launches.
+- **Shortcuts:** Ctrl+F search · Ctrl+Enter review & apply · Esc clear search.
+
+### Design
+**Finding things**
+- **Sidebar:** collapsible sections (remembered) and an applied count per category, like *0/22*.
+- **Log folds away:** the latest line shows next to the buttons, and *Show log* opens the full log.
+**Look**
+- Toggle switches instead of checkboxes. Pending rows get a yellow edge.
+- A 3-bar impact meter with "High / Medium / Low gain". Gain text is no longer red.
+- Rounded chips for *Moderate risk*, *Advanced*, *Restart*, *Sign-out*.
+- Dark title bar, dark scrollbars and dropdowns. On Windows 11 the window border is red and the caption matches the sidebar.
+- Keyboard focus is visible on toggles, sidebar items and the latency chain.
+
+### Fixes
+- Every "&" in names was eaten by Windows and turned into an underlined shortcut ("GPU _Devices", "Create _activate"), a bug since 1.0. It's fixed everywhere.
+- Long page notes no longer cause a horizontal scrollbar on tweak pages.
+
+## What's new in 1.5: hardware-aware
+
+### New features
+- **PC advisor** (sidebar → SYSTEM → PC advisor): reads this PC's real hardware and recommends only what applies to it:
+  - CPU topology through the Windows API (`GetLogicalProcessorInformationEx`): P-cores vs E-cores, SMT, and whether a hybrid CPU has its **E-cores disabled in BIOS**. In that case "Prefer P-cores" isn't selected because it does nothing.
+  - Network link: Wi-Fi vs Ethernet, and whether a wired port is sitting unused.
+  - RAM configured vs rated speed (XMP off, at rating, or overclocked past it).
+  - Display running below its maximum refresh rate.
+  - NVMe storage, NVIDIA GPU, and VBS actually *running* (not just configured).
+  - Each finding has a **Select N tweaks** button. **Select all recommended** ticks everything for this PC, and nothing changes until you click Apply.
+- **Tools:**
+  - **Measure Sleep(1) precision**: 500 samples with avg / p99 / max / stdev and a verdict. Use it to prove that the timer-resolution and dynamic-tick tweaks actually work.
+  - **Export active plan (.pow)** and **Import plan (.pow) and activate**. Imports get a fresh GUID, so they never overwrite an existing plan.
+
+### Tweaks
+- **New preset "This PC (auto)"** in the preset box, plus `ArchTweaker.exe /preset Auto` on the command line.
+- **4 new tweaks** (174 total):
+  - *NVMe: no idle power states:* primary and secondary APST latency tolerance 0, secondary idle timeout 0, NOPPME off. Uses the GUIDs from Microsoft's StorNVMe power documentation.
+  - *Wi-Fi: roam only on very weak signal:* Roaming Aggressiveness = Lowest on Intel/Killer adapters that expose it. Stops the periodic background-scan ping spikes on AX2xx cards.
+  - *No away mode, no networking in standby.*
+  - *Display never dims; no adaptive brightness.*
+
+### Under the hood
+- Build: the exe now carries the admin manifest, icon and version info (1.5.0.0) as before. The source still compiles with the C# 5 compiler built into Windows (`build.bat`).
+
+## What's new in 1.4
+
+### New features
+- Search also matches the gain text (e.g. type "ms", "FPS" or "GB").
+
+### Tweaks
+- **Expected gain for every tweak:** an impact level (HIGH / MEDIUM / LOW / NONE) plus a concrete estimate, such as FPS %, 1 % lows, milliseconds of latency, ping, GB freed, RAM saved or seconds saved. It's shown under each tweak, in the details panel (section "EXPECTED GAIN"), in the System scan table (Impact + Expected gain columns) and in exported reports.
+- New scan filter **"OFF with medium/high gain"**: shows exactly which worthwhile tweaks your PC is still missing.
+- Estimates come from public benchmarks where they exist (Tom's Hardware / ComputerBase VBS tests, heise / Neowin native NVMe, djdallmann network research, timer-resolution benchmarks). Tweaks with no proven gain say so plainly.
+
+## What's new in 1.3
+
+### New features
+- **System scan** page (sidebar → SYSTEM → System scan): reads the LIVE state of all 170 tweaks and shows each one as ON / OFF / not available. Sources: registry, services, scheduled tasks, the active power plan (powercfg), boot config (bcdedit), network stack, memory manager and storage (PowerShell). It also catches changes made by Windows, by you or by other tools. Filters: all / only ON / only OFF / not available. Double-click a row to jump to the tweak. Export to .txt or .csv (Excel).
+- **Raw system state** report: full bcdedit output, TCP global settings, network/memory/storage values, active power-plan CPU values, sleep states, timer resolution, key registry values and all curated services.
+- The details panel has a new **How the state is detected** section.
+- All detection is language-independent and works on Russian, English or any other Windows.
+
+### Fixes
+- **Command tweaks now detect the real state** instead of remembering what ArchTweaker applied: bcdedit (dynamic tick, HPET, boot menu, hypervisor), TRIM, TCP auto-tuning, RSS, heuristics, Teredo, Compact OS, memory compression, reserved storage, DNS, NIC power, protocol bindings, IPv6. Only TCP Fast Open and the one-time power-plan cleanup still rely on ArchTweaker's own record.
+
+## What's new in 1.2
+
+### New features
+- **Details panel**: click any tweak to read what it does, its current state on this PC, and **every exact change**: registry path + value, service, scheduled task, power setting, device key or command, plus what unticking restores.
+- Tools: show current timer resolution, Optimize drives (TRIM), rebuild performance counters, advanced power settings, `powercfg /a`.
+
+### Tweaks
+- **Power Plan** category (19 tweaks): a dedicated *ArchTweaker Max Performance* plan plus every relevant hidden setting:
+  - CPU: min/max 100%, Aggressive boost, EPP 0, no core parking, Rocket ramp-up, latency hints 100%, no throttle states, P-core preference.
+  - Devices: PCIe ASPM off, USB/disk/NVMe/Wi-Fi never power down, GPU power policies at max.
+  - Optional extremes: C-states off, never sleep, Modern Standby off.
+- **Input & Latency**: built-in 0.5 ms **timer-resolution service** (+ GlobalTimerResolutionRequests), input buffer sizes, background raw-mouse throttle, USB/HID device power saving.
+- **GPU & Devices**:
+  - GPU MSI mode; NVIDIA P0 lock, HDCP off and misc driver settings; AMD ULPS off.
+  - NIC power saving / EEE / Green Ethernet / WoL off.
+  - PCI/ACPI power saving off, device wake off, write-cache flushing off, native NVMe driver.
+- More: best-performance visual effects, no input/widget preload, automatic maintenance off, WPBT block, BSOD details, 1-year update pause, protocol unbinding, IPv6 off, Spectre/Meltdown toggle.
+- Network throttling was **removed from the Gaming preset**: independent measurements (djdallmann/GamingPCSetup) show higher NDIS DPC latency when it's disabled.
+
+### Design
+- **Dark / Light switch** in the top bar (remembered between launches). Switching keeps your page and your pending changes.

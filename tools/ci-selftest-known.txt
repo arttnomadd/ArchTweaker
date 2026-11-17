@@ -1,0 +1,3 @@
+# Tweak ids allowed to FAIL the self-test on GitHub's Windows Server runners (one per line).
+# Add an id only with a reason: the tweak can't work on a server VM (no such device, service or feature),
+# not because it is broken on a real PC.

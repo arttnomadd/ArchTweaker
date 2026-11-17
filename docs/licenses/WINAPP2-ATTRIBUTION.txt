@@ -1,0 +1,8 @@
+The "Deep clean" feature downloads and uses Winapp2.ini, a community-maintained
+cleanup ruleset, at runtime. It is not bundled with ArchTweaker.
+
+  Winapp2 — https://github.com/MoscaDotTo/Winapp2
+  Licensed CC-BY-SA-4.0 (https://creativecommons.org/licenses/by-sa/4.0/)
+
+ArchTweaker uses only the file-cleaning (FileKey) rules and never the registry
+rules. The downloaded copy is cached under C:\ProgramData\ArchTweaker\winapp2\.

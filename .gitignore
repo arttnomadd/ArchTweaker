@@ -1,0 +1,18 @@
+# build output
+/out/
+/bin/
+/obj/
+/ArchTweaker.exe
+*.pdb
+# python
+__pycache__/
+.pytest_cache/
+e2e/artifacts/
+.ruff_cache/
+
+# 3.35: the update signing key must never be committed (ADR-0008)
+*update-key*.json
+*.pem
+# latest.json at the root is the published, signed manifest the app reads; other copies stay out
+latest.json
+!/latest.json

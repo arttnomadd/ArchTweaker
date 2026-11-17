@@ -1,0 +1,140 @@
+# Builds ArchTweaker on real Windows, runs the unit tests, then the UI smoke tests (pywinauto, UI Automation).
+# This is the check that covers what a Linux/Mono build can't: powrprof, NvAPI absence handling, DPI, UIA names.
+name: windows
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+env:
+  SIGN_PFX_BASE64: ${{ secrets.SIGN_PFX_BASE64 }}
+
+jobs:
+  build-and-test:
+    # 3.8: two real Windows builds: Server 2022 (Windows 10 kernel, build 20348) and Server 2025 (24H2 kernel, build 26100)
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-2022, windows-2025]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      # 3.35: /recurse, because the sources sit in feature folders since 3.25 (src\*.cs matched no file)
+      - name: Build ArchTweaker.exe (in-box .NET Framework 4.8 compiler)
+        shell: cmd
+        run: |
+          set CSC=%WINDIR%\Microsoft.NET\Framework64\v4.0.30319\csc.exe
+          if not exist out mkdir out
+          "%CSC%" /nologo /target:winexe /platform:anycpu /optimize+ /out:out\ArchTweaker.exe /win32manifest:app.manifest /win32icon:app.ico ^
+            /r:System.Windows.Forms.dll /r:System.Drawing.dll /r:System.Management.dll /r:System.ServiceProcess.dll /r:System.Core.dll /r:System.Xml.dll /r:Accessibility.dll /r:System.IO.Compression.dll ^
+            /recurse:src\*.cs || exit /b 1
+
+      - name: Unit tests
+        shell: cmd
+        run: |
+          set CSC=%WINDIR%\Microsoft.NET\Framework64\v4.0.30319\csc.exe
+          "%CSC%" /nologo /target:exe /main:Runner /out:out\at-tests.exe ^
+            /r:System.Windows.Forms.dll /r:System.Drawing.dll /r:System.Management.dll /r:System.ServiceProcess.dll /r:System.Core.dll /r:System.Xml.dll /r:Accessibility.dll /r:System.IO.Compression.dll ^
+            /recurse:Tests\*.cs /recurse:src\*.cs || exit /b 1
+          out\at-tests.exe
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Writing rules (ASD-STE100 subset) for English UI text
+        run: python tools/ste_check.py --list --max 0
+
+      - name: UI smoke tests (pywinauto)
+        env:
+          APP_PATH: ${{ github.workspace }}\out\ArchTweaker.exe
+          APP_TITLE: ArchTweaker
+          LAUNCH_TIMEOUT: "40"
+        run: |
+          python -m pip install -r e2e/requirements.txt
+          python -m pytest e2e -m smoke --junitxml=out/e2e.xml
+
+      - name: UI test in Russian
+        env:
+          APP_PATH: ${{ github.workspace }}\out\ArchTweaker.exe
+          LAUNCH_TIMEOUT: "40"
+          AT_LANG: ru
+        run: python -m pytest e2e -m ru --junitxml=out/e2e-ru.xml
+
+      - name: Apply the Recommended preset, then Undo everything (throwaway CI VM)
+        env:
+          APP_PATH: ${{ github.workspace }}\out\ArchTweaker.exe
+          LAUNCH_TIMEOUT: "40"
+          AT_E2E_APPLY: "1"
+        run: python -m pytest e2e -m vm --junitxml=out/e2e-vm.xml
+
+      # 3.8: the self-test on real Windows: read every tweak's state, then apply / check / undo / put back every
+      # tweak that can be undone exactly (throwaway CI VM). Fails the job on any FAIL line not listed in
+      # tools/ci-selftest-known.txt (tweaks that can't work on a server VM, one id per line).
+      - name: Self-test on real Windows
+        shell: pwsh
+        run: |
+          $exe = Resolve-Path out\ArchTweaker.exe
+          $read = Start-Process $exe -ArgumentList "/selftest","read" -Wait -PassThru
+          $full = Start-Process $exe -ArgumentList "/selftest" -Wait -PassThru
+          New-Item -ItemType Directory -Force out\selftest | Out-Null
+          Copy-Item (Join-Path $env:ProgramData "ArchTweaker\selftest-*.txt") out\selftest\
+          $report = Get-ChildItem out\selftest -Filter selftest-*.txt | Where-Object { (Get-Content $_.FullName -TotalCount 1) -like "*(full)*" } | Select-Object -Last 1
+          $known = @(); if (Test-Path tools\ci-selftest-known.txt) { $known = Get-Content tools\ci-selftest-known.txt | Where-Object { $_ -and -not $_.StartsWith("#") } }
+          $fails = @(Select-String -Path $report.FullName -Pattern '^FAIL\s+(\S+)' | Where-Object { $known -notcontains $_.Matches[0].Groups[1].Value })
+          "### Self-test on ${{ matrix.os }}" | Out-File -Append $env:GITHUB_STEP_SUMMARY
+          (Get-Content $report.FullName -Tail 1) | Out-File -Append $env:GITHUB_STEP_SUMMARY
+          foreach ($f in $fails) { "- " + $f.Line | Out-File -Append $env:GITHUB_STEP_SUMMARY }
+          Get-Content $report.FullName
+          if ($fails.Count -gt 0) { Write-Error "$($fails.Count) tweak(s) failed the self-test"; exit 1 }
+
+      # 3.8: startup timeline on real Windows (phases, every external program, UI or background thread, duration)
+      - name: Startup trace
+        if: always()
+        shell: pwsh
+        run: |
+          $exe = Resolve-Path out\ArchTweaker.exe
+          Start-Process $exe -ArgumentList "/trace","exit" -Wait -PassThru | Out-Null
+          New-Item -ItemType Directory -Force out\trace | Out-Null
+          Copy-Item (Join-Path $env:ProgramData "ArchTweaker\trace-*.txt") out\trace\
+          Get-Content (Get-ChildItem out\trace -Filter trace-*.txt | Select-Object -Last 1).FullName
+
+      # 3.0: Authenticode signing when a certificate is configured (repository secrets SIGN_PFX_BASE64 and
+      # SIGN_PFX_PASSWORD). Without them the exe is left unsigned and only the checksum file is produced.
+      - name: Sign ArchTweaker.exe
+        if: ${{ env.SIGN_PFX_BASE64 != '' }}
+        env:
+          SIGN_PFX_BASE64: ${{ secrets.SIGN_PFX_BASE64 }}
+          SIGN_PFX_PASSWORD: ${{ secrets.SIGN_PFX_PASSWORD }}
+        shell: pwsh
+        run: |
+          $pfx = Join-Path $env:RUNNER_TEMP "sign.pfx"
+          [IO.File]::WriteAllBytes($pfx, [Convert]::FromBase64String($env:SIGN_PFX_BASE64))
+          $signtool = Get-ChildItem "${env:ProgramFiles(x86)}\Windows Kits\10\bin" -Recurse -Filter signtool.exe | Where-Object FullName -like "*x64*" | Select-Object -Last 1
+          & $signtool.FullName sign /f $pfx /p $env:SIGN_PFX_PASSWORD /fd SHA256 /tr http://timestamp.digicert.com /td SHA256 /d "ArchTweaker" out\ArchTweaker.exe
+          if ($LASTEXITCODE -ne 0) { exit 1 }
+          & $signtool.FullName verify /pa out\ArchTweaker.exe
+          Remove-Item $pfx
+
+      - name: SHA-256 checksum
+        shell: pwsh
+        run: |
+          $h = (Get-FileHash out\ArchTweaker.exe -Algorithm SHA256).Hash.ToLower()
+          "$h  ArchTweaker.exe" | Out-File -Encoding ascii out\SHA256SUMS.txt
+          Get-Content out\SHA256SUMS.txt
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: archtweaker-${{ matrix.os }}-${{ github.sha }}
+          path: |
+            out/selftest/
+            out/trace/
+            out/ArchTweaker.exe
+            out/SHA256SUMS.txt
+            out/e2e*.xml
+            e2e/artifacts/
+          if-no-files-found: ignore

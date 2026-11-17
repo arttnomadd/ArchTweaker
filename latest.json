@@ -1,0 +1,8 @@
+{
+ "version": "3.38.1",
+ "serial": "1794934190",
+ "url": "https://github.com/arttnomadd/ArchTweaker/releases/download/v3.38.1/ArchTweaker.exe",
+ "sha256": "35f05b3a7f2023c4259b50ee972a3764f0c88ef6b76b5b062f7be3d245ca8c51",
+ "notes": "Update checks now use github.com/arttnomadd/ArchTweaker. Fixes blocked release downloads.",
+ "sig": "Kx4AHCBAhoOXCAthr1NLVLBraO55O9Ba/26vAiNgkBWQcy1ho3Rsq+cylD3DOJzENO27shTz9iQTd67ozaCBiSohw2Z/UgNpHW6fDUIrQGY5KJBirBgHQf/deNwrG+1smKrQYdWA29b3+5cK1mkr/HZ4+SwztJr2PpluA2ePFX2kcytEYacERd3++k/4+sksfA8dqLe62R2PnFVhgLJotRtOiQhWp/fER2SQtvixJJVLqxcb4Fx9jPyDDgsGFUR1N+sUszXTFq3ifSH6FQxo3Zxd61WKwkEd63HwK2CLZjunLvBkv5X0rMkt1o/sbRq9K305vP7UJXwBAHjHwSa4728Bt0qXG0P1H44cz780xSWzXd59rsleKXUeX8PZj+VTzY8ve4Da1Loj9BboM4iHN4adfGm40gmG3Tn6yBwGeO+hNSmdRum8qkbzJXjOP+nIP7D4UpLxsiywY95mzJXirZwpx3hKf5PB9nUmXs1h3PMGIPKw/mO7QvbFlZwyosSH"
+}
