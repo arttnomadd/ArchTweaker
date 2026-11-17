@@ -4,6 +4,10 @@
 
 An original Windows 10/11 tweaker for maximum performance and the lowest latency. It measures what each change does on your PC and undoes every change exactly. Black & red dark theme and a light theme, English and Russian.
 
+**Free for everyone.** No internet needed, no account, no sign-in, no registration. Download the exe and run it.
+
+**Comments and suggestions are welcome.** Open an [issue](https://github.com/arttnomadd/ArchTweaker/issues/new) for a bug, an idea, a tweak you want added, or any feedback.
+
 ![Home: health score, latency chain and live vitals](docs/screenshots/home.png)
 
 ## Download
