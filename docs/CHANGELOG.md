@@ -6,6 +6,16 @@ Each version groups its changes under these headings, in this order (leave out t
 `### New features` · `### Tweaks` · `### Design` · `### Fixes` · `### Security` · `### Under the hood`.
 A short intro under the version title is fine. The What's new dialog filters by these headings.
 
+## 3.38.4: Pages open right after start
+
+### Fixes
+- **The sidebar works while ArchTweaker backs up the services at first start.** On a new PC, the first start saves the original service settings. Until that was done, the whole sidebar was off and clicks on a page did nothing, which on a slow PC took several seconds. Now only Apply and Undo wait for the backup.
+- **Screen readers read "Input & Latency" correctly in the page title.** The "&" was dropped, so the title was read as "Input  Latency".
+- **A screen reader's "Open" on a sidebar item waits while ArchTweaker is busy,** like a click does.
+
+### Under the hood
+- **The Windows UI tests pass again.** They opened pages before the sidebar was ready, read the page title before it changed, looked for pages that Lite mode hides, and used names that changed in 3.36 and 3.37. They now wait for the sidebar, open pages through their accessibility action, run in Pro mode (one test checks what Lite hides), and use the current names. The Apply button has a fixed UI Automation ID, because its text changes ("Nothing to apply", "Apply 3 changes").
+
 ## 3.38.3: Honest network grades, no silent failures in the safety paths
 
 ### Security

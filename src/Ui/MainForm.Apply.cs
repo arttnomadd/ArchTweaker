@@ -479,9 +479,11 @@ namespace ArchTweaker
             try { BeginInvoke((Action)(() => { if (busyCount > 0) { status.Text = msg; ShutdownBlock.Set(this, msg); } })); } catch (InvalidOperationException) { }
         }
 
-        public void Busy(string msg, Action work, Action done)
+        public void Busy(string msg, Action work, Action done) { Busy(msg, work, done, true); }
+        // 3.38.4: lockPages false keeps the sidebar usable (start-up backup): only Apply and Undo wait for the work
+        public void Busy(string msg, Action work, Action done, bool lockPages)
         {
-            busyCount++; status.Text = msg; UseWaitCursor = true; side.Enabled = false; applyBtn.Enabled = false; undoLastBtn.Enabled = false; tailLine.Visible = false;
+            busyCount++; status.Text = msg; UseWaitCursor = true; if (lockPages) side.Enabled = false; applyBtn.Enabled = false; undoLastBtn.Enabled = false; tailLine.Visible = false;
             ShutdownBlock.Set(this, msg);   // 3.30: Windows asks before it shuts down in the middle of a change
             ThreadPool.QueueUserWorkItem(delegate
             {

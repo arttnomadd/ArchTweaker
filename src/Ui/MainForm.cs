@@ -192,7 +192,8 @@ namespace ArchTweaker
             // ---- top bar
             // 3.16: less empty height; a page glyph before the title
             var top = new Panel { Dock = DockStyle.Top, Height = 66, BackColor = Theme.Bg, Padding = new Padding(20, 8, 16, 4) };
-            pageTitle = new Label { Font = Theme.FH, ForeColor = Theme.Text, AutoSize = true, Location = new Point(0, 0), Name = "pageTitle", UseMnemonic = false };   // 3.38.2: Name gives the UIA AutomationId; screen readers now read the page title, not "pageTitle"
+            pageTitle = new Label { Font = Theme.FH, ForeColor = Theme.Text, AutoSize = true, Location = new Point(0, 0), Name = "pageTitle", UseMnemonic = false };
+            pageTitle.TextChanged += delegate { pageTitle.AccessibleName = pageTitle.Text; };   // 3.38.4: "Input & Latency" was read as "Input  Latency"   // 3.38.2: Name gives the UIA AutomationId; screen readers now read the page title, not "pageTitle"
             pageGlyph = new Label { AutoSize = true, ForeColor = Theme.Accent, UseMnemonic = false, Visible = false, Location = new Point(0, 4), AccessibleRole = AccessibleRole.Graphic, Tag = "notr" };
             if (NavItem.IconFont != null) pageGlyph.Font = new Font(NavItem.IconFont.FontFamily, 20f * Theme.Dpi / 96f, GraphicsUnit.Pixel);   // fonts are not part of the DPI scale pass
             // 3.1: the subtitle gets its own full-width line under the title and the toolbar, so it is no longer cut short
@@ -257,6 +258,7 @@ namespace ArchTweaker
             // 3.36: the Apply bar is its own layer: a hairline along its top edge
             bottom.Paint += (s9, e9) => Gfx.Hair(e9.Graphics, 0, 0, bottom.Width, 0);
             applyBtn = Theme.Primary("Apply changes", delegate { ApplyPending(); });
+            applyBtn.Name = "applyChanges";   // 3.38.4: UIA AutomationId for the e2e tests
             discardBtn = Theme.Btn("Discard changes", delegate { Pending.Clear(); RefreshAll(); });
             var undoAll = Theme.Btn("Undo everything", delegate { UndoAll(); });
             undoLastBtn = Theme.Btn("Undo last apply", delegate { UndoLast(); });
@@ -431,7 +433,8 @@ namespace ArchTweaker
                     (t, v, worse) => { try { BeginInvoke((Action)(() => ABTestPage.ShowResult(t, v, worse))); } catch (InvalidOperationException) { } },
                     () => { try { BeginInvoke((Action)(() => { if (Dlg.Confirm("Restart to finish the A/B test?", "ArchTweaker took the first measurement and applied the tweak. Restart now. ArchTweaker opens by itself after you sign in and takes the second measurement.", "Restart now")) Shell.Run("shutdown.exe", "/r /t 5", false); })); } catch (InvalidOperationException) { } });
                 Log.W("ArchTweaker {0} on {1}. Journal entries: {2}", Program.Version, OSInfo.Name, Journal.Count);
-                Busy("Backing up service configuration…", () => ServicesModule.AutoBackupIfNone(), null);
+                // 3.38.4: the pages stay usable meanwhile; on a new PC this backup took seconds with the whole sidebar off
+                Busy("Backing up service configuration…", () => ServicesModule.AutoBackupIfNone(), null, false);
             };
             L.Apply(this);   // 3.0: interface language (no-op in English)
             if (Tray.Enabled) { try { tray = Tray.Create(this); } catch (Exception ex) { Log.W("Tray icon: {0}", ex.Message); } }

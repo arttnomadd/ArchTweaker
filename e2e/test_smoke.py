@@ -1,6 +1,7 @@
 # ArchTweaker E2E smoke tests. Navigate every page and confirm the app stays alive and responsive.
 # Locators use the UIA AutomationId, which WinForms takes from Control.Name: nav items set Name to their page name,
-# and the header label exposes AutomationId "pageTitle".
+# and the header label exposes AutomationId "pageTitle". The tests run in Pro mode (conftest), except those marked "lite".
+import time
 import pytest
 
 # Pages reachable from the sidebar (sections auto-expand on click), in sidebar order: Home, the tweak
@@ -29,10 +30,33 @@ def _hidden_pro_page(win, name):
     return name in PRO_PAGES and not win.child_window(auto_id=name, control_type="TabItem").exists(timeout=3)
 
 
-def _nav(win, name):
-    """Click a sidebar item by its accessible name and return the header label's text."""
-    win.child_window(auto_id=name, control_type="TabItem").click_input()
-    return win.child_window(auto_id="pageTitle").window_text()
+def _title(win, expected, timeout=15):
+    """The header label's text, once it reads `expected` or the time is up."""
+    title = win.child_window(auto_id="pageTitle")
+    end = time.time() + timeout
+    shown = title.window_text()
+    while shown != expected and time.time() < end:
+        time.sleep(0.25)
+        shown = title.window_text()
+    return shown
+
+
+def _nav(win, name, timeout=60):
+    """Open a sidebar page and return the header text.
+    3.38.4: waits until the sidebar is enabled (it is off while ArchTweaker is busy), then uses the item's
+    accessibility "Open" action: no mouse, so items scrolled out of view work too. Retries once if the title stays."""
+    item = win.child_window(auto_id=name, control_type="TabItem")
+    item.wait("exists enabled", timeout=timeout)
+    shown = None
+    for _ in range(2):
+        try:
+            item.iface_legacy_iaccessible.DoDefaultAction()
+        except Exception:
+            item.click_input()
+        shown = _title(win, name)
+        if shown == name:
+            break
+    return shown
 
 
 @pytest.mark.smoke
@@ -68,8 +92,11 @@ def test_full_navigation_sweep_leaves_app_alive(app):
 @pytest.mark.smoke
 def test_controls_expose_names_to_screen_readers(app):
     # Assert: the 2.5 accessibility pass named the top-bar inputs and the View menu button (3.1: theme moved into View).
-    for name in ("Search all tweaks", "Show tweaks", "Preset", "View options", "Pages"):
+    for name in ("Search all tweaks", "Preset", "View options", "Pages"):
         assert app.child_window(title=name).exists(timeout=5), "missing accessible name: %s" % name
+    # the tweak filter tabs are on tweak pages only
+    _nav(app, "Privacy")
+    assert app.child_window(title="Show tweaks").exists(timeout=10), "missing accessible name: Show tweaks"
 
 
 @pytest.mark.smoke
@@ -86,12 +113,8 @@ def test_sidebar_arrow_keys_move_focus(app):
 @pytest.mark.smoke
 @pytest.mark.parametrize("page", ["A/B test", "Latency", "What changed"])
 def test_more_pages_open(app, page):
-    # Act: open a page added in 2.7 from the sidebar.
-    app.child_window(title=page, control_type="TabItem").click_input()
-    # Assert: the page title follows.
-    title = app.child_window(auto_id="pageTitle")
-    title.wait("visible", timeout=10)
-    assert title.window_text() == page
+    # Act: open a page added in 2.7 from the sidebar. Assert: the page title follows.
+    assert _nav(app, page) == page
 
 
 @pytest.mark.smoke
@@ -102,15 +125,14 @@ def test_command_palette_opens_and_navigates(app):
     import time; time.sleep(1)
     from pywinauto import keyboard
     keyboard.send_keys("Disk{SPACE}space{ENTER}", pause=0.05)
-    title = app.child_window(auto_id="pageTitle")
-    title.wait("visible", timeout=10)
     # Assert
-    assert title.window_text() == "Disk space"
+    assert _title(app, "Disk space") == "Disk space"
 
 
 @pytest.mark.smoke
-def test_tools_page_has_language_and_scheme(app):
-    _nav(app, "Tools & backup")
+def test_settings_page_has_language_and_scheme(app):
+    # 3.38.4: language and colour scheme live on Settings (Tools & backup no longer has them)
+    _nav(app, "Settings")
     assert app.child_window(title="Language", control_type="ComboBox").exists(timeout=5)
     assert app.child_window(title="Colour scheme", control_type="ComboBox").exists(timeout=5)
 
@@ -133,7 +155,7 @@ def test_apply_safe_preset_then_undo_everything(app):
     rp = app.child_window(title="Create restore point before first apply", control_type="CheckBox")
     if rp.get_toggle_state() == 1:
         rp.click_input()
-    app.child_window(title="Apply changes", control_type="Button").click_input()
+    app.child_window(auto_id="applyChanges", control_type="Button").click_input()
     review = Desktop(backend="uia").window(title="Review changes")
     review.wait("visible", timeout=30)
     review.child_window(title_re=r"Apply \d+ changes?", control_type="Button").click_input()
@@ -143,7 +165,7 @@ def test_apply_safe_preset_then_undo_everything(app):
     dlg = Desktop(backend="uia").window(title="ArchTweaker", control_type="Window", found_index=0)
     dlg.child_window(title="Undo everything", control_type="Button").click_input()
     # Assert: the app is still alive and nothing is pending.
-    app.child_window(title="Apply changes", control_type="Button").wait("visible", timeout=300)
+    app.child_window(auto_id="applyChanges", control_type="Button").wait("visible", timeout=300)
     assert app.is_visible()
 
 
@@ -154,8 +176,10 @@ def test_russian_interface(app):
     title = app.child_window(auto_id="pageTitle")
     title.wait("visible", timeout=10)
     assert title.window_text() == "Главная"
-    app.child_window(title="Инструменты и бэкап", control_type="TabItem").click_input()
-    assert title.window_text() == "Инструменты и бэкап"
+    item = app.child_window(auto_id="Tools & backup", control_type="TabItem")   # the ID is the English page name
+    item.wait("exists enabled", timeout=60)
+    item.iface_legacy_iaccessible.DoDefaultAction()
+    assert _title(app, "Инструменты и бэкап") == "Инструменты и бэкап"
 
 
 # ---- 3.2 ----
@@ -180,7 +204,7 @@ def test_first_run_guide_can_be_skipped(app):
     # Assert: the guide closed, the choice is remembered and nothing was ticked.
     guide.wait_not("visible", timeout=10)
     assert _hkcu("SetupDone") == 1
-    assert app.child_window(title="Apply changes", control_type="Button").exists(timeout=5)
+    assert app.child_window(auto_id="applyChanges", control_type="Button").exists(timeout=5)
 
 
 @pytest.mark.smoke
@@ -195,7 +219,8 @@ def test_tweak_page_opens_with_summary(app):
 def test_idle_buttons_are_hidden(app):
     # Assert: nothing pending and nothing applied in this session: Discard has nothing to do.
     assert not app.child_window(title="Discard changes", control_type="Button").exists(timeout=2)
-    assert app.child_window(title="Apply changes", control_type="Button").exists(timeout=5)
+    # 3.33: with nothing pending the button reads "Nothing to apply"; its ID stays "applyChanges"
+    assert app.child_window(auto_id="applyChanges", control_type="Button").exists(timeout=5)
 
 
 @pytest.mark.smoke
@@ -213,13 +238,13 @@ def test_arrow_keys_walk_the_tweak_list(app):
 
 
 @pytest.mark.smoke
-def test_view_menu_has_32_options(app):
+def test_view_menu_has_its_options(app):
     from pywinauto import Desktop
     # Act: open the View menu.
     app.child_window(title="View options", control_type="Button").click_input()
     menu = Desktop(backend="uia").window(control_type="Menu", found_index=0)
-    # Assert
-    for item in ("Dark theme", "Follow Windows theme", "Slim sidebar", "Highest gain first", "130 %"):
+    # Assert (3.37: colour schemes, accents, text size and sorting are submenus; these are top-level items)
+    for item in ("Appearance…", "Switch dark / light", "Follow Windows theme", "Compact rows", "Slim sidebar"):
         assert menu.child_window(title=item, control_type="MenuItem").exists(timeout=5), "missing menu item: " + item
     from pywinauto import keyboard
     keyboard.send_keys("{ESC}")
@@ -248,6 +273,15 @@ def test_danger_zone_is_locked_and_asks_before_unlocking(app):
     assert gate.exists(timeout=10), "unlock asks first"
     gate.child_window(title="Keep locked", control_type="Button").click_input()
     assert app.child_window(title_re="Unlock for this session.*", control_type="Button").exists(timeout=5), "still locked"
+
+
+@pytest.mark.smoke
+@pytest.mark.lite
+def test_lite_hides_pro_pages(app):
+    # 3.38.4: Lite mode (the default for new users) shows the everyday pages only.
+    assert _nav(app, "Cleanup") == "Cleanup"
+    for page in ("Drivers", "Bake into ISO", "Danger zone", "Command tweaks"):
+        assert not app.child_window(auto_id=page, control_type="TabItem").exists(timeout=2), page + " is hidden in Lite"
 
 
 @pytest.mark.smoke

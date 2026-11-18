@@ -3,7 +3,17 @@ namespace ArchTweaker
 {
     public static class Changelog
     {
-        public const string Text = @"## 3.38.3: Honest network grades, no silent failures in the safety paths
+        public const string Text = @"## 3.38.4: Pages open right after start
+
+### Fixes
+- **The sidebar works while ArchTweaker backs up the services at first start.** On a new PC, the first start saves the original service settings. Until that was done, the whole sidebar was off and clicks on a page did nothing, which on a slow PC took several seconds. Now only Apply and Undo wait for the backup.
+- **Screen readers read ""Input & Latency"" correctly in the page title.** The ""&"" was dropped, so the title was read as ""Input  Latency"".
+- **A screen reader's ""Open"" on a sidebar item waits while ArchTweaker is busy,** like a click does.
+
+### Under the hood
+- **The Windows UI tests pass again.** They opened pages before the sidebar was ready, read the page title before it changed, looked for pages that Lite mode hides, and used names that changed in 3.36 and 3.37. They now wait for the sidebar, open pages through their accessibility action, run in Pro mode (one test checks what Lite hides), and use the current names. The Apply button has a fixed UI Automation ID, because its text changes (""Nothing to apply"", ""Apply 3 changes"").
+
+## 3.38.3: Honest network grades, no silent failures in the safety paths
 
 ### Security
 - **Bake into ISO refuses an output folder it cannot check.** If Windows could not read the folder's attributes, the check for a link to another folder was skipped and the bake went on. Now the bake stops and asks for another folder.
@@ -70,14 +80,18 @@ ArchTweaker now has its public home at github.com/arttnomadd/ArchTweaker.
 
 ### Under the hood
 - Theme.SchemeFromKey and Theme.AccentFromSaved move saved settings from every earlier version to the new lists (AccentV 4). Tests cover each old value.
-
-## 3.36.2: Pro notice no longer covers the toolbar
+";
+        public const string All = @"## 3.38.4: Pages open right after start
 
 ### Fixes
-- **The Pro notice no longer covers the first toolbar row.** On Power tuner, Interrupt tuner, Tuning assistant and other Pro pages, the ""Expert area (Pro)"" bar could be drawn over the Game, Seconds per sample and Rounds controls. The page was laid out as if the bar were not there. The bar now docks at window level, like the update and drift bars, so the page always starts below it.
-- **Page notes show all their text.** The short explanations under the buttons (for example on the tuner pages) had a fixed height. At bigger text sizes or in a narrow window the second line was cut. A note now grows to fit its text.
-";
-        public const string All = @"## 3.38.3: Honest network grades, no silent failures in the safety paths
+- **The sidebar works while ArchTweaker backs up the services at first start.** On a new PC, the first start saves the original service settings. Until that was done, the whole sidebar was off and clicks on a page did nothing, which on a slow PC took several seconds. Now only Apply and Undo wait for the backup.
+- **Screen readers read ""Input & Latency"" correctly in the page title.** The ""&"" was dropped, so the title was read as ""Input  Latency"".
+- **A screen reader's ""Open"" on a sidebar item waits while ArchTweaker is busy,** like a click does.
+
+### Under the hood
+- **The Windows UI tests pass again.** They opened pages before the sidebar was ready, read the page title before it changed, looked for pages that Lite mode hides, and used names that changed in 3.36 and 3.37. They now wait for the sidebar, open pages through their accessibility action, run in Pro mode (one test checks what Lite hides), and use the current names. The Apply button has a fixed UI Automation ID, because its text changes (""Nothing to apply"", ""Apply 3 changes"").
+
+## 3.38.3: Honest network grades, no silent failures in the safety paths
 
 ### Security
 - **Bake into ISO refuses an output folder it cannot check.** If Windows could not read the folder's attributes, the check for a link to another folder was skipped and the bake went on. Now the bake stops and asks for another folder.

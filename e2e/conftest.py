@@ -19,10 +19,14 @@ def app(request, tmp_path):
     from pywinauto import Application
 
     # The tests locate controls by their English names: start in English unless AT_LANG says otherwise.
+    # 3.38.4: Pro mode, so every page and category is in the sidebar; tests marked "lite" start in Lite mode.
+    # Always written, because HKCU outlives each test.
     try:
         import winreg
         with winreg.CreateKey(winreg.HKEY_CURRENT_USER, r"Software\ArchTweaker") as k:
             winreg.SetValueEx(k, "Language", 0, winreg.REG_SZ, os.environ.get("AT_LANG", "en"))
+            winreg.SetValueEx(k, "Mode", 0, winreg.REG_SZ, "Lite" if request.node.get_closest_marker("lite") else "Pro")
+            winreg.SetValueEx(k, "ProAccepted", 0, winreg.REG_DWORD, 1)
     except OSError:
         pass
 

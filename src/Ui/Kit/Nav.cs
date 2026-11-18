@@ -174,7 +174,7 @@ namespace ArchTweaker
             public override string Name { get { string b = L.T(n.Page); return n.Pend > 0 ? b + ", " + n.Pend + " " + L.T("pending") : b; } }
             public override AccessibleStates State { get { var s = base.State | AccessibleStates.Selectable | AccessibleStates.Focusable; if (n.Active) s |= AccessibleStates.Selected; return s; } }
             public override string DefaultAction { get { return "Open"; } }
-            public override void DoDefaultAction() { n.PerformOpen(); }
+            public override void DoDefaultAction() { if (n.Enabled) n.PerformOpen(); }   // 3.38.4: not while the sidebar is locked
         }
         public void PerformOpen() { OnClick(EventArgs.Empty); }
     }
