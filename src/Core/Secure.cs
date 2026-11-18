@@ -169,10 +169,11 @@ namespace ArchTweaker
                         if (fs.AreAccessRulesProtected) { fs.SetAccessRuleProtection(false, false); changed = true; }
                         if (changed) File.SetAccessControl(f, fs);
                     }
-                    catch { }
+                    catch (Exception ex) { Log.W("Securing {0}: {1}", f, ex.Message); }
                 }
                 CheckBinExe(root);
-                try { using (var b = Reg.Base(Hive.HKLM)) using (var k = b.CreateSubKey(@"Software\ArchTweaker")) k.SetValue("Hardened", HardenMark); } catch { }
+                try { using (var b = Reg.Base(Hive.HKLM)) using (var k = b.CreateSubKey(@"Software\ArchTweaker")) k.SetValue("Hardened", HardenMark); }
+                catch (Exception ex) { Log.W("Could not record the lock-down mark (the walk runs again next start): {0}", ex.Message); }
             }
             catch (Exception ex) { Log.W("Could not lock down {0}: {1}", root, ex.Message); }
         }

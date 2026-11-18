@@ -34,9 +34,10 @@ static class UiTests
 
     [Test] public static void EveryAccent_PassesContrast_InBothThemes()
     {
-        int keepA = Theme.AccentIndex, keepS = Theme.Scheme;
+        int keepA = Theme.AccentIndex, keepS = Theme.Scheme; var keepC = Theme.SchemeCustom;
         try
         {
+            Theme.SchemeCustom = Theme.DefaultSchemeCustom;   // 3.38.2: not the colour saved on this PC
             for (int i = 0; i < Theme.AccentNames.Length; i++)
                 for (int sc = 0; sc < Theme.SchemeNames.Length; sc++)
                 {
@@ -51,7 +52,7 @@ static class UiTests
                     T.True(TestHelp.Cr(Theme.Text, Theme.PendingBg) >= 4.5 && TestHelp.Cr(Theme.Text, Theme.Sel) >= 4.5, n + " text on tinted rows");
                 }
         }
-        finally { Theme.AccentIndex = keepA; Theme.SetScheme(keepS); }
+        finally { Theme.SchemeCustom = keepC; Theme.AccentIndex = keepA; Theme.SetScheme(keepS); }
     }
 
     [Test] public static void HeaderSwitch_ReturnsToLastDarkScheme()
@@ -169,7 +170,7 @@ static class UiTests
         Func<System.Drawing.Color, System.Drawing.Color, double> cr = AccentMaker.Contrast;
         try
         {
-            string[] picks = { "#000000", "#FFFFFF", "#777777", "#808080", "#FF0000", "#00FF00", "#0000FF", "#FFC0CB", "#1A1B2E", "#F5DEB3", "#4B0082", "#008080" };
+            string[] picks = { "#000000", "#FFFFFF", "#777777", "#808080", "#FF0000", "#00FF00", "#0000FF", "#FFC0CB", "#1A1B2E", "#F5DEB3", "#4B0082", "#008080", "#008040" };   // 3.38.2: #008040 gave status text under 4.5:1
             foreach (var hex in picks)
                 for (int a = 0; a < Theme.AccentNames.Length; a++)
                 {
@@ -179,7 +180,7 @@ static class UiTests
                     T.True(cr(Theme.Muted, Theme.Bg) >= 4.5 && cr(Theme.Muted, Theme.Panel) >= 4.5 && cr(Theme.Muted, Theme.Side) >= 4.5 && cr(Theme.Muted, Theme.PendingBg) >= 4.5, n + "muted 4.5:1");
                     T.True(cr(Theme.OnAccent, Theme.Accent) >= 4.5 && cr(Theme.OnAccent, Theme.AccentDark) >= 4.5, n + "button text 4.5:1");
                     T.True(cr(Theme.Accent, Theme.Bg) >= 3 && cr(Theme.Accent, Theme.Panel) >= 3, n + "accent 3:1");
-                    T.True(cr(Theme.Ok, Theme.Panel) >= 3 && cr(Theme.Warn, Theme.Panel) >= 3 && cr(Theme.Bad, Theme.Panel) >= 3, n + "status 3:1");
+                    T.True(cr(Theme.Ok, Theme.Panel) >= 4.5 && cr(Theme.Warn, Theme.Panel) >= 4.5 && cr(Theme.Bad, Theme.Panel) >= 4.5 && cr(Theme.Ok, Theme.PanelHover) >= 4.5, n + "status 4.5:1");
                     T.True(cr(Theme.Text, Theme.Sel) >= 4.5 && cr(Theme.Text, Theme.PendingBg) >= 4.5 && cr(Theme.LogFg, Theme.LogBg) >= 4.5, n + "tints and log 4.5:1");
                     T.True(Theme.Dark == SchemeMaker.IsDark(Theme.SchemeCustom), n + "dark follows the colour");
                 }

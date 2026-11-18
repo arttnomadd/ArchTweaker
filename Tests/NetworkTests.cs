@@ -65,6 +65,50 @@ static class NetworkTests
         T.True(Bufferbloat.Advice("C").Contains("SQM"), "bad grade points at the router");
     }
 
+    // 3.38.3: lost pings under load were left out, so a line where every ping timed out graded A+
+    [Test] public static void Bufferbloat_LostPingsUnderLoad_CountAsTimeouts()
+    {
+        Func<double[], int, Bufferbloat.Phase> ph = (rtt, lost) => { var p = new Bufferbloat.Phase(); p.Rtt.AddRange(rtt); p.Lost = lost; return p; };
+        var allLost = new Bufferbloat.Result { Idle = ph(new double[] { 10, 11, 12 }, 0), Download = ph(new double[0], 40), Upload = ph(new double[] { 12 }, 0) };
+        T.Eq(allLost.Grade, "F", "every ping lost while downloading is F, not A+");
+        var mostLost = new Bufferbloat.Result { Idle = ph(new double[] { 10 }, 0), Download = ph(new double[] { 15, 16 }, 10), Upload = ph(new double[] { 12 }, 0) };
+        T.Eq(mostLost.Grade, "F", "most pings lost under load is F");
+        var fewLost = new Bufferbloat.Result { Idle = ph(new double[] { 10 }, 0), Download = ph(new double[] { 12, 13, 14, 15, 16, 17, 18, 19, 20 }, 1), Upload = ph(new double[] { 12 }, 0) };
+        T.Eq(fewLost.Grade, "A", "one lost ping in ten barely moves the median");
+        T.Eq(ph(new double[] { 10, 30 }, 0).LoadedMedian, 20.0, "no loss: same as the median");
+        T.Eq(ph(new double[0], 0).LoadedMedian, 0.0, "no samples: 0");
+        var noIdle = new Bufferbloat.Result { Idle = ph(new double[0], 50), Download = ph(new double[] { 80 }, 0), Upload = ph(new double[] { 80 }, 0) };
+        T.Eq(noIdle.Grade, "?", "no reply at rest: no grade");
+        T.True(Bufferbloat.Advice("?").Contains("ping"), "the advice says ping got no reply");
+    }
+
+    // 3.38.3: a router that answers no ping was reported as an unstable link
+    [Test] public static void NetTest_RouterThatIgnoresPing_IsNotBlamed()
+    {
+        var silent = NetTest.Compute("r", new double?[] { null, null, null, null });
+        var goodNet = NetTest.Compute("n", Enumerable.Repeat((double?)20.0, 20).ToList());
+        var lossyNet = NetTest.Compute("n", new double?[] { 20, null, 20, 20, 20 });
+        T.True(NetTest.Verdict(silent, goodNet).StartsWith("GOOD"), "silent router, good internet: GOOD");
+        T.True(NetTest.Verdict(silent, lossyNet).Contains("past the router"), "silent router, lossy internet: the internet is judged");
+        var lossyLan = NetTest.Compute("r", new double?[] { 1, null, 1, 1 });
+        T.True(NetTest.Verdict(lossyLan, goodNet).Contains("router"), "a router that answers some pings is still judged");
+    }
+
+    [Test] public static void FastOpen_OddOutput_IsUnknown()
+    {
+        T.Eq(NetshGlobal.ParseFastOpen(null), (bool?)null, "null output");
+        T.Eq(NetshGlobal.ParseFastOpen(""), (bool?)null, "empty output");
+        T.Eq(NetshGlobal.ParseFastOpen("Fast Open : default\r\n"), (bool?)null, "a value that is not enabled/disabled");
+        T.Eq(NetshGlobal.ParseFastOpen("fast open: DISABLED"), (bool?)false, "case and spacing do not matter");
+    }
+
+    [Test] public static void NetDpc_KnowsNetworkDrivers_Only()
+    {
+        foreach (var d in new[] { "ndis.sys", "tcpip.sys", "e1d68x64.sys", "rt640x64.sys", "Netwtw10.sys", "NDIS.SYS" }) T.True(NetDpcCheck.IsNetDriver(d), d + " is a network driver");
+        foreach (var d in new[] { "nvlddmkm.sys", "storport.sys", "ndis.sys.bak", "", null }) T.False(NetDpcCheck.IsNetDriver(d), (d ?? "null") + " is not");
+        T.Eq(NetDpcCheck.Verdict(new DriverStat[0]), null, "no drivers: no message");
+    }
+
     [Test] public static void NetBindings_UndoBindsEverythingItUnbound()
     {
         var t = Catalog.All.First(x => x.Id == "net_bindings");

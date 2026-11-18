@@ -107,7 +107,7 @@ namespace ArchTweaker
                     return true;
                 }
             }
-            catch { }
+            catch (Exception ex) { Log.W("Undo journal: could not read the original of {0}\\{1}\\{2}: {3}", h, path, name, ex.Message); }
             return false;
         }
 

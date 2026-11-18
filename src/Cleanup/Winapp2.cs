@@ -234,10 +234,10 @@ namespace ArchTweaker
                 try
                 {
                     string root = Environment.GetFolderPath(pf);
+                    if (root.Length > 3) deny.Add(Path.Combine(root, "Microsoft Update Health Tools").ToLowerInvariant());   // 3.38.1: before the listing, so a listing error can't drop it
                     if (root.Length > 3) foreach (var w in Directory.GetDirectories(root, "Windows*")) deny.Add(w.TrimEnd('\\').ToLowerInvariant());
-                    if (root.Length > 3) deny.Add(Path.Combine(root, "Microsoft Update Health Tools").ToLowerInvariant());
                 }
-                catch { }
+                catch (Exception ex) { Log.W("Cleaner: could not list Windows folders under {0}: {1}", pf, ex.Message); }
             DenySubtrees = deny.Distinct().ToArray();
         }
 

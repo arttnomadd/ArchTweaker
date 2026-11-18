@@ -67,7 +67,8 @@ namespace ArchTweaker
         static bool Fresh(string json)
         {
             long seen = 0;
-            try { object o = Reg.Get(Hive.HKLM, @"Software\ArchTweaker\Update", "LastSerial"); if (o != null) long.TryParse(o.ToString(), out seen); } catch { }
+            try { object o = Reg.Get(Hive.HKLM, @"Software\ArchTweaker\Update", "LastSerial"); if (o != null && !long.TryParse(o.ToString(), out seen)) Log.W("Update: the saved manifest serial is not a number; it is replaced."); }
+            catch (Exception ex) { Log.W("Update: could not read the saved manifest serial: {0}", ex.Message); }
             if (!SerialNewEnough(json, seen)) { Log.W("Update: the manifest serial is missing or older than one seen before ({0}). Refused.", seen); return false; }
             try { using (var b = Reg.Base(Hive.HKLM)) using (var k = b.CreateSubKey(@"Software\ArchTweaker\Update")) k.SetValue("LastSerial", Field(json, "serial")); }
             catch (Exception ex) { Log.W("Update: could not save the manifest serial: {0}", ex.Message); }

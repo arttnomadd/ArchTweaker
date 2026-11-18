@@ -18,6 +18,19 @@ namespace ArchTweaker
         {
             public string Name; public List<double> Rtt = new List<double>(); public int Lost; public double Mbps;
             public double Median { get { return Pct(50); } }
+            // 3.38.3: a lost ping counts as the 2 s timeout. Under heavy bufferbloat most pings time out, and a median of
+            // the replies alone (or 0 when none came back) graded the worst line A+.
+            public const double TimeoutMs = 2000;
+            public double LoadedMedian
+            {
+                get
+                {
+                    var all = new List<double>(Rtt); for (int i = 0; i < Lost; i++) all.Add(TimeoutMs);
+                    if (all.Count == 0) return 0;
+                    all.Sort(); double x = (all.Count - 1) / 2.0; int lo = (int)Math.Floor(x), hi = (int)Math.Ceiling(x);
+                    return all[lo] + (all[hi] - all[lo]) * (x - lo);
+                }
+            }
             public double Pct(double p)
             {
                 if (Rtt.Count == 0) return 0;
@@ -38,9 +51,10 @@ namespace ArchTweaker
         public class Result
         {
             public Phase Idle, Download, Upload;
-            public double DownMore { get { return Math.Max(0, Download.Median - Idle.Median); } }
-            public double UpMore { get { return Math.Max(0, Upload.Median - Idle.Median); } }
-            public string Grade { get { return Bufferbloat.Grade(Math.Max(DownMore, UpMore)); } }
+            public double DownMore { get { return Math.Max(0, Download.LoadedMedian - Idle.Median); } }
+            public double UpMore { get { return Math.Max(0, Upload.LoadedMedian - Idle.Median); } }
+            // "?" when nothing answered at rest: without a baseline there is nothing to compare (ping blocked)
+            public string Grade { get { return Idle.Rtt.Count == 0 ? "?" : Bufferbloat.Grade(Math.Max(DownMore, UpMore)); } }
         }
 
         // Same bands as the common bufferbloat tests: extra latency under load, in ms.
@@ -59,6 +73,7 @@ namespace ArchTweaker
             {
                 case "A+": case "A": return "Latency stays low when the line is busy. Nothing to change.";
                 case "B": return "Latency rises a little when the line is busy. Games feel it only during big downloads.";
+                case "?": return "No reply to ping at rest, so ArchTweaker can't grade the line. A firewall or the router may block ping.";
                 default: return "Latency rises a lot when the line is busy: ping spikes in games whenever someone downloads or uploads. Turn on SQM, Smart Queue or Cake in the router, or limit its speed to about 90 % of your line. No Windows tweak can fix this.";
             }
         }

@@ -97,7 +97,8 @@ namespace ArchTweaker
                 App("[bufferbloat] " + r.Idle.Line());
                 App("[bufferbloat] " + r.Download.Line());
                 App("[bufferbloat] " + r.Upload.Line());
-                App("[bufferbloat] " + L.F("Grade {0}: +{1:0} ms while downloading, +{2:0} ms while uploading.", r.Grade, r.DownMore, r.UpMore) + " " + L.T(Bufferbloat.Advice(r.Grade)));
+                if (r.Grade == "?") App("[bufferbloat] " + L.T(Bufferbloat.Advice(r.Grade)));   // 3.38.3: no baseline, no grade
+                else App("[bufferbloat] " + L.F("Grade {0}: +{1:0} ms while downloading, +{2:0} ms while uploading.", r.Grade, r.DownMore, r.UpMore) + " " + L.T(Bufferbloat.Advice(r.Grade)));
                 if (r.Download.Mbps < 1 && r.Upload.Mbps < 1) App("[bufferbloat] " + L.T("ArchTweaker could not load the line (no download or upload). The grade does not count."));
                 App("");
             });

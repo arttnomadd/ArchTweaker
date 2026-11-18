@@ -3670,6 +3670,7 @@ While uploading	Во время отдачи
 {0}: min {1:0} · 25 % {2:0} · median {3:0} · 75 % {4:0} · 95 % {5:0} · max {6:0} ms	{0}: мин {1:0} · 25 % {2:0} · медиана {3:0} · 75 % {4:0} · 95 % {5:0} · макс {6:0} мс
  · {0} lost	 · потеряно {0}
  · {0:0} Mbit/s	 · {0:0} Мбит/с
+No reply to ping at rest, so ArchTweaker can't grade the line. A firewall or the router may block ping.	Нет ответа на пинг в покое, поэтому ArchTweaker не может оценить канал. Пинг может блокировать брандмауэр или роутер.
 Latency stays low when the line is busy. Nothing to change.	Задержка остаётся низкой при загруженном канале. Менять ничего не нужно.
 Latency rises a little when the line is busy. Games feel it only during big downloads.	При загруженном канале задержка немного растёт. В играх это заметно только во время больших загрузок.
 Latency rises a lot when the line is busy: ping spikes in games whenever someone downloads or uploads. Turn on SQM, Smart Queue or Cake in the router, or limit its speed to about 90 % of your line. No Windows tweak can fix this.	При загруженном канале задержка сильно растёт: пинг в играх скачет, когда кто-то что-то скачивает или отдаёт. Включите в роутере SQM, Smart Queue или Cake либо ограничьте его скорость примерно 90 % от тарифа. Ни один твик Windows этого не исправит.

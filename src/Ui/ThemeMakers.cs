@@ -67,9 +67,9 @@ namespace ArchTweaker
                 panel = M(bg, White, 0.05); hover = M(bg, White, 0.09); side = M(bg, Black, 0.35); border = M(bg, White, 0.14);
                 grid = M(bg, White, 0.10); alt = M(bg, White, 0.025); logBg = M(bg, Black, 0.5); off = M(bg, White, 0.16); strong = White;
                 muted = Ensure(M(text, bg, 0.35), text, 4.5, bg, panel, hover, side);
-                ok = Ensure(Color.FromArgb(0x34, 0xC7, 0x59), White, 3, panel, hover);
-                warn = Ensure(Color.FromArgb(0xFF, 0xB0, 0x20), White, 3, panel, hover);
-                bad = Ensure(Color.FromArgb(0xFF, 0x6B, 0x6B), White, 3, panel, hover);
+                ok = Ensure(Color.FromArgb(0x34, 0xC7, 0x59), White, 4.5, panel, hover);
+                warn = Ensure(Color.FromArgb(0xFF, 0xB0, 0x20), White, 4.5, panel, hover);
+                bad = Ensure(Color.FromArgb(0xFF, 0x6B, 0x6B), White, 4.5, panel, hover);
             }
             else
             {
@@ -79,9 +79,9 @@ namespace ArchTweaker
                 grid = M(bg, Black, 0.07); alt = M(panel, bg, 0.3); logBg = M(bg, White, 0.85); off = M(bg, Black, 0.15); strong = Black;
                 for (int i = 0; i < 40 && Cr(text, side) < 7; i++) side = M(side, White, 0.1);
                 muted = Ensure(M(text, bg, 0.45), text, 4.5, bg, panel, hover, side);
-                ok = Ensure(Color.FromArgb(0x0E, 0x74, 0x34), Black, 3, panel, hover, bg);
-                warn = Ensure(Color.FromArgb(0x7E, 0x4A, 0x00), Black, 3, panel, hover, bg);
-                bad = Ensure(Color.FromArgb(0xAE, 0x12, 0x19), Black, 3, panel, hover, bg);
+                ok = Ensure(Color.FromArgb(0x0E, 0x74, 0x34), Black, 4.5, panel, hover, bg);
+                warn = Ensure(Color.FromArgb(0x7E, 0x4A, 0x00), Black, 4.5, panel, hover, bg);
+                bad = Ensure(Color.FromArgb(0xAE, 0x12, 0x19), Black, 4.5, panel, hover, bg);
             }
             logFg = Ensure(M(text, bg, 0.2), text, 4.5, logBg);
             // accent slots (4-6, 8, 16) are placeholders: Theme fills them with AccentMaker for the chosen accent

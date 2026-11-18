@@ -86,6 +86,7 @@ namespace ArchTweaker
         {
             string cmd = p.QuietUninstall.Length > 0 ? p.QuietUninstall : p.UninstallString;
             if (cmd.Length == 0) return -1;
+            bool unattended = p.QuietUninstall.Length > 0 || (p.Msi && quiet);
             if (p.Msi && p.QuietUninstall.Length == 0)
             {
                 // Only accept a strictly-formatted product GUID; never pass arbitrary registry text to msiexec.
@@ -94,14 +95,17 @@ namespace ArchTweaker
                 cmd = "msiexec.exe /x " + m.Value + (quiet ? " /qn /norestart" : " /qb");
             }
             Log.W("Uninstall {0}: {1}", p.Name, cmd);
-            return SplitExec(cmd);
+            return SplitExec(cmd, WaitMs(unattended));
         }
 
-        static int SplitExec(string cmd)
+        // 3.38.3: an uninstaller with a window waits for the user, so no limit; one without a window gets 15 minutes
+        internal static int WaitMs(bool unattended) { return unattended ? 15 * 60000 : System.Threading.Timeout.Infinite; }
+
+        static int SplitExec(string cmd, int waitMs)
         {
             string file, args;
             ParseCommand(cmd, out file, out args);
-            return Exec(file, args);
+            return Exec(file, args, waitMs);
         }
 
         // Split a command string into file + args, handling quoted paths, unquoted paths that contain spaces,
@@ -145,12 +149,17 @@ namespace ArchTweaker
             return "/x " + m.Value + (quiet ? " /qn /norestart" : " /qb");
         }
 
-        static int Exec(string file, string args)
+        static int Exec(string file, string args, int waitMs)
         {
             try
             {
                 var psi = new System.Diagnostics.ProcessStartInfo(Shell.ResolveTool(file), args) { UseShellExecute = false };
-                using (var proc = System.Diagnostics.Process.Start(psi)) { proc.WaitForExit(); return proc.ExitCode; }
+                using (var proc = System.Diagnostics.Process.Start(psi))
+                {
+                    // not killed: stopping an uninstaller half way can break the program it removes
+                    if (!proc.WaitForExit(waitMs)) { Log.W("Uninstaller {0} is still running after {1} min. ArchTweaker stopped waiting; it keeps running.", file, waitMs / 60000); return -1; }
+                    return proc.ExitCode;
+                }
             }
             catch (Exception ex) { Log.W("Uninstaller launch failed: {0} — {1}", file, ex.Message); return -1; }
         }
@@ -268,7 +277,8 @@ namespace ArchTweaker
                 }
                 catch (Exception ex) { fail++; Log.W("Leftover removal failed for {0}: {1}", lo.IsReg ? lo.RegPath : lo.Path, ex.Message); }
             }
-            try { if (manifest.Count > 0) File.WriteAllLines(System.IO.Path.Combine(bk, "_restore-manifest.txt"), manifest.ToArray()); } catch { }
+            try { if (manifest.Count > 0) File.WriteAllLines(System.IO.Path.Combine(bk, "_restore-manifest.txt"), manifest.ToArray()); }
+            catch (Exception ex) { Log.W("Could not write the leftover restore list in {0}: {1}. The backups are there; this list says where each came from.", bk, ex.Message); }
             failed = fail;
             return freed;
         }
@@ -279,6 +289,6 @@ namespace ArchTweaker
             foreach (var f in Directory.GetFiles(src)) File.Copy(f, System.IO.Path.Combine(dst, System.IO.Path.GetFileName(f)), true);
             foreach (var d in Directory.GetDirectories(src)) if ((new DirectoryInfo(d).Attributes & FileAttributes.ReparsePoint) == 0) CopyTree(d, System.IO.Path.Combine(dst, System.IO.Path.GetFileName(d)));
         }
-        static void DeleteTree(string d) { try { Directory.Delete(d, true); } catch { } }
+        static void DeleteTree(string d) { try { Directory.Delete(d, true); } catch (Exception ex) { Log.W("Leftover {0} was backed up but not fully removed: {1}", d, ex.Message); } }
     }
 }

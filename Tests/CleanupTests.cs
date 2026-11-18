@@ -49,6 +49,13 @@ static class CleanupTests
             T.False((bool)T.Call(typeof(Winapp), "AllowedTarget", b), "base refused: " + b);
     }
 
+    // 3.38.3: an uninstaller with a window has no time limit; one without a window stops being waited for after 15 min
+    [Test] public static void Uninstaller_WaitsWithoutLimit_OnlyWhenTheUserIsAsked()
+    {
+        T.Eq(Uninstaller.WaitMs(false), System.Threading.Timeout.Infinite, "interactive: no limit");
+        T.Eq(Uninstaller.WaitMs(true), 15 * 60000, "unattended: 15 minutes");
+    }
+
     [Test] public static void UrlOk_AllowsHttpsAllowlistedHosts_Only()
     {
         T.True((bool)T.Call(typeof(Updater), "UrlOk", "https://raw.githubusercontent.com/a/b.json"), "https allowlisted host allowed");

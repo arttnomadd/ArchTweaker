@@ -258,7 +258,7 @@ namespace ArchTweaker
                     try { f.Delete(); n++; } catch { }
                 if (n > 0) Log.W("Deleted {0} old registry snapshot(s); the newest {1} stay.", n, keep);
             }
-            catch { }
+            catch (Exception ex) { Log.W("Snapshot prune {0}: {1}", dir, ex.Message); }
             return n;
         }
     }
@@ -282,7 +282,7 @@ namespace ArchTweaker
             }
             catch (Exception ex) { Log.W("Applied list: {0}", ex.Message); }
         }
-        public static void Clear() { try { using (var b = Reg.Base(Hive.HKCU)) b.DeleteSubKeyTree(KEY, false); } catch { } }
+        public static void Clear() { try { using (var b = Reg.Base(Hive.HKCU)) b.DeleteSubKeyTree(KEY, false); } catch (Exception ex) { Log.W("Applied list: could not clear: {0}", ex.Message); } }
     }
 
     // After a Windows feature update (build number change), lists the tweaks the update reset.
@@ -297,7 +297,8 @@ namespace ArchTweaker
             int now = OSInfo.Build, before = 0;
             object o = Reg.Get(Hive.HKCU, KEY, "LastBuild");
             if (o != null) int.TryParse(o.ToString(), out before);
-            try { using (var b = Reg.Base(Hive.HKCU)) using (var k = b.CreateSubKey(KEY)) k.SetValue("LastBuild", now.ToString()); } catch { }
+            try { using (var b = Reg.Base(Hive.HKCU)) using (var k = b.CreateSubKey(KEY)) k.SetValue("LastBuild", now.ToString()); }
+            catch (Exception ex) { Log.W("Could not record the Windows build: {0}", ex.Message); }
             if (before == 0 || before == now) return null;
             var r = new Result { OldBuild = before, NewBuild = now };
             var ids = AppliedSet.Read();

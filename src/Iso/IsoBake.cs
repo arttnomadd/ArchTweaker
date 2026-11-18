@@ -226,7 +226,8 @@ namespace ArchTweaker
             }
             // never merge into, or later delete, something that was already there
             if (Directory.Exists(work) || Directory.Exists(mount) || File.Exists(outIso)) { r.Error = "The output folder already has a folder or ISO with that name."; return r; }
-            try { if ((File.GetAttributes(job.OutDir) & FileAttributes.ReparsePoint) != 0) { r.Error = "The output folder is a link to another folder. Choose a normal folder."; return r; } } catch { }
+            try { if ((File.GetAttributes(job.OutDir) & FileAttributes.ReparsePoint) != 0) { r.Error = "The output folder is a link to another folder. Choose a normal folder."; return r; } }
+            catch (Exception ex) { Log.W("Bake into ISO: could not check {0}: {1}", job.OutDir, ex.Message); r.Error = "ArchTweaker could not check the output folder. Choose another folder."; return r; }   // 3.38.1: fail closed
             r.Folder = work;
             Log.W("Bake into ISO: {0} → {1}; editions {2}; {3} tweak(s)", job.Iso, job.OutDir, string.Join(",", job.Editions.Select(e => e.Index.ToString(CultureInfo.InvariantCulture)).ToArray()), job.Tweaks.Count);
 

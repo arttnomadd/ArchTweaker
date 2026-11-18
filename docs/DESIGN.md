@@ -6,7 +6,7 @@ The one style the app ships (since 2.4.1). Every page reads its colours, fonts a
 
 ### Colour
 
-All pairs below are checked with `palettes.py`. The checks are: text ≥ 7:1, muted text ≥ 4.5:1, text on the accent ≥ 4.5:1, accent and status colours ≥ 3:1. Status colours used as small text in light mode are ≥ 4.5:1.
+All pairs below are checked with `palettes.py`. The checks are: text ≥ 7:1, muted text ≥ 4.5:1, text on the accent ≥ 4.5:1, accent and status colours ≥ 3:1. Status colours used as small text in light mode, and every status colour of the Custom scheme, are ≥ 4.5:1.
 
 | Token | Dark | Light | Use |
 |---|---|---|---|

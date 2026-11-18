@@ -64,7 +64,8 @@ namespace ArchTweaker
         // where the problem is: between the PC and the router, or past the router
         public static string Verdict(Stat router, Stat net)
         {
-            if (router != null && (router.LossPct > 0 || router.Jitter > 2 || router.Avg > 5))
+            // 3.38.3: a router that answers no ping at all is not judged (many block ping); the internet test still counts
+            if (router != null && router.Sent > router.Lost && (router.LossPct > 0 || router.Jitter > 2 || router.Avg > 5))
                 return "BAD: unstable between this PC and the router. Check Wi-Fi signal, the cable and the adapter's power saving (Internet & Network, GPU & Devices).";
             if (net.Sent == net.Lost) return "No reply from the internet test address. A firewall can block ping. The router test above still counts.";
             if (net.LossPct >= 1 || net.Jitter > 8)
