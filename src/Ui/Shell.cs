@@ -34,7 +34,7 @@ namespace ArchTweaker
             all = cmds;
             FormBorderStyle = FormBorderStyle.None; StartPosition = FormStartPosition.Manual; ShowInTaskbar = false; KeyPreview = true;
             BackColor = Theme.Border; Padding = new Padding(1); Size = new Size(Theme.S(620), Theme.S(420)); AutoScaleMode = AutoScaleMode.None;
-            AccessibleName = L.T("Command palette"); Chrome.Hook(this);   // borderless: only the small rounded corners apply
+            AccessibleName = L.T("Command palette"); Text = L.T("Command palette"); Chrome.Hook(this);   // borderless: only the small rounded corners apply; 3.39: Text names the window for UI Automation
             var inner = new Panel { Dock = DockStyle.Fill, BackColor = Theme.Panel, Padding = new Padding(Theme.S(12)) };
             box.Dock = DockStyle.Top; box.BorderStyle = BorderStyle.None; box.Font = Theme.Semi(12f); box.BackColor = Theme.Panel; box.ForeColor = Theme.Text; box.AccessibleName = L.T("Type a page, tweak or action");
             var hint = new Label { Dock = DockStyle.Top, Height = Theme.S(24), Text = L.T("Type a page, tweak or action. Enter opens it, Esc closes."), ForeColor = Theme.Muted, Font = Theme.FS, UseMnemonic = false, TextAlign = ContentAlignment.BottomLeft };
