@@ -151,11 +151,11 @@ def test_command_palette_opens_and_navigates(app):
     # 3.39: wait for the palette's box and type into it, so no key is lost while it opens
     box = _dialog(app, "Command palette", timeout=10).child_window(title="Type a page, tweak or action", control_type="Edit")
     box.wait("exists visible", timeout=10)
-    box.set_edit_text("Disk space")
-    time.sleep(0.5)
-    # 3.39: Enter straight to the keyboard; box.type_keys focuses the box again first, and the palette (which
-    # closes when it loses focus) was gone by then
+    # 3.39: real keystrokes once the box is there. set_edit_text did not reach the palette's filter, and
+    # box.type_keys focuses the box again first, which closed the palette (it closes when it loses focus)
     from pywinauto import keyboard
+    keyboard.send_keys("Disk{SPACE}space", pause=0.05)
+    time.sleep(0.8)
     keyboard.send_keys("{ENTER}")
     # Assert
     assert _title(app, "Disk space") == "Disk space"
