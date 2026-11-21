@@ -113,8 +113,14 @@ namespace ArchTweaker
             if (proof != null)
             {
                 string pw; var pv = proof.Value;
-                if (pv.Stale(out pw)) chips.Insert(0, new KeyValuePair<string, Color>(L.T("Re-test"), Theme.Muted));
-                else if (pv.Helped) chips.Insert(0, new KeyValuePair<string, Color>(L.T("Proven") + " " + pv.Short(), Theme.Ok));
+                // 3.39: no gain and worse show on the row too, not only in the details
+                switch (ProofStore.KindOf(pv, pv.Stale(out pw)))
+                {
+                    case ProofKind.Stale: chips.Insert(0, new KeyValuePair<string, Color>(L.T("Re-test"), Theme.Muted)); break;
+                    case ProofKind.Proven: chips.Insert(0, new KeyValuePair<string, Color>(L.T("Proven") + " " + pv.Short(), Theme.Ok)); break;
+                    case ProofKind.NoGain: chips.Insert(0, new KeyValuePair<string, Color>(L.T("No gain here"), Theme.Muted)); break;
+                    case ProofKind.Worse: chips.Insert(0, new KeyValuePair<string, Color>(L.T("Worse here") + " " + pv.Short(), Theme.Bad)); break;
+                }
             }
             AccessibleName = L.T(t.Title); AccessibleDescription = A11yDesc(t); AccessibleRole = AccessibleRole.CheckButton;
         }

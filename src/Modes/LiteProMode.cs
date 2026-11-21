@@ -22,7 +22,7 @@ namespace ArchTweaker
         // Pages that change devices, drivers, services, apps, power internals or Windows images: Pro only.
         static readonly HashSet<string> ProPages = new HashSet<string>(StringComparer.Ordinal)
         {
-            "Tuning assistant", "Interrupt tuner", "Power tuner", "Tune everything", "A/B test", "Deep clean", "Services", "Apps (UWP)",
+            "Tuning assistant", "Interrupt tuner", "Power tuner", "Tune everything", "A/B test", "Deep clean", "Services", "Apps (UWP)", "Scheduled tasks",
             "Power settings", "Hosts blocker", "Drivers", "Bake into ISO"
         };
 

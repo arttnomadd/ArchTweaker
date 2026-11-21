@@ -45,8 +45,26 @@ namespace ArchTweaker
         }
     }
 
+    // 3.39: one verdict per measured tweak. TooFew: under 3 runs each, too thin to act on.
+    public enum ProofKind { Proven, NoGain, Worse, Stale, TooFew }
+
     public static class ProofStore
     {
+        public const int MinRuns = 3;
+        // what a measurement means for the row chip and for "Optimize safely"
+        public static ProofKind KindOf(Proof p, bool stale)
+        {
+            if (stale) return ProofKind.Stale;
+            if (p.Helped) return ProofKind.Proven;
+            if (p.Samples < MinRuns) return ProofKind.TooFew;
+            return p.Worse ? ProofKind.Worse : ProofKind.NoGain;
+        }
+        public static ProofKind? KindOf(string id)
+        {
+            var p = Get(id); if (p == null) return null;
+            string why; return KindOf(p.Value, p.Value.Stale(out why));
+        }
+
         static readonly CultureInfo Inv = CultureInfo.InvariantCulture;
         public static string FileOverride;   // tests
         static string File_ { get { return FileOverride ?? FileDefault; } }

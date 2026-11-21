@@ -105,17 +105,26 @@ namespace ArchTweaker
         public void OptimizeSafely()
         {
             if (busyCount > 0) return;
-            List<string> ids = null;
-            Busy("Checking this PC…", () => { ids = LiteActions.SafePicks(); }, () =>
+            List<string> ids = null; List<Tweak> noGain = null;
+            Busy("Checking this PC…", () => { ids = LiteActions.SafePicks(); noGain = LiteActions.NoGainCandidates(); }, () =>
             {
                 SelectIds(ids, (added, already) =>
                 {
-                    int n = added.Count + already.Count;
-                    if (n == 0) { Log.Say("Optimize safely: everything recommended for this PC is already applied."); return; }
-                    foreach (var t in added.Concat(already)) Log.W("  + {0}   ({1})", L.T(t.Title), L.T(t.Category));
-                    if (!Dlg.Confirm("Optimize safely?", L.F("ArchTweaker applies {0} safe tweak(s) picked for this PC. The log lists them. A restore point comes first.", n) + "\n\n" + L.T("Tip: run a Benchmark before and after to see the difference."), "Apply now", "Review first"))
-                    { if (!logOpen) ToggleLog(); return; }
-                    ApplyPending();
+                    // 3.39: applied tweaks that measured no gain or a loss on this PC are undone in the same go
+                    StateCache.ReadAsync(noGain, this, () =>
+                    {
+                        var undo = noGain.Where(t => StateCache.Get(t) == true).ToList();
+                        foreach (var t in undo) { Pending[t] = false; Log.W("  - {0}   ({1})", L.T(t.Title), L.T("measured no gain here")); }
+                        if (undo.Count > 0) RefreshAll();
+                        int n = added.Count + already.Count;
+                        if (n == 0 && undo.Count == 0) { Log.Say("Optimize safely: everything recommended for this PC is already applied."); return; }
+                        foreach (var t in added.Concat(already)) Log.W("  + {0}   ({1})", L.T(t.Title), L.T(t.Category));
+                        string body = n > 0 ? L.F("ArchTweaker applies {0} safe tweak(s) picked for this PC. The log lists them. A restore point comes first.", n) : "";
+                        if (undo.Count > 0) body = (body.Length > 0 ? body + "\n\n" : "") + L.F("It also undoes {0} applied tweak(s) that measured no gain or a loss on this PC.", undo.Count);
+                        if (!Dlg.Confirm("Optimize safely?", body + "\n\n" + L.T("Tip: run a Benchmark before and after to see the difference."), "Apply now", "Review first"))
+                        { if (!logOpen) ToggleLog(); return; }
+                        ApplyPending();
+                    });
                 });
             });
         }

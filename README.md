@@ -52,7 +52,7 @@ SmartScreen can warn about a new, unsigned program. Click **More info → Run an
 | Measure & test | Latency, Benchmark, Measure, A/B test (Pro), Live overlay, Mouse polling |
 | Tune (Pro) | Tuning assistant, Interrupt tuner, Power tuner, Tune everything |
 | History | What changed, Results, Change history |
-| Clean & apps | Cleanup, Deep clean (Pro), Disk space, Uninstaller, Apps (UWP) (Pro), Startup, Services (Pro) |
+| Clean & apps | Cleanup, Deep clean (Pro), Disk space, Uninstaller, Apps (UWP) (Pro), Startup, Scheduled tasks (Pro), Services (Pro) |
 | Windows tools | Power settings (Pro), Context menu, Hosts blocker (Pro), Drivers (Pro), Bake into ISO (Pro) |
 | Tools & backup | Restore point, recovery kit, profiles, drivers export, repairs, Pro tools |
 | Settings | Language, colour scheme, notification area icon, Lite / Pro mode and PIN, What's new, tour |

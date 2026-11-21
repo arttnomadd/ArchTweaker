@@ -92,6 +92,62 @@ static class CleanupTests
         T.Eq(AppsPage.ConfirmLine(safe), "• Weather", "a Safe app is just its name");
     }
 
+    // 3.39: Scheduled tasks page
+    [Test] public static void Tasks_ParseSortsThirdPartyFirst_AndSkipsJunk()
+    {
+        var l = TasksModule.Parse("\\Microsoft\\Windows\\Defrag\\|ScheduledDefrag|Ready|Microsoft Corporation\r\n\\|GoogleUpdateTaskMachineUA|Ready|Google LLC\r\n\\Vendor\\|Updater|Disabled|Vendor | Inc\r\nnot a task line\r\n|NoPath|Ready|x\r\n");
+        T.Eq(l.Count, 3, "three tasks, junk lines dropped");
+        T.False(l[0].Microsoft, "third-party first");
+        T.True(l[2].Microsoft && l[2].Full == "\\Microsoft\\Windows\\Defrag\\ScheduledDefrag", "Microsoft last, full path joined");
+        var v = l.First(t => t.Name == "Updater");
+        T.False(v.Enabled, "Disabled state read"); T.Eq(v.Author, "Vendor | Inc", "a | in the author stays");
+        T.True(TasksModule.IsMicrosoft("\\Other\\", "Microsoft Corporation"), "Microsoft by author");
+        string p, n; TasksModule.Split("\\A\\B\\Name", out p, out n);
+        T.Eq(p, "\\A\\B\\", "folder"); T.Eq(n, "Name", "name");
+        T.Eq(TasksModule.PsQuote("it's"), "'it''s'", "PowerShell quote doubles '");
+        T.False(TasksModule.SafeName("NoRoot") || TasksModule.SafeName("\\a\nb") || TasksModule.SafeName(null) || TasksModule.SafeName("\\"), "unsafe names refused");
+    }
+
+    [Test] public static void Tasks_JournalKeepsFirstState_AndPutsBackExactly()
+    {
+        string f = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "at-tasks-" + Guid.NewGuid().ToString("N") + ".tsv");
+        var keepSetter = TasksModule.Setter; var calls = new List<string>();
+        TasksModule.JournalOverride = f;
+        TasksModule.Setter = (full, on) => { calls.Add(full + "=" + (on ? "on" : "off")); return true; };
+        try
+        {
+            var t = new SchedTask { Path = "\\Vendor\\", Name = "Updater", State = "Ready" };
+            T.True(TasksModule.SetEnabled(t, false), "disabled");
+            T.False(t.Enabled, "state follows");
+            T.True(TasksModule.SetEnabled(t, true) && TasksModule.SetEnabled(t, false), "on and off again");
+            T.Eq(TasksModule.Journal().Count, 1, "one journal line per task");
+            T.True(TasksModule.Journal()["\\Vendor\\Updater"], "the first state (enabled) is kept");
+            calls.Clear();
+            T.Eq(TasksModule.RestoreAll(), 1, "one put back");
+            T.Eq(calls.Count, 1, "one call"); T.Eq(calls[0], "\\Vendor\\Updater=on", "back to enabled");
+            T.Eq(TasksModule.Journal().Count, 0, "journal cleared after a full put-back");
+            T.False(TasksModule.SetEnabled(new SchedTask { Path = "bad", Name = "x" }, false), "unsafe path refused");
+        }
+        finally { TasksModule.Setter = keepSetter; TasksModule.JournalOverride = null; try { System.IO.File.Delete(f); } catch { } }
+    }
+
+    [Test] public static void Tasks_FailedPutBackStaysInTheJournal()
+    {
+        string f = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "at-tasks-" + Guid.NewGuid().ToString("N") + ".tsv");
+        var keepSetter = TasksModule.Setter;
+        TasksModule.JournalOverride = f;
+        try
+        {
+            System.IO.File.WriteAllLines(f, new[] { "\\A\\One\t1", "\\A\\Two\t0", "garbage", "\\A\\One\t0" });
+            T.Eq(TasksModule.Journal().Count, 2, "garbage dropped, first line per task wins");
+            TasksModule.Setter = (full, on) => full.EndsWith("One");
+            T.Eq(TasksModule.RestoreAll(), 1, "one went back");
+            var left = TasksModule.Journal();
+            T.True(left.Count == 1 && left.ContainsKey("\\A\\Two") && !left["\\A\\Two"], "the failed one is kept with its state");
+        }
+        finally { TasksModule.Setter = keepSetter; TasksModule.JournalOverride = null; try { System.IO.File.Delete(f); } catch { } }
+    }
+
     [Test] public static void UrlOk_AllowsHttpsAllowlistedHosts_Only()
     {
         T.True((bool)T.Call(typeof(Updater), "UrlOk", "https://raw.githubusercontent.com/a/b.json"), "https allowlisted host allowed");

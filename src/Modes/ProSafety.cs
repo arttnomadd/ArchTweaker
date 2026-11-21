@@ -169,5 +169,11 @@ namespace ArchTweaker
             var rec = new HashSet<string>(Advisor.RecommendedIds());
             return Catalog.All.Where(t => rec.Contains(t.Id) && Mode.LiteTweak(t) && t.Applicable && t.Impact >= 1).Select(t => t.Id).ToList();
         }
+        // 3.39: tweaks measured on this PC with no gain or a loss (fresh, 3+ runs each). Optimize safely offers to undo the applied ones.
+        public static List<Tweak> NoGainCandidates()
+        {
+            return Catalog.All.Where(t => t.Applicable && Mode.Allows(t) && !t.Dangerous && IsNoGain(ProofStore.KindOf(t.Id))).ToList();
+        }
+        public static bool IsNoGain(ProofKind? k) { return k == ProofKind.NoGain || k == ProofKind.Worse; }
     }
 }

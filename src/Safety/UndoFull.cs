@@ -39,6 +39,7 @@ namespace ArchTweaker
             try { PowerExplorer.RevertAll(); } catch (Exception ex) { Log.W("Power settings revert: {0}", ex.Message); }
             try { PowerCache.Invalidate(); Probe.Invalidate(); } catch { }
             HostsModule.Remove();
+            try { TasksModule.RestoreAll(); } catch (Exception ex) { Log.W("Scheduled tasks put back: {0}", ex.Message); }   // 3.39: tasks switched on the Scheduled tasks page
             Journal.UndoAll();          // then every registry value back to its exact original
             RemoveLegacyProgramRules(); // after the replay, so nothing new is journaled
             AppliedSet.Clear();

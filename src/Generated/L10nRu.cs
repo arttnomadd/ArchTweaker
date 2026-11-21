@@ -3893,6 +3893,33 @@ App Installer (winget)	Установщик приложений (winget)
 winget source	Источник winget
 Windows Security	Безопасность Windows
 NVIDIA Control Panel	Панель управления NVIDIA
+No gain here	Без выигрыша здесь
+Worse here	Хуже здесь
+measured no gain here	измерено: без выигрыша
+It also undoes {0} applied tweak(s) that measured no gain or a loss on this PC.	Также отменяются применённые твики ({0}), которые на этом ПК не дали выигрыша или ухудшили результат.
+Scheduled tasks	Запланированные задачи
+Tasks that Windows and programs run on a timer	Задачи, которые Windows и программы запускают по расписанию
+Task (checked = enabled)	Задача (галочка = включена)
+Author	Автор
+Microsoft	Microsoft
+Run now	Запустить сейчас
+Put back all	Вернуть все
+Hide Microsoft tasks	Скрыть задачи Microsoft
+Starting the task…	Запуск задачи…
+Started the task '{0}'.	Задача «{0}» запущена.
+No scheduled task was changed from this page.	На этой странице не меняли ни одной задачи.
+Put back {0} task(s)?	Вернуть задачи ({0})?
+Each task ArchTweaker changed here goes back to the state it had before.	Каждая задача, которую ArchTweaker изменил здесь, вернётся в прежнее состояние.
+Putting tasks back…	Возврат задач…
+Put back {0} scheduled task(s).	Возвращено задач: {0}.
+Reading scheduled tasks…	Чтение запланированных задач…
+Untick a task to disable it. ArchTweaker never deletes a task, and 'Put back all' or 'Undo everything' restores each one it changed. Microsoft tasks keep Windows maintained: disable one only when you know what it does.	Снимите галочку, чтобы отключить задачу. ArchTweaker никогда не удаляет задачи, а «Вернуть все» или «Отменить всё» восстанавливают каждую изменённую. Задачи Microsoft обслуживают Windows: отключайте их, только если знаете, что они делают.
+Disable a Microsoft task?	Отключить задачу Microsoft?
+Microsoft tasks keep Windows maintained: updates, disk checks, defragmenting and more. Disable one only when you know what it does. ArchTweaker can put it back.	Задачи Microsoft обслуживают Windows: обновления, проверка дисков, дефрагментация и другое. Отключайте их, только если знаете, что они делают. ArchTweaker может вернуть всё обратно.
+Disable	Отключить
+Keep it on	Оставить включённой
+Windows refused to change the task '{0}'. Some system tasks are protected.	Windows не разрешила изменить задачу «{0}». Некоторые системные задачи защищены.
+No scheduled tasks found.	Запланированные задачи не найдены.
 ";
     }
 }

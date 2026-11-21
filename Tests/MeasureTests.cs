@@ -292,6 +292,22 @@ static class MeasureTests
         T.False(noise.Helped, "within noise is not a win"); T.False(noise.Worse, "within noise is not worse");
     }
 
+    // 3.39: one verdict per measurement, used by the row chip and by Optimize safely
+    [Test] public static void Proof_KindOf_GivesOneVerdict()
+    {
+        var won = ProofStore.Parse("a\t20261116-021500\tm\tu\t+3.0\t3\t1\t0\t\tA/B test").Value;
+        var noise = ProofStore.Parse("b\t20261116-021500\tm\tu\t+0.4\t4\t0\t0\t\tA/B test").Value;
+        var worse = ProofStore.Parse("c\t20261116-021500\tm\tu\t-2.0\t4\t1\t0\t\tA/B test").Value;
+        var thin = ProofStore.Parse("d\t20261116-021500\tm\tu\t+0.2\t2\t0\t0\t\tA/B test").Value;
+        T.Eq(ProofStore.KindOf(won, false), ProofKind.Proven, "a real win");
+        T.Eq(ProofStore.KindOf(noise, false), ProofKind.NoGain, "within noise, enough runs");
+        T.Eq(ProofStore.KindOf(worse, false), ProofKind.Worse, "measured worse");
+        T.Eq(ProofStore.KindOf(thin, false), ProofKind.TooFew, "2 runs each is too thin to act on");
+        T.Eq(ProofStore.KindOf(won, true), ProofKind.Stale, "stale beats everything");
+        T.True(LiteActions.IsNoGain(ProofKind.NoGain) && LiteActions.IsNoGain(ProofKind.Worse), "no gain and worse are offered for undo");
+        T.False(LiteActions.IsNoGain(ProofKind.Proven) || LiteActions.IsNoGain(ProofKind.Stale) || LiteActions.IsNoGain(ProofKind.TooFew) || LiteActions.IsNoGain(null), "the rest are not");
+    }
+
     [Test] public static void Proof_StaleOnBuildChange()
     {
         string why;

@@ -13,7 +13,7 @@ PAGES = [
     "Danger zone", "PC advisor", "System scan", "Hardware audit", "System info", "Boot times", "Latency",
     "Benchmark", "Measure", "A/B test", "Live overlay", "Mouse polling", "Tuning assistant", "Interrupt tuner",
     "Power tuner", "Tune everything", "What changed", "Results", "Change history", "Cleanup", "Deep clean",
-    "Disk space", "Uninstaller", "Apps (UWP)", "Startup", "Services", "Power settings", "Context menu",
+    "Disk space", "Uninstaller", "Apps (UWP)", "Startup", "Scheduled tasks", "Services", "Power settings", "Context menu",
     "Hosts blocker", "Drivers", "Bake into ISO",
 ]
 
@@ -21,7 +21,7 @@ PAGES = [
 # Pro-only pages (Mode.ProPages in src/Modes/LiteProMode.cs; a unit test keeps the two in step). Lite mode hides them.
 PRO_PAGES = {
     "Tuning assistant", "Interrupt tuner", "Power tuner", "Tune everything", "A/B test", "Deep clean", "Services", "Apps (UWP)",
-    "Power settings", "Hosts blocker", "Drivers", "Bake into ISO",
+    "Scheduled tasks", "Power settings", "Hosts blocker", "Drivers", "Bake into ISO",
 }
 
 
