@@ -62,9 +62,9 @@ namespace ArchTweaker
             {
                 if (hideMs.Checked && t.Microsoft) continue;
                 if (query.Length > 0 && (t.Full + " " + t.Author).IndexOf(query, StringComparison.OrdinalIgnoreCase) < 0) continue;
-                var it = new ListViewItem(new[] { t.Name, L.T(t.Microsoft ? "Microsoft" : "Other"), t.Path, t.Author }) { Tag = t, Checked = t.Enabled };
+                var it = new ListViewItem(new[] { t.Name, t.Own ? "ArchTweaker" : L.T(t.Microsoft ? "Microsoft" : "Other"), t.Path, t.Author }) { Tag = t, Checked = t.Enabled };
                 it.UseItemStyleForSubItems = false;
-                it.SubItems[1].Tag = t.Microsoft ? Theme.Muted : Theme.Accent;   // pill colour (TableSkin)
+                it.SubItems[1].Tag = t.Own ? Theme.Ok : t.Microsoft ? Theme.Muted : Theme.Accent;   // pill colour (TableSkin)
                 it.ForeColor = t.Enabled ? Theme.Text : Theme.Muted;
                 lv.Items.Add(it);
             }
@@ -77,6 +77,12 @@ namespace ArchTweaker
             if (filling) return;
             var t = (SchedTask)lv.Items[e.Index].Tag;
             bool on = e.NewValue == CheckState.Checked;
+            if (t.Own)
+            {
+                e.NewValue = e.CurrentValue;
+                Log.Say("ArchTweaker manages its own tasks (boot guard, maintenance). Change them on Tools & backup.");
+                return;
+            }
             if (!on && t.Microsoft && !msConfirmed)
             {
                 if (!Dlg.Confirm("Disable a Microsoft task?", "Microsoft tasks keep Windows maintained: updates, disk checks, defragmenting and more. Disable one only when you know what it does. ArchTweaker can put it back.", "Disable", "Keep it on"))

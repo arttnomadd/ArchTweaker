@@ -102,6 +102,9 @@ static class CleanupTests
         var v = l.First(t => t.Name == "Updater");
         T.False(v.Enabled, "Disabled state read"); T.Eq(v.Author, "Vendor | Inc", "a | in the author stays");
         T.True(TasksModule.IsMicrosoft("\\Other\\", "Microsoft Corporation"), "Microsoft by author");
+        T.True(TasksModule.IsOwn("\\ArchTweaker\\", "DevicePower") && TasksModule.IsOwn("\\", "ArchTweaker Boot check"), "ArchTweaker's own tasks");
+        T.False(TasksModule.IsOwn("\\Vendor\\", "Updater"), "others are not");
+        T.False(TasksModule.SetEnabled(new SchedTask { Path = "\\", Name = "ArchTweaker Boot OK", State = "Ready" }, false), "own tasks can't be switched here");
         string p, n; TasksModule.Split("\\A\\B\\Name", out p, out n);
         T.Eq(p, "\\A\\B\\", "folder"); T.Eq(n, "Name", "name");
         T.Eq(TasksModule.PsQuote("it's"), "'it''s'", "PowerShell quote doubles '");

@@ -3958,6 +3958,7 @@ Block ads and trackers with AdGuard DNS (all adapters)	Блокировать р
 AdGuard's public DNS answers ad and tracker names with nothing, for every app and browser. Unlike a hosts file it has no size limit. On Windows 11, Windows encrypts the lookups (DNS over HTTPS). Reverting goes back to automatic (DHCP) DNS.	Публичный DNS AdGuard не отдаёт адреса рекламных и следящих доменов — для всех приложений и браузеров. В отличие от файла hosts, размер списка не ограничен. В Windows 11 запросы шифруются (DNS over HTTPS). Отмена возвращает автоматический (DHCP) DNS.
 Ads and trackers blocked for every app at the DNS level, with no hosts-file size limit. Lookup speed about the same as other public DNS.	Реклама и трекеры блокируются для всех приложений на уровне DNS, без ограничения размера файла hosts. Скорость запросов примерно как у других публичных DNS.
 Local names your router serves, provider parental filters, and the odd site that needs an ad or tracker name to work.	Локальные имена, которые раздаёт роутер, родительские фильтры провайдера и редкие сайты, которым для работы нужен рекламный или следящий домен.
+ArchTweaker manages its own tasks (boot guard, maintenance). Change them on Tools & backup.	ArchTweaker сам управляет своими задачами (защита загрузки, обслуживание). Меняйте их на странице «Инструменты и бэкап».
 ";
     }
 }

@@ -13,7 +13,6 @@ namespace ArchTweaker
         bool loading;
         public CustomizePage()
         {
-            Heading("Customize", true);
             Controls.Add(Note("Everyday Windows settings in one place. ArchTweaker records each change in the undo journal: 'Put back all' or 'Undo everything' restores what Windows had."));
             var bar = new FlowLayoutPanel { AutoSize = true, WrapContents = true, Margin = new Padding(0, 6, 0, 6) };
             bar.Controls.Add(Theme.Btn("Put back all", delegate
@@ -27,7 +26,7 @@ namespace ArchTweaker
             string group = null;
             foreach (var s in CustomSettings.All.Where(x => x.Shown))
             {
-                if (s.Group != group) { group = s.Group; Heading(s.Group, false); }
+                if (s.Group != group) { Heading(s.Group, group == null); group = s.Group; }
                 Group(s.Title, Editor(s), Note(L.F("Takes effect {0}.", L.T(s.AppliesWhen))));
             }
         }

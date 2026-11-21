@@ -12,6 +12,7 @@ namespace ArchTweaker
         public string Full { get { return Path + Name; } }
         public bool Enabled { get { return !State.Equals("Disabled", StringComparison.OrdinalIgnoreCase); } }
         public bool Microsoft { get { return TasksModule.IsMicrosoft(Path, Author); } }
+        public bool Own { get { return TasksModule.IsOwn(Path, Name); } }
     }
 
     // Every change made from the Scheduled tasks page is journaled once, with the state the task had before
@@ -41,6 +42,13 @@ namespace ArchTweaker
             return l.OrderBy(t => t.Microsoft ? 1 : 0).ThenBy(t => t.Path, StringComparer.OrdinalIgnoreCase).ThenBy(t => t.Name, StringComparer.OrdinalIgnoreCase).ToList();
         }
 
+        // ArchTweaker's own tasks (boot guard, maintenance, timer service): managed on Tools & backup, never switched here
+        public static bool IsOwn(string path, string name)
+        {
+            return (path ?? "").StartsWith(@"\ArchTweaker\", StringComparison.OrdinalIgnoreCase)
+                || (name ?? "").StartsWith("ArchTweaker", StringComparison.OrdinalIgnoreCase);
+        }
+
         public static bool IsMicrosoft(string path, string author)
         {
             return (path ?? "").StartsWith(@"\Microsoft\", StringComparison.OrdinalIgnoreCase)
@@ -66,7 +74,7 @@ namespace ArchTweaker
         // Turns a task on or off. The state before ArchTweaker's first change is journaled first.
         public static bool SetEnabled(SchedTask t, bool on)
         {
-            if (t == null || !SafeName(t.Full)) return false;
+            if (t == null || !SafeName(t.Full) || t.Own) return false;
             if (t.Enabled == on) return true;
             Remember(t.Full, t.Enabled);
             bool ok = Setter(t.Full, on);
