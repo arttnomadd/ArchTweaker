@@ -102,6 +102,7 @@ def test_each_page_opens_without_crashing(app, page):
 
 
 @pytest.mark.smoke
+@pytest.mark.timeout(900)   # 3.38.4: ~45 pages at a few seconds each; the 120 s default stopped the whole run
 def test_full_navigation_sweep_leaves_app_alive(app):
     # Act: visit every page in sequence.
     for page in PAGES:
