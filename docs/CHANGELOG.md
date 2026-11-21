@@ -6,7 +6,12 @@ Each version groups its changes under these headings, in this order (leave out t
 `### New features` · `### Tweaks` · `### Design` · `### Fixes` · `### Security` · `### Under the hood`.
 A short intro under the version title is fine. The What's new dialog filters by these headings.
 
-## 3.38.4: Pages open right after start
+## 3.38.4: Pages open right after start, risk badges for Store apps
+
+### New features
+- **Every Store app has a risk badge on the Apps (UWP) page.** **Safe:** nothing else needs it, and the Microsoft Store has it. **Caution:** a feature or game service stops working, for example Game Pass without the Xbox app, HEIC photos without the HEIF codec, or Win+Shift+S without Snipping Tool. **Keep:** Windows or other programs need it, like the Microsoft Store, App Installer (winget) or Windows Security. **Unknown:** ArchTweaker doesn't know it, so check what it is first. Point at a badge to see why.
+- **"Check known bloat" ticks Safe apps only.** Before, it skipped only apps whose name said "needed" or "keep".
+- **Removing a Caution or Keep app says what stops working.** The confirmation lists those apps first, each with the reason, and warns when one is marked Keep.
 
 ### Fixes
 - **The sidebar works while ArchTweaker backs up the services at first start.** On a new PC, the first start saves the original service settings. Until that was done, the whole sidebar was off and clicks on a page did nothing, which on a slow PC took several seconds. Now only Apply and Undo wait for the backup.

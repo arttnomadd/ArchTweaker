@@ -107,7 +107,8 @@ namespace ArchTweaker
             string text = e.SubItem.Text ?? "";
             if (IsPill(col) && text.Length > 0 && e.ColumnIndex > 0)
             {
-                Color tone = warnRow ? rowTone : OkWords.Contains(text.Trim()) ? Theme.Ok : Theme.Muted;
+                // 3.38.4: a sub-item whose Tag is a Color sets its own pill tone (Apps risk badges)
+                Color tone = e.SubItem.Tag is Color ? (Color)e.SubItem.Tag : warnRow ? rowTone : OkWords.Contains(text.Trim()) ? Theme.Ok : Theme.Muted;
                 Pill(g, tr, text, tone, bg);
                 return;
             }

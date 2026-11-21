@@ -959,7 +959,7 @@ Package	Пакет
 Check known bloat	Отметить известный мусор
 Uncheck all	Снять все отметки
 Also remove for new users	Удалять и для новых пользователей
-You can reinstall removed apps from the Microsoft Store. 'Check known bloat' leaves items marked 'needed' or 'keep' unchecked.	Удалённые приложения можно заново установить из Microsoft Store. Пункты с пометкой «нужно» или «оставьте» не отмечаются кнопкой «Отметить известный мусор».
+Safe: nothing else needs it. Caution: a feature or game service stops working. Keep: Windows or other programs need it. Unknown: check what it is first. 'Check known bloat' ticks Safe apps only. Point at a badge to see why.	Безопасно: больше ничему не нужно. Осторожно: перестанет работать функция или игровая служба. Оставить: нужно Windows или другим программам. Неизвестно: сначала проверьте, что это. «Отметить известный мусор» отмечает только безопасные. Наведите на метку, чтобы увидеть причину.
 Reading installed apps…	Чтение установленных приложений…
 No apps match ""	Нет приложений, совпадающих с «
 No removable Store apps found.	Удаляемые приложения Store не найдены.
@@ -3843,6 +3843,56 @@ What's new · version history	Что нового · история версий
 {0} versions	Версий: {0}
 list dated {0}	список от {0}
 Its maintainer has not updated this list since {0}. It still works, but new ad and tracking servers are missing.	Автор не обновлял этот список с {0}. Список работает, но в нём нет новых рекламных и следящих серверов.
+Caution	Осторожно
+Keep	Оставить
+Unknown	Неизвестно
+Windows or other programs need the apps marked Keep.	Приложения с меткой «Оставить» нужны Windows или другим программам.
+Nothing else needs it. You can reinstall it from the Microsoft Store.	Больше ничему не нужно. Его можно заново установить из Microsoft Store.
+Not in ArchTweaker's lists. Check what it is before you remove it.	Его нет в списках ArchTweaker. Проверьте, что это, перед удалением.
+Game Pass and Xbox PC games need it.	Нужно для Game Pass и игр Xbox на ПК.
+Game Bar: the Win+G overlay, FPS counter and game recording.	Game Bar: оверлей Win+G, счётчик FPS и запись игр.
+Xbox sign-in and Game Pass screens in games use it.	Его используют вход в Xbox и экраны Game Pass в играх.
+Games that sign in with an Xbox account need it.	Нужно играм со входом через учётную запись Xbox.
+The default picture viewer.	Просмотр фото по умолчанию.
+Paint.	Paint.
+Snipping Tool and the Win+Shift+S screenshot shortcut.	Ножницы и снимок экрана по Win+Shift+S.
+On many laptops the only camera app.	На многих ноутбуках это единственное приложение камеры.
+Media Player: the default music and video player.	Медиаплеер: проигрыватель музыки и видео по умолчанию.
+Notepad, the default text editor.	Блокнот, текстовый редактор по умолчанию.
+Calculator.	Калькулятор.
+The default terminal on Windows 11.	Терминал по умолчанию в Windows 11.
+Photos can't open HEIC pictures from phones without it.	Без него «Фотографии» не открывают снимки HEIC с телефонов.
+Photos can't open WebP pictures without it.	Без него «Фотографии» не открывают картинки WebP.
+Photos can't open camera RAW files without it.	Без него «Фотографии» не открывают RAW-файлы камер.
+Videos in HEVC (H.265) don't play without it.	Без него не воспроизводится видео HEVC (H.265).
+Videos in VP9 don't play without it.	Без него не воспроизводится видео VP9.
+Videos in AV1 don't play without it.	Без него не воспроизводится видео AV1.
+Realtek Audio Console: speaker, jack and microphone settings.	Realtek Audio Console: настройки динамиков, разъёмов и микрофона.
+Intel Graphics Command Center: display and GPU settings.	Intel Graphics Command Center: настройки дисплея и видеокарты.
+AMD Software: driver and display settings.	AMD Software: настройки драйвера и дисплея.
+Reinstalling any Store app needs the Microsoft Store.	Чтобы заново установить любое приложение, нужен Microsoft Store.
+The Microsoft Store needs it for purchases and licences.	Он нужен Microsoft Store для покупок и лицензий.
+App Installer: winget and installing .msix or .appx files need it.	Установщик приложений: нужен для winget и установки файлов .msix и .appx.
+winget reads its app list from it.	Из него winget берёт список приложений.
+The Windows Security app.	Приложение «Безопасность Windows».
+NVIDIA Control Panel: driver and display settings.	Панель управления NVIDIA: настройки драйвера и дисплея.
+Notepad	Блокнот
+Calculator	Калькулятор
+Windows Terminal	Терминал Windows
+HEIF image codec	Кодек изображений HEIF
+WebP image codec	Кодек изображений WebP
+Raw image codec	Кодек изображений RAW
+HEVC video codec	Видеокодек HEVC
+VP9 video codec	Видеокодек VP9
+AV1 video codec	Видеокодек AV1
+Realtek Audio Console	Realtek Audio Console
+Intel Graphics Command Center	Intel Graphics Command Center
+AMD Software	AMD Software
+Store purchases	Покупки в Store
+App Installer (winget)	Установщик приложений (winget)
+winget source	Источник winget
+Windows Security	Безопасность Windows
+NVIDIA Control Panel	Панель управления NVIDIA
 ";
     }
 }

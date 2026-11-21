@@ -56,6 +56,42 @@ static class CleanupTests
         T.Eq(Uninstaller.WaitMs(true), 15 * 60000, "unattended: 15 minutes");
     }
 
+    // 3.38.4: risk badges on the Apps page
+    [Test] public static void AppRisk_KnownAppsGetTheRightBadge()
+    {
+        T.Eq(AppsModule.RiskOf("Microsoft.BingWeather"), AppRisk.Safe, "Weather is safe to remove");
+        T.Eq(AppsModule.RiskOf("microsoft.bingweather"), AppRisk.Safe, "case does not matter");
+        T.Eq(AppsModule.RiskOf("Microsoft.GamingApp"), AppRisk.Caution, "Xbox app: Game Pass needs it");
+        T.Eq(AppsModule.RiskOf("Microsoft.XboxIdentityProvider"), AppRisk.Caution, "Xbox sign-in");
+        T.Eq(AppsModule.RiskOf("Microsoft.HEVCVideoExtension"), AppRisk.Caution, "a codec");
+        T.Eq(AppsModule.RiskOf("Microsoft.WindowsStore"), AppRisk.Keep, "the Store");
+        T.Eq(AppsModule.RiskOf("Microsoft.DesktopAppInstaller"), AppRisk.Keep, "winget");
+        T.Eq(AppsModule.RiskOf("Contoso.SomeApp"), AppRisk.Unknown, "not in the lists");
+        T.Eq(AppsModule.RiskOf(null), AppRisk.Unknown, "no name");
+    }
+
+    [Test] public static void AppRisk_ListsAgree_AndEveryBadgeHasAReason()
+    {
+        foreach (var k in AppsModule.KeepWhy.Keys) T.False(AppsModule.CautionWhy.ContainsKey(k), k + " is not both Keep and Caution");
+        // the old hints in the friendly names ("needed", "keep") must match a Caution or Keep badge
+        foreach (var kv in AppsModule.Bloat)
+            if (kv.Value.Contains("needed") || kv.Value.Contains("keep")) T.True(AppsModule.RiskOf(kv.Key) != AppRisk.Safe, kv.Key + " is not marked Safe");
+        foreach (var n in AppsModule.Bloat.Keys.Concat(AppsModule.CautionWhy.Keys).Concat(AppsModule.KeepWhy.Keys).Concat(new[] { "Contoso.SomeApp" }))
+        {
+            string w = AppsModule.WhyOf(n);
+            T.True(!string.IsNullOrEmpty(w) && w.EndsWith("."), n + " has a reason sentence");
+        }
+        foreach (var n in AppsModule.CautionWhy.Keys.Concat(AppsModule.KeepWhy.Keys)) T.True(AppsModule.FriendlyOf(n).Length > 0, n + " has a friendly name");
+    }
+
+    [Test] public static void AppRisk_ConfirmLineNamesWhatStopsWorking()
+    {
+        var keep = new AppPkg { Name = "Microsoft.WindowsStore", Friendly = "Microsoft Store", Risk = AppRisk.Keep };
+        var safe = new AppPkg { Name = "Microsoft.BingWeather", Friendly = "Weather", Risk = AppRisk.Safe };
+        T.True(AppsPage.ConfirmLine(keep).Contains("Keep") && AppsPage.ConfirmLine(keep).Contains("Microsoft Store"), "Keep app says why");
+        T.Eq(AppsPage.ConfirmLine(safe), "• Weather", "a Safe app is just its name");
+    }
+
     [Test] public static void UrlOk_AllowsHttpsAllowlistedHosts_Only()
     {
         T.True((bool)T.Call(typeof(Updater), "UrlOk", "https://raw.githubusercontent.com/a/b.json"), "https allowlisted host allowed");
