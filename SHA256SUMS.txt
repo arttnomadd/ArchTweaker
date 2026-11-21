@@ -1,1 +1,1 @@
-7bf24faafc664fc11dfa3729d86b3c90fb4688cb5c3bc45d14db4622ad233867  ArchTweaker.exe
+d51c337abc5f2935c6e0cfe9b5885dfed6fce2541222ac391be697e9d579b6f1  ArchTweaker.exe

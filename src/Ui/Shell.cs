@@ -61,7 +61,8 @@ namespace ArchTweaker
         {
             var words = box.Text.Trim().Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
             shown = all.Where(c => words.All(w => c.Search.IndexOf(w, StringComparison.OrdinalIgnoreCase) >= 0))
-                       .OrderBy(c => words.Length > 0 && c.Text.StartsWith(words[0], StringComparison.OrdinalIgnoreCase) ? 0 : 1)
+                       .OrderBy(c => c.Text.Equals(box.Text.Trim(), StringComparison.OrdinalIgnoreCase) ? 0 : 1)   // 3.39: an exact name always wins
+                       .ThenBy(c => words.Length > 0 && c.Text.StartsWith(words[0], StringComparison.OrdinalIgnoreCase) ? 0 : 1)
                        .ThenBy(c => c.Kind == "Page" ? 0 : c.Kind == "Action" ? 1 : 2).Take(60).ToList();
             list.BeginUpdate(); list.Items.Clear(); foreach (var c in shown) list.Items.Add(c.Text); list.EndUpdate();
             if (list.Items.Count > 0) list.SelectedIndex = 0;

@@ -148,9 +148,12 @@ def test_command_palette_opens_and_navigates(app):
     # 3.38.4: a real click on the page title first, so the keys reach ArchTweaker and not Windows search
     app.child_window(auto_id="pageTitle").click_input()
     app.type_keys("^k")
-    import time; time.sleep(1)
-    from pywinauto import keyboard
-    keyboard.send_keys("Disk{SPACE}space{ENTER}", pause=0.05)
+    # 3.39: wait for the palette's box and type into it, so no key is lost while it opens
+    box = _dialog(app, "Command palette", timeout=10).child_window(title="Type a page, tweak or action", control_type="Edit")
+    box.wait("exists visible", timeout=10)
+    box.set_edit_text("Disk space")
+    time.sleep(0.5)
+    box.type_keys("{ENTER}")
     # Assert
     assert _title(app, "Disk space") == "Disk space"
 
@@ -234,6 +237,9 @@ def test_first_run_guide_can_be_skipped(app):
 def test_tweak_page_opens_with_summary(app):
     # Act
     assert _nav(app, "Gaming") == "Gaming"
+    # 3.39: the details panel only shows when the window is wide enough (side + 560 + panel, about 1,100 px)
+    if app.rectangle().width() < 1150:
+        pytest.skip("window too narrow for the details panel on this screen")
     # Assert: no tweak selected, so the details panel shows the page summary.
     assert app.child_window(title="PAGE SUMMARY").exists(timeout=10)
 
@@ -263,8 +269,8 @@ def test_arrow_keys_walk_the_tweak_list(app):
 @pytest.mark.smoke
 def test_view_menu_has_its_options(app):
     from pywinauto import Desktop
-    # Act: open the View menu.
-    app.child_window(title="View options", control_type="Button").click_input()
+    # Act: open the View menu (3.37: a left click opens the Appearance panel; right-click or the keyboard opens the menu)
+    app.child_window(title="View options", control_type="Button").right_click_input()
     # 3.38.4: the drop-down is a top-level window of ArchTweaker's own process (found_index=0 found other menus)
     pid = app.element_info.process_id
     end = time.time() + 10
