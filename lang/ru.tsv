@@ -3913,5 +3913,36 @@ Disable a Microsoft task?	Отключить задачу Microsoft?
 Microsoft tasks keep Windows maintained: updates, disk checks, defragmenting and more. Disable one only when you know what it does. ArchTweaker can put it back.	Задачи Microsoft обслуживают Windows: обновления, проверка дисков, дефрагментация и другое. Отключайте их, только если знаете, что они делают. ArchTweaker может вернуть всё обратно.
 Disable	Отключить
 Keep it on	Оставить включённой
-Windows refused to change the task '{0}'. Some system tasks are protected.	Windows не разрешила изменить задачу «{0}». Некоторые системные задачи защищены.
+Windows refused to change the task '{0}'. Windows protects some system tasks.	Windows не разрешила изменить задачу «{0}». Некоторые системные задачи защищены.
 No scheduled tasks found.	Запланированные задачи не найдены.
+Customize	Настройка
+Taskbar, File Explorer, menus and keys	Панель задач, проводник, меню и клавиши
+Everyday Windows settings in one place. ArchTweaker records each change in the undo journal: 'Put back all' or 'Undo everything' restores what Windows had.	Повседневные настройки Windows в одном месте. Каждое изменение записывается в журнал отмены: «Вернуть все» или «Отменить всё» восстановят прежние значения Windows.
+Takes effect {0}.	Применится {0}.
+at once	сразу
+after Explorer restarts	после перезапуска проводника
+after you sign out and in again	после выхода из системы и повторного входа
+in the next window	в следующем окне
+Taskbar	Панель задач
+File Explorer	Проводник
+Menus and keys	Меню и клавиши
+Taskbar alignment	Выравнивание панели задач
+Search on the taskbar	Поиск на панели задач
+Seconds on the clock	Секунды на часах
+File Explorer opens to	Проводник открывается на
+Menu delay	Задержка меню
+Hover delay	Задержка наведения
+Key repeat delay	Задержка повтора клавиш
+Key repeat speed	Скорость повтора клавиш
+Left	Слева
+Centre	По центру
+Icon only	Только значок
+Search box	Поле поиска
+This PC	Этот компьютер
+Home / Quick access	Главная / Быстрый доступ
+Shortest	Самая короткая
+Short	Короткая
+Long	Длинная
+Longest	Самая длинная
+ms	мс
+(0 slow, 31 fast)	(0 медленно, 31 быстро)

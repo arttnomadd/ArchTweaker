@@ -25,7 +25,7 @@ namespace ArchTweaker
             { Cat.Responsiveness, '\uE945' }, { Cat.Gaming, '\uE7FC' }, { Cat.PowerPlan, '\uE7E8' }, { Cat.Input, '\uE962' }, { Cat.Gpu, '\uE7F4' },
             { Cat.Network, '\uE774' }, { Cat.TasksServices, '\uE912' }, { Cat.Commands, '\uE756' }, { Catalog.HARDENING, '\uEA18' },
             { DangerZone.CAT, '\uE7BA' },
-            { "PC advisor", '\uE82F' }, { "System scan", '\uE9D9' }, { "Services", '\uE912' }, { "Apps (UWP)", '\uE71D' }, { "Startup", '\uE768' }, { "Scheduled tasks", '\uE823' },
+            { "PC advisor", '\uE82F' }, { "System scan", '\uE9D9' }, { "Services", '\uE912' }, { "Apps (UWP)", '\uE71D' }, { "Startup", '\uE768' }, { "Scheduled tasks", '\uE823' }, { "Customize", '\uE771' },
             { "Cleanup", '\uE74D' }, { "Deep clean", '\uE74D' }, { "Uninstaller", '\uE738' }, { "Power settings", '\uE9E9' }, { "Context menu", '\uE8FD' },
             { "Hosts blocker", '\uE8F8' }, { "Measure", '\uE9D2' }, { "A/B test", '\uE8EF' }, { "Tools & backup", '\uE90F' }, { "Settings", '\uE713' }, { "System info", '\uE946' },
             { "Latency", '\uEC4A' }, { "Benchmark", '\uE9D9' }, { "Drivers", '\uE964' }, { "What changed", '\uE81C' }, { "Change history", '\uE787' }, { "Disk space", '\uEDA2' },

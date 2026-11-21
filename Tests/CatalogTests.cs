@@ -9,6 +9,37 @@ using ArchTweaker;
 
 static class CatalogTests
 {
+    // 3.39: Customize page values
+    [Test] public static void CustomSettings_AreWellFormed()
+    {
+        var ids = new HashSet<string>();
+        foreach (var s in CustomSettings.All)
+        {
+            T.True(ids.Add(s.Id), s.Id + " is unique");
+            T.True(s.H == Hive.HKCU, s.Id + " only touches the current user");
+            T.True(!string.IsNullOrEmpty(s.AppliesWhen) && !string.IsNullOrEmpty(s.Group), s.Id + " says when it applies");
+            if (s.IsChoice)
+            {
+                T.Eq(s.Labels.Length, s.Values.Length, s.Id + " one label per value");
+                T.True(s.Values.Distinct().Count() == s.Values.Length && s.Values.Contains(s.Default), s.Id + " values distinct, default among them");
+            }
+            else T.True(s.Min <= s.Default && s.Default <= s.Max, s.Id + " default in range");
+        }
+    }
+
+    [Test] public static void CustomSettings_ParseAndClamp()
+    {
+        var delay = CustomSettings.All.First(s => s.Id == "menu_delay");
+        T.Eq(delay.Parse("250"), 250, "string number read");
+        T.Eq(delay.Parse(" 9999 "), 1000, "clamped to the maximum");
+        T.Eq(delay.Parse("abc"), 400, "garbage gives the default");
+        T.Eq(delay.Parse(null), 400, "missing gives the default");
+        T.Eq((string)delay.ToRegistry(-5), "0", "written as REG_SZ, clamped");
+        var align = CustomSettings.All.First(s => s.Id == "taskbar_align");
+        T.Eq(align.Parse(0), 0, "DWORD read"); T.Eq(align.Parse(7), 1, "unknown choice gives the default");
+        T.True(align.ToRegistry(0) is int, "DWORD written as int");
+    }
+
     [Test] public static void AllTweaks_HaveUniqueIds()
     {
         var dupes = Catalog.All.GroupBy(t => t.Id, StringComparer.OrdinalIgnoreCase).Where(g => g.Count() > 1).Select(g => g.Key).ToList();

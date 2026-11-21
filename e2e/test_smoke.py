@@ -13,7 +13,7 @@ PAGES = [
     "Danger zone", "PC advisor", "System scan", "Hardware audit", "System info", "Boot times", "Latency",
     "Benchmark", "Measure", "A/B test", "Live overlay", "Mouse polling", "Tuning assistant", "Interrupt tuner",
     "Power tuner", "Tune everything", "What changed", "Results", "Change history", "Cleanup", "Deep clean",
-    "Disk space", "Uninstaller", "Apps (UWP)", "Startup", "Scheduled tasks", "Services", "Power settings", "Context menu",
+    "Disk space", "Uninstaller", "Apps (UWP)", "Startup", "Scheduled tasks", "Services", "Customize", "Power settings", "Context menu",
     "Hosts blocker", "Drivers", "Bake into ISO",
 ]
 

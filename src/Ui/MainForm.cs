@@ -41,6 +41,7 @@ namespace ArchTweaker
             { "Apps (UWP)", "Built-in Store apps you can remove" },
             { "Startup", "Programs that start with Windows" },
             { "Scheduled tasks", "Tasks that Windows and programs run on a timer" },
+            { "Customize", "Taskbar, File Explorer, menus and keys" },
             { "Cleanup", "Temporary files, caches and logs" },
             { "Deep clean", "Per-app cleaning rules (Winapp2)" },
             { "Uninstaller", "Desktop programs, with leftover cleanup" },
@@ -170,6 +171,7 @@ namespace ArchTweaker
             AddNav(nav, "Clean & apps", "Scheduled tasks", () => new TasksPage());   // 3.39
             AddNav(nav, "Clean & apps", "Services", () => new ServicesPage());
             AddSection(nav, "Windows tools");
+            AddNav(nav, "Windows tools", "Customize", () => new CustomizePage());   // 3.39
             AddNav(nav, "Windows tools", "Power settings", () => new PowerSettingsPage());
             AddNav(nav, "Windows tools", "Context menu", () => new ContextMenuPage());
             AddNav(nav, "Windows tools", "Hosts blocker", () => new HostsPage());

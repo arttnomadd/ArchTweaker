@@ -86,7 +86,7 @@ namespace ArchTweaker
             if (!TasksModule.SetEnabled(t, on))
             {
                 e.NewValue = e.CurrentValue;
-                Log.Say("Windows refused to change the task '{0}'. Some system tasks are protected.", t.Name);
+                Log.Say("Windows refused to change the task '{0}'. Windows protects some system tasks.", t.Name);
                 return;
             }
             lv.Items[e.Index].ForeColor = on ? Theme.Text : Theme.Muted;
