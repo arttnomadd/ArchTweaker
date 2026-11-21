@@ -153,7 +153,10 @@ def test_command_palette_opens_and_navigates(app):
     box.wait("exists visible", timeout=10)
     box.set_edit_text("Disk space")
     time.sleep(0.5)
-    box.type_keys("{ENTER}")
+    # 3.39: Enter straight to the keyboard; box.type_keys focuses the box again first, and the palette (which
+    # closes when it loses focus) was gone by then
+    from pywinauto import keyboard
+    keyboard.send_keys("{ENTER}")
     # Assert
     assert _title(app, "Disk space") == "Disk space"
 
