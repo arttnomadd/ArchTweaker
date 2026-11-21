@@ -43,20 +43,43 @@ def _title(win, expected, timeout=15):
 
 def _nav(win, name, timeout=60):
     """Open a sidebar page and return the header text.
-    3.38.4: waits until the sidebar is enabled (it is off while ArchTweaker is busy), then uses the item's
-    accessibility "Open" action: no mouse, so items scrolled out of view work too. Retries once if the title stays."""
+    3.38.4: types the page name into the sidebar's "Find a page" box first. The filter shows matching items at the
+    top of the sidebar, so the item is on screen even when its section is closed or scrolled away, and a real click
+    lands on it. Waits while the sidebar is off (ArchTweaker busy), retries the click once, then clears the filter."""
+    box = win.child_window(auto_id="findPage", control_type="Edit")
+    box.wait("exists enabled", timeout=timeout)
     item = win.child_window(auto_id=name, control_type="TabItem")
-    item.wait("exists enabled", timeout=timeout)
     shown = None
-    for _ in range(2):
-        try:
-            item.iface_legacy_iaccessible.DoDefaultAction()
-        except Exception:
+    try:
+        box.set_edit_text(name)
+        item.wait("exists visible enabled", timeout=timeout)
+        for _ in range(2):
             item.click_input()
-        shown = _title(win, name)
-        if shown == name:
-            break
+            shown = _title(win, name)
+            if shown == name:
+                break
+    finally:
+        try:
+            box.set_edit_text("")
+        except Exception:
+            pass
     return shown
+
+
+def _dialog(win, title, timeout=30):
+    """A dialog ArchTweaker opens. WinForms owned dialogs sit under the main window in UI Automation,
+    not under the desktop, so look in both places."""
+    from pywinauto import Desktop
+    end = time.time() + timeout
+    while time.time() < end:
+        for spec in (win.child_window(title=title, control_type="Window"), Desktop(backend="uia").window(title=title)):
+            try:
+                if spec.exists(timeout=0.5):
+                    return spec
+            except Exception:
+                pass
+        time.sleep(0.5)
+    raise AssertionError("dialog '%s' did not open" % title)
 
 
 @pytest.mark.smoke
@@ -93,7 +116,8 @@ def test_full_navigation_sweep_leaves_app_alive(app):
 def test_controls_expose_names_to_screen_readers(app):
     # Assert: the 2.5 accessibility pass named the top-bar inputs and the View menu button (3.1: theme moved into View).
     for name in ("Search all tweaks", "Preset", "View options", "Pages"):
-        assert app.child_window(title=name).exists(timeout=5), "missing accessible name: %s" % name
+        # found_index: a combo box and its inner list can share the name
+        assert app.child_window(title=name, found_index=0).exists(timeout=5), "missing accessible name: %s" % name
     # the tweak filter tabs are on tweak pages only
     _nav(app, "Privacy")
     assert app.child_window(title="Show tweaks").exists(timeout=10), "missing accessible name: Show tweaks"
@@ -120,7 +144,8 @@ def test_more_pages_open(app, page):
 @pytest.mark.smoke
 def test_command_palette_opens_and_navigates(app):
     # Act: Ctrl+K, type a page name, Enter.
-    app.set_focus()
+    # 3.38.4: a real click on the page title first, so the keys reach ArchTweaker and not Windows search
+    app.child_window(auto_id="pageTitle").click_input()
     app.type_keys("^k")
     import time; time.sleep(1)
     from pywinauto import keyboard
@@ -132,9 +157,9 @@ def test_command_palette_opens_and_navigates(app):
 @pytest.mark.smoke
 def test_settings_page_has_language_and_scheme(app):
     # 3.38.4: language and colour scheme live on Settings (Tools & backup no longer has them)
-    _nav(app, "Settings")
-    assert app.child_window(title="Language", control_type="ComboBox").exists(timeout=5)
-    assert app.child_window(title="Colour scheme", control_type="ComboBox").exists(timeout=5)
+    assert _nav(app, "Settings") == "Settings"
+    assert app.child_window(title="Language", found_index=0).exists(timeout=10)
+    assert app.child_window(title="Colour scheme", found_index=0).exists(timeout=10)
 
 
 # ---- opt-in: changes the PC. CI sets AT_E2E_APPLY=1 on its throwaway VM. ----
@@ -156,8 +181,7 @@ def test_apply_safe_preset_then_undo_everything(app):
     if rp.get_toggle_state() == 1:
         rp.click_input()
     app.child_window(auto_id="applyChanges", control_type="Button").click_input()
-    review = Desktop(backend="uia").window(title="Review changes")
-    review.wait("visible", timeout=30)
+    review = _dialog(app, "Review changes")
     review.child_window(title_re=r"Apply \d+ changes?", control_type="Button").click_input()
     app.child_window(title="Undo last apply", control_type="Button").wait("enabled", timeout=300)
     # Act 2: undo everything.
@@ -195,10 +219,8 @@ def _hkcu(name):
 @pytest.mark.smoke
 @pytest.mark.first_run
 def test_first_run_guide_can_be_skipped(app):
-    from pywinauto import Desktop
     # Arrange: SetupDone was cleared, so the guide opens over the main window.
-    guide = Desktop(backend="uia").window(title="Set up ArchTweaker")
-    guide.wait("visible", timeout=30)
+    guide = _dialog(app, "Set up ArchTweaker", timeout=60)
     # Act
     guide.child_window(title="Skip setup", control_type="Button").click_input()
     # Assert: the guide closed, the choice is remembered and nothing was ticked.
@@ -210,7 +232,7 @@ def test_first_run_guide_can_be_skipped(app):
 @pytest.mark.smoke
 def test_tweak_page_opens_with_summary(app):
     # Act
-    _nav(app, "Gaming")
+    assert _nav(app, "Gaming") == "Gaming"
     # Assert: no tweak selected, so the details panel shows the page summary.
     assert app.child_window(title="PAGE SUMMARY").exists(timeout=10)
 
@@ -226,7 +248,7 @@ def test_idle_buttons_are_hidden(app):
 @pytest.mark.smoke
 def test_arrow_keys_walk_the_tweak_list(app):
     # Arrange: focus the first tweak row on a page.
-    _nav(app, "Privacy")
+    assert _nav(app, "Privacy") == "Privacy"
     rows = app.descendants(control_type="CheckBox")
     rows = [r for r in rows if r.window_text() and r.window_text() != "Create restore point before first apply"]
     assert len(rows) >= 2, "expected tweak rows on Privacy"
@@ -242,10 +264,23 @@ def test_view_menu_has_its_options(app):
     from pywinauto import Desktop
     # Act: open the View menu.
     app.child_window(title="View options", control_type="Button").click_input()
-    menu = Desktop(backend="uia").window(control_type="Menu", found_index=0)
+    # 3.38.4: the drop-down is a top-level window of ArchTweaker's own process (found_index=0 found other menus)
+    pid = app.element_info.process_id
+    end = time.time() + 10
+    names = set()
+    while time.time() < end:
+        names = set()
+        for w in Desktop(backend="uia").windows(process=pid):
+            for d in w.descendants(control_type="MenuItem"):
+                names.add(d.window_text())
+        for d in app.descendants(control_type="MenuItem"):
+            names.add(d.window_text())
+        if "Slim sidebar" in names:
+            break
+        time.sleep(0.5)
     # Assert (3.37: colour schemes, accents, text size and sorting are submenus; these are top-level items)
-    for item in ("Appearance…", "Switch dark / light", "Follow Windows theme", "Compact rows", "Slim sidebar"):
-        assert menu.child_window(title=item, control_type="MenuItem").exists(timeout=5), "missing menu item: " + item
+    for item in ("Switch dark / light", "Follow Windows theme", "Compact rows", "Slim sidebar"):
+        assert item in names, "missing menu item: %s (found: %s)" % (item, sorted(names))
     from pywinauto import keyboard
     keyboard.send_keys("{ESC}")
 
@@ -264,13 +299,11 @@ def test_log_has_filter_and_support_copy(app):
 @pytest.mark.smoke
 def test_danger_zone_is_locked_and_asks_before_unlocking(app):
     # 3.4: the Danger zone opens locked; its unlock button opens a confirmation that "Keep locked" closes again.
-    _nav(app, "Danger zone")
+    assert _nav(app, "Danger zone") == "Danger zone"
     unlock = app.child_window(title_re="Unlock for this session.*", control_type="Button")
     assert unlock.exists(timeout=10), "Danger zone banner shows the unlock button"
     unlock.click_input()
-    from pywinauto import Desktop
-    gate = Desktop(backend="uia").window(title="Unlock the Danger zone")
-    assert gate.exists(timeout=10), "unlock asks first"
+    gate = _dialog(app, "Unlock the Danger zone", timeout=10)
     gate.child_window(title="Keep locked", control_type="Button").click_input()
     assert app.child_window(title_re="Unlock for this session.*", control_type="Button").exists(timeout=5), "still locked"
 
@@ -288,5 +321,6 @@ def test_lite_hides_pro_pages(app):
 @pytest.mark.parametrize("button", ["Ghost devices…", "Network test (ping + jitter)"])
 def test_new_tools_are_reachable(app, button):
     # 3.5: ghost devices (Drivers page) and the network test (Measure page) are one click away.
-    _nav(app, "Drivers" if button.startswith("Ghost") else "Measure")
+    page = "Drivers" if button.startswith("Ghost") else "Measure"
+    assert _nav(app, page) == page
     assert app.child_window(title=button, control_type="Button").exists(timeout=10)

@@ -16,7 +16,7 @@ namespace ArchTweaker
 - **A screen reader's ""Open"" on a sidebar item waits while ArchTweaker is busy,** like a click does.
 
 ### Under the hood
-- **The Windows UI tests pass again.** They opened pages before the sidebar was ready, read the page title before it changed, looked for pages that Lite mode hides, and used names that changed in 3.36 and 3.37. They now wait for the sidebar, open pages through their accessibility action, run in Pro mode (one test checks what Lite hides), and use the current names. The Apply button has a fixed UI Automation ID, because its text changes (""Nothing to apply"", ""Apply 3 changes"").
+- **The Windows UI tests pass again.** They opened pages before the sidebar was ready, read the page title before it changed, looked for pages that Lite mode hides, and used names that changed in 3.36 and 3.37. They now open a page by typing its name into ""Find a page"" and clicking the item, so closed or scrolled sections don't matter. They find dialogs under the main window, read the View menu from ArchTweaker's own process, run in Pro mode (one test checks what Lite hides), and use the current names. ""Find a page"" has a fixed UI Automation ID too. The Apply button has a fixed UI Automation ID, because its text changes (""Nothing to apply"", ""Apply 3 changes"").
 
 ## 3.38.3: Honest network grades, no silent failures in the safety paths
 
@@ -99,7 +99,7 @@ ArchTweaker now has its public home at github.com/arttnomadd/ArchTweaker.
 - **A screen reader's ""Open"" on a sidebar item waits while ArchTweaker is busy,** like a click does.
 
 ### Under the hood
-- **The Windows UI tests pass again.** They opened pages before the sidebar was ready, read the page title before it changed, looked for pages that Lite mode hides, and used names that changed in 3.36 and 3.37. They now wait for the sidebar, open pages through their accessibility action, run in Pro mode (one test checks what Lite hides), and use the current names. The Apply button has a fixed UI Automation ID, because its text changes (""Nothing to apply"", ""Apply 3 changes"").
+- **The Windows UI tests pass again.** They opened pages before the sidebar was ready, read the page title before it changed, looked for pages that Lite mode hides, and used names that changed in 3.36 and 3.37. They now open a page by typing its name into ""Find a page"" and clicking the item, so closed or scrolled sections don't matter. They find dialogs under the main window, read the View menu from ArchTweaker's own process, run in Pro mode (one test checks what Lite hides), and use the current names. ""Find a page"" has a fixed UI Automation ID too. The Apply button has a fixed UI Automation ID, because its text changes (""Nothing to apply"", ""Apply 3 changes"").
 
 ## 3.38.3: Honest network grades, no silent failures in the safety paths
 

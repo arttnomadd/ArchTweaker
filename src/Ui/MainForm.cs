@@ -122,7 +122,7 @@ namespace ArchTweaker
             nav.Controls.Add(logoRow); nav.Controls.Add(sub);
             if (!Theme.Slim)   // 3.26: filter the sidebar by page name
             {
-                var pageBox = new TextBox { AccessibleName = "Find a page" };
+                var pageBox = new TextBox { AccessibleName = "Find a page", Name = "findPage" };   // 3.38.4: Name = UIA AutomationId (e2e)
                 var pageFind = new SearchField(pageBox, navW) { Margin = new Padding(0, 8, 0, 6) };
                 SetCue(pageBox, "Find a page");
                 pageBox.TextChanged += delegate { FilterNav(pageBox.Text); };
