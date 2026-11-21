@@ -195,6 +195,7 @@ namespace ArchTweaker
         {
             new[] { "il_timers", "exp_serialtimer" },        // spread timer expiry across cores vs serialize it
             new[] { "gd_nv_drs_frl", "gd_nv_drs_vsync" },    // frame cap for G-SYNC vs G-SYNC forced off
+            new[] { "dnscloudflare", "dnsadguard" },         // 3.39: one set of DNS servers at a time
         };
         static void Exclusions()
         {

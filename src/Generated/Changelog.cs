@@ -3,7 +3,22 @@ namespace ArchTweaker
 {
     public static class Changelog
     {
-        public const string Text = @"## 3.38.4: Pages open right after start, risk badges for Store apps
+        public const string Text = @"## 3.39.0: Measured verdicts, Scheduled tasks, Customize
+
+### New features
+- **Every measured tweak says what it did on this PC.** Besides the green ""Proven"" chip, a row now shows **No gain here** or **Worse here** when an A/B test or the Tuning assistant measured it with at least 3 runs each. Results from fewer runs stay in the details panel only.
+- **""Optimize safely"" also undoes what didn't help.** Applied tweaks that measured no gain or a loss on this PC are undone in the same go. The confirmation says how many, and the log lists them.
+- **New page: Scheduled tasks** (Clean & apps, Pro). Every task on the PC, third-party first. Untick a task to disable it, or run it now. ArchTweaker records the state each task had before its first change, so ""Put back all"" and ""Undo everything"" restore it exactly. It never deletes a task. Disabling a Microsoft task asks once per session first.
+- **New page: Customize** (Windows tools, also in Lite). Taskbar alignment (Windows 11), search on the taskbar, seconds on the clock, where File Explorer opens, menu and hover delay, key repeat delay and speed, as drop-downs and number boxes. Each card says when the change takes effect. Every change goes into the undo journal, so ""Put back all"" and ""Undo everything"" restore what Windows had.
+- **The setup guide explains the best order:** drivers, then Windows Update until nothing is left, then Store app updates, then tweaks.
+
+### Tweaks
+- **Block ads and trackers with AdGuard DNS** (Internet & Network, moderate). AdGuard's public DNS blocks ad and tracker names for every app, with no hosts-file size limit. On Windows 11 ArchTweaker also registers its DNS-over-HTTPS address, so lookups are encrypted. Plain DNS stays as a fallback. Undo goes back to automatic DNS and removes the address. It can't be on together with ""Use Cloudflare DNS"". The Hosts blocker points to it when a list is very large.
+
+### Under the hood
+- **A new language needs no code change.** Every `lang/<code>.tsv` becomes a language. Its `# name:` line gives the name in the language list, and Windows starts in that language when the display language matches. [docs/TRANSLATING.md](docs/TRANSLATING.md) explains the steps.
+
+## 3.38.4: Pages open right after start, risk badges for Store apps
 
 ### New features
 - **Every Store app has a risk badge on the Apps (UWP) page.** **Safe:** nothing else needs it, and the Microsoft Store has it. **Caution:** a feature or game service stops working, for example Game Pass without the Xbox app, HEIC photos without the HEIF codec, or Win+Shift+S without Snipping Tool. **Keep:** Windows or other programs need it, like the Microsoft Store, App Installer (winget) or Windows Security. **Unknown:** ArchTweaker doesn't know it, so check what it is first. Point at a badge to see why.
@@ -74,19 +89,23 @@ ArchTweaker now has its public home at github.com/arttnomadd/ArchTweaker.
 
 ### Under the hood
 - **HaGeZi Multi (≈404,000) and Pro (≈518,000) were not added.** In a Windows hosts file, lists of that size make the DNS Client use a lot of CPU, even at 9 names per line. Light stays the largest HaGeZi choice.
+";
+        public const string All = @"## 3.39.0: Measured verdicts, Scheduled tasks, Customize
 
-## 3.37.0: Fewer, clearer colour choices
+### New features
+- **Every measured tweak says what it did on this PC.** Besides the green ""Proven"" chip, a row now shows **No gain here** or **Worse here** when an A/B test or the Tuning assistant measured it with at least 3 runs each. Results from fewer runs stay in the details panel only.
+- **""Optimize safely"" also undoes what didn't help.** Applied tweaks that measured no gain or a loss on this PC are undone in the same go. The confirmation says how many, and the log lists them.
+- **New page: Scheduled tasks** (Clean & apps, Pro). Every task on the PC, third-party first. Untick a task to disable it, or run it now. ArchTweaker records the state each task had before its first change, so ""Put back all"" and ""Undo everything"" restore it exactly. It never deletes a task. Disabling a Microsoft task asks once per session first.
+- **New page: Customize** (Windows tools, also in Lite). Taskbar alignment (Windows 11), search on the taskbar, seconds on the clock, where File Explorer opens, menu and hover delay, key repeat delay and speed, as drop-downs and number boxes. Each card says when the change takes effect. Every change goes into the undo journal, so ""Put back all"" and ""Undo everything"" restore what Windows had.
+- **The setup guide explains the best order:** drivers, then Windows Update until nothing is left, then Store app updates, then tweaks.
 
-### Design
-- **Four colour schemes instead of eleven:** Carbon dark (the default), Carbon light, OLED black and Custom. Slate, Rose, Blossom and the four design packages (Carbon Performance, Carbon Strict, Fluent Native, Gaming HUD) were near copies of Carbon dark with another accent, and the accent picker already does that. If you used one of them, ArchTweaker opens in Carbon dark (Blossom, the light one, opens in Carbon light). Your accent stays as it was.
-- **A colour scheme no longer changes your accent.** Before, picking Carbon Strict, Fluent Native, Gaming HUD, Rose or Blossom also switched the accent.
-- **Eight accents instead of ten:** Red, Blue, Teal, Graphite, Pink, Neon cyan, Windows and Custom. The old Red and Blue were near copies of Carbon red and Carbon blue, which are now simply called Red and Blue. A saved accent keeps its colour.
-- **The accent row fits the View panel again.** With ten accents, Custom was cut off at the right edge.
+### Tweaks
+- **Block ads and trackers with AdGuard DNS** (Internet & Network, moderate). AdGuard's public DNS blocks ad and tracker names for every app, with no hosts-file size limit. On Windows 11 ArchTweaker also registers its DNS-over-HTTPS address, so lookups are encrypted. Plain DNS stays as a fallback. Undo goes back to automatic DNS and removes the address. It can't be on together with ""Use Cloudflare DNS"". The Hosts blocker points to it when a list is very large.
 
 ### Under the hood
-- Theme.SchemeFromKey and Theme.AccentFromSaved move saved settings from every earlier version to the new lists (AccentV 4). Tests cover each old value.
-";
-        public const string All = @"## 3.38.4: Pages open right after start, risk badges for Store apps
+- **A new language needs no code change.** Every `lang/<code>.tsv` becomes a language. Its `# name:` line gives the name in the language list, and Windows starts in that language when the display language matches. [docs/TRANSLATING.md](docs/TRANSLATING.md) explains the steps.
+
+## 3.38.4: Pages open right after start, risk badges for Store apps
 
 ### New features
 - **Every Store app has a risk badge on the Apps (UWP) page.** **Safe:** nothing else needs it, and the Microsoft Store has it. **Caution:** a feature or game service stops working, for example Game Pass without the Xbox app, HEIC photos without the HEIF codec, or Win+Shift+S without Snipping Tool. **Keep:** Windows or other programs need it, like the Microsoft Store, App Installer (winget) or Windows Security. **Unknown:** ArchTweaker doesn't know it, so check what it is first. Point at a badge to see why.

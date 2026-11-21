@@ -35,6 +35,12 @@ namespace ArchTweaker
                 .Cmd("ipconfig.exe", "/flushdns")
                 .UndoPS("Get-NetAdapter -Physical | ForEach-Object { Set-DnsClientServerAddress -InterfaceIndex $_.ifIndex -ResetServerAddresses }")
                 .In(game);
+            // 3.39: blocking at the resolver: no hosts-file size limit, every app and browser covered. Windows 11 also gets the
+            // DoH template, so lookups to these servers are encrypted (plain DNS stays as a fallback). Undo: automatic DNS, templates removed.
+            T("dnsadguard", N, "Block ads and trackers with AdGuard DNS (all adapters)", "AdGuard's public DNS answers ad and tracker names with nothing, for every app and browser. Unlike a hosts file it has no size limit. On Windows 11, Windows encrypts the lookups (DNS over HTTPS). Reverting goes back to automatic (DHCP) DNS.")
+                .PS("$s=@('94.140.14.14','94.140.15.15','2a10:50c0::ad1:ff','2a10:50c0::ad2:ff'); Get-NetAdapter -Physical | Where-Object Status -eq 'Up' | ForEach-Object { Set-DnsClientServerAddress -InterfaceIndex $_.ifIndex -ServerAddresses $s }; if (Get-Command Add-DnsClientDohServerAddress -EA SilentlyContinue) { foreach ($a in $s) { try { Add-DnsClientDohServerAddress -ServerAddress $a -DohTemplate 'https://dns.adguard-dns.com/dns-query' -AllowFallbackToUdp $true -AutoUpgrade $true -EA Stop | Out-Null } catch {} } }; Clear-DnsClientCache")
+                .UndoPS("Get-NetAdapter -Physical | ForEach-Object { Set-DnsClientServerAddress -InterfaceIndex $_.ifIndex -ResetServerAddresses }; if (Get-Command Remove-DnsClientDohServerAddress -EA SilentlyContinue) { foreach ($a in @('94.140.14.14','94.140.15.15','2a10:50c0::ad1:ff','2a10:50c0::ad2:ff')) { try { Remove-DnsClientDohServerAddress -ServerAddress $a -EA Stop } catch {} } }")
+                .R(Risk.Moderate);
             T("doh", N, "Enable DNS over HTTPS (automatic)", "Windows encrypts DNS lookups for DNS servers it knows support it (Cloudflare, Google, Quad9). Your ISP can't see or tamper with them. Other servers keep plain DNS.")
                 .Dw(LM, @"SOFTWARE\Policies\Microsoft\Windows NT\DNSClient", "DoHPolicy", 2, null)   // 3.7: current policy ("Configure DNS over HTTPS": allow); EnableAutoDoh was the 2020 Insider switch
                 .W11().In(priv, game);

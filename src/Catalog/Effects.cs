@@ -129,6 +129,7 @@ namespace ArchTweaker
             { "dnsneg", new[] { "Caching failed DNS lookups.", null } },
             { "preferipv4", new[] { "IPv6 as the first choice for connections (IPv6 itself still works).", "Very rarely: services that answer properly only over IPv6 connect a little slower." } },
             { "net_ports", new string[] { null, null } },
+            { "dnsadguard", new[] { "Your provider's DNS.", "Local names your router serves, provider parental filters, and the odd site that needs an ad or tracker name to work." } },   // 3.39
             { "dnscloudflare", new[] { "Your provider's DNS.", "Local names your router serves (some NAS and printer names), and provider parental filters." } },
             { "nicpower", new[] { "Network adapter sleep.", "Wake-on-LAN and some laptop battery life." } },
             { "netbios", new[] { "NetBIOS over TCP/IP.", "Browsing very old NAS / SMB1 shares by name." } },

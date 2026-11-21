@@ -163,6 +163,7 @@ namespace ArchTweaker
             // ---------- Internet & Network ----------
             { "llmnr", new object[] { 0, "Security only." } }, { "smb1", new object[] { 0, "Security only." } },
             { "dnsneg", new object[] { 1, "A site that briefly failed works again instantly instead of after up to 15 min." } },
+            { "dnsadguard", new object[] { 1, "Ads and trackers blocked for every app at the DNS level, with no hosts-file size limit. Lookup speed about the same as other public DNS." } },   // 3.39
             { "dnscloudflare", new object[] { 2, "DNS lookups ≈5–50 ms faster than many ISP resolvers (first visit to each site). In-game ping unchanged." } },
             { "doh", new object[] { 0, "Privacy/security; adds ≈0–5 ms on the first lookup." } },
             { "preferipv4", new object[] { 1, "Fixes multi-second connect delays on networks with broken IPv6. 0 ms otherwise." } },

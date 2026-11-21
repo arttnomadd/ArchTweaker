@@ -3,7 +3,9 @@ namespace ArchTweaker
 {
     public static class L10nRu
     {
+        public const string Name = "Русский";
         public const string Table = @"# ArchTweaker Russian interface text. English<TAB>Russian. \n = new line. {0} placeholders; {0|one|few|many} picks a Russian plural form.
+# name: Русский
 Windows 11 only — no effect on this build.	Только для Windows 11 — на этой сборке не действует.
 Windows 10 only — no effect on Windows 11.	Только для Windows 10 — в Windows 11 не действует.
 Requirement	Требование
@@ -882,7 +884,7 @@ Leftovers — 	Остатки —
 Remove checked	Удалить отмеченные
 Comfortable size for Windows	Удобный для Windows размер
 Large: watch for slow first lookups after boot	Большой: после загрузки первые запросы могут быть медленными
-Very large: Windows' DNS Client may use high CPU and lookups can stall	Очень большой: DNS-клиент Windows может сильно грузить процессор, а запросы могут подвисать
+Very large: Windows' DNS Client may use high CPU and lookups can stall. For lists this big, the AdGuard DNS tweak (Internet & Network) blocks at the DNS server instead.	Очень большой: DNS-клиент Windows может сильно грузить процессор, а запросы могут подвисать. Для таких больших списков лучше твик AdGuard DNS (Интернет и сеть): он блокирует на стороне DNS-сервера.
 About 	Около 
  domains. 	 доменов. 
  domains, built in	 доменов, встроен
@@ -3951,6 +3953,11 @@ Long	Длинная
 Longest	Самая длинная
 ms	мс
 (0 slow, 31 fast)	(0 медленно, 31 быстро)
+Best results: first install the drivers, run Windows Update until nothing is left, and update the Store apps. Then tweak. A large Windows update can still reset some tweaks. The drift bar tells you when, and 'Re-apply' fixes it.	Для лучшего результата сначала установите драйверы, запускайте Центр обновления Windows, пока обновлений не останется, и обновите приложения Store. Затем применяйте твики. Крупное обновление Windows всё равно может сбросить часть твиков: полоса дрейфа сообщит об этом, а «Применить снова» всё исправит.
+Block ads and trackers with AdGuard DNS (all adapters)	Блокировать рекламу и трекеры через AdGuard DNS (все адаптеры)
+AdGuard's public DNS answers ad and tracker names with nothing, for every app and browser. Unlike a hosts file it has no size limit. On Windows 11, Windows encrypts the lookups (DNS over HTTPS). Reverting goes back to automatic (DHCP) DNS.	Публичный DNS AdGuard не отдаёт адреса рекламных и следящих доменов — для всех приложений и браузеров. В отличие от файла hosts, размер списка не ограничен. В Windows 11 запросы шифруются (DNS over HTTPS). Отмена возвращает автоматический (DHCP) DNS.
+Ads and trackers blocked for every app at the DNS level, with no hosts-file size limit. Lookup speed about the same as other public DNS.	Реклама и трекеры блокируются для всех приложений на уровне DNS, без ограничения размера файла hosts. Скорость запросов примерно как у других публичных DNS.
+Local names your router serves, provider parental filters, and the odd site that needs an ad or tracker name to work.	Локальные имена, которые раздаёт роутер, родительские фильтры провайдера и редкие сайты, которым для работы нужен рекламный или следящий домен.
 ";
     }
 }

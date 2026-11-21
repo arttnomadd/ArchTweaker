@@ -116,6 +116,8 @@ namespace ArchTweaker
                 f.Controls.Add(Para("ArchTweaker changes Windows settings for speed and privacy. Before anything changes, you see the exact list. ArchTweaker saves every original value, so you can put it back.", Theme.Text, Theme.F, 0));
                 f.Controls.Add(rp);
                 f.Controls.Add(Para("A restore point takes about a minute. It lets Windows go back to today's state even if ArchTweaker can't start.", Theme.Muted, Theme.FS, 2));
+                // 3.39: the order that keeps tweaks from being undone by the next update
+                f.Controls.Add(Para("Best results: first install the drivers, run Windows Update until nothing is left, and update the Store apps. Then tweak. A large Windows update can still reset some tweaks. The drift bar tells you when, and 'Re-apply' fixes it.", Theme.Muted, Theme.FS, 12));
             }
             else if (s == 1)
             {

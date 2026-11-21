@@ -1,8 +1,8 @@
 # ArchTweaker tweak list
 
-Generated from the catalog of ArchTweaker 3.38.1 by `tools/DumpTweaks.cs`. Do not edit by hand.
+Generated from the catalog of ArchTweaker 3.39.0 by `tools/DumpTweaks.cs`. Do not edit by hand.
 
-280 tweaks. **Lite** = shown in Lite mode (safe, not experimental). **Pro** = shown only in Pro mode.
+281 tweaks. **Lite** = shown in Lite mode (safe, not experimental). **Pro** = shown only in Pro mode.
 Impact: **HIGH** = 5 %+ / GBs / seconds · **MEDIUM** = 1–5 % or clearly measurable latency · **LOW** = under 1 %, consistency or ms-level feel · **NONE** = privacy, appearance or convenience.
 The ranges are typical public-test results, not guarantees. The details pane in the app shows the same text, plus what each tweak turns off and can break.
 
@@ -247,13 +247,14 @@ The ranges are typical public-test results, not guarantees. The details pane in 
 | Audio enhancements off | Lite | Safe | NONE | No measurable speed effect expected. |
 | Audio threads get high scheduling priority | Lite | Safe | NONE | No measurable speed effect expected. |
 
-## Internet & Network (14)
+## Internet & Network (15)
 
 | Tweak | Mode | Risk | Impact | Expected gain |
 |---|---|---|---|---|
 | Disable active connectivity probes (NCSI) | Pro | Moderate | NONE | No measurable speed effect expected. |
 | Don't cache failed DNS lookups | Lite | Safe | LOW | A site that briefly failed works again instantly instead of after up to 15 min. |
 | Use Cloudflare DNS (1.1.1.1) on all adapters | Lite | Safe | MEDIUM | DNS lookups ≈5–50 ms faster than many ISP resolvers (first visit to each site). In-game ping unchanged. |
+| Block ads and trackers with AdGuard DNS (all adapters) | Pro | Moderate | LOW | Ads and trackers blocked for every app at the DNS level, with no hosts-file size limit. Lookup speed about the same as other public DNS. |
 | Enable DNS over HTTPS (automatic) | Lite | Safe | NONE | Privacy/security; adds ≈0–5 ms on the first lookup. |
 | Prefer IPv4 over IPv6 | Pro | Moderate | LOW | Fixes multi-second connect delays on networks with broken IPv6. 0 ms otherwise. |
 | More parallel connections per server | Lite | Safe | LOW | Multi-file downloads in WinINet apps up to 2–4× faster to start. |

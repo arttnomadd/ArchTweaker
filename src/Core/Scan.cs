@@ -126,6 +126,7 @@ namespace ArchTweaker
             Probe_("memcompress", () => Probe.Is("MemCompression", "False"), "PowerShell: Get-MMAgent → MemoryCompression");
             Probe_("reservedstorage", () => Probe.Is("ReservedStorage", "Disabled"), "PowerShell: Get-WindowsReservedStorageState");
             Probe_("dnscloudflare", () => (Probe.Get("DNS") ?? "").Split(',').Contains("1.1.1.1"), "PowerShell: Get-DnsClientServerAddress → DNS servers");
+            Probe_("dnsadguard", () => (Probe.Get("DNS") ?? "").Split(',').Contains("94.140.14.14"), "PowerShell: Get-DnsClientServerAddress → DNS servers");   // 3.39
             Probe_("nicpower", () => Probe.AllAre("NicPower", "Disabled"), "PowerShell: Get-NetAdapterPowerManagement → AllowComputerToTurnOffDevice");
             Probe_("net_bindings", () => Probe.AllAre("LLDP", "False") && Probe.AllAre("Implat", "False"), "PowerShell: Get-NetAdapterBinding ms_lldp / ms_implat");
             Probe_("net_pacer", () => Probe.AllAre("QoS", "False"), "PowerShell: Get-NetAdapterBinding ms_pacer");   // 3.30

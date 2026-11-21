@@ -13,6 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
@@ -21,8 +22,10 @@ namespace ArchTweaker
 {
     public static class L
     {
-        public static readonly string[] Codes = { "en", "ru" };
-        public static readonly string[] Names = { "English", "Русский" };
+        // 3.39: every generated table (src/Generated/L10n<Code>.cs from lang/<code>.tsv) is a language; English first
+        static readonly KeyValuePair<string, Type>[] Tables = FindTables();
+        public static readonly string[] Codes = new[] { "en" }.Concat(Tables.Select(t => t.Key)).ToArray();
+        public static readonly string[] Names = new[] { "English" }.Concat(Tables.Select(t => NameOf(t.Value, t.Key))).ToArray();
         public static string Lang = "en";
         public static bool Active { get { return Lang != "en"; } }
 
@@ -43,7 +46,10 @@ namespace ArchTweaker
             try { o = Reg.Get(Hive.HKCU, @"Software\ArchTweaker", "Language"); } catch { }
             string code = o == null ? null : o.ToString();
             if (code == null || Array.IndexOf(Codes, code) < 0)
-                code = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "ru" ? "ru" : "en";
+            {
+                string ui = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;   // 3.39: any language that has a table
+                code = Array.IndexOf(Codes, ui) >= 0 ? ui : "en";
+            }
             Use(code);
         }
 
@@ -58,8 +64,31 @@ namespace ArchTweaker
             {
                 Lang = Array.IndexOf(Codes, code) < 0 ? "en" : code;
                 exact = new Dictionary<string, string>(StringComparer.Ordinal); patterns = new List<Pattern>(); fragments = new List<KeyValuePair<string, string>>(); cache.Clear(); missing.Clear();
-                if (Lang == "ru") Load(L10nRu.Table);
+                string t = TableFor(Lang); if (t != null) Load(t);
             }
+        }
+
+        static KeyValuePair<string, Type>[] FindTables()
+        {
+            try
+            {
+                return typeof(L).Assembly.GetTypes()
+                    .Where(t => t.Namespace == "ArchTweaker" && t.Name.Length == 6 && t.Name.StartsWith("L10n", StringComparison.Ordinal)
+                        && t.GetField("Table", BindingFlags.Public | BindingFlags.Static) != null)
+                    .Select(t => new KeyValuePair<string, Type>(t.Name.Substring(4).ToLowerInvariant(), t))
+                    .OrderBy(p => p.Key, StringComparer.Ordinal).ToArray();
+            }
+            catch { return new KeyValuePair<string, Type>[0]; }
+        }
+        static string NameOf(Type t, string code)
+        {
+            var f = t.GetField("Name", BindingFlags.Public | BindingFlags.Static);
+            return f != null ? (string)f.GetValue(null) : code;
+        }
+        public static string TableFor(string code)
+        {
+            foreach (var p in Tables) if (p.Key == code) return (string)p.Value.GetField("Table", BindingFlags.Public | BindingFlags.Static).GetValue(null);
+            return null;
         }
 
         // Table format: one entry per line, "English<TAB>Translation". \n and \t are escaped. Lines starting with # are comments.

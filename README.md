@@ -1,4 +1,4 @@
-# ArchTweaker 3.38.4
+# ArchTweaker 3.39.0
 
 **Why ArchTweaker:** measured, not promised (A/B test any tweak on this PC and keep only the measured wins); exactly undoable; works offline with no account; one small program of about 4 MB; open about every tweak's risk and evidence.
 
@@ -24,7 +24,7 @@ Data, backups and reports are in `C:\ProgramData\ArchTweaker\`.
 SmartScreen can warn about a new, unsigned program. Click **More info → Run anyway**, or build the exe yourself from this source (see [Build](#build)).
 
 - **What changed in each version:** [docs/CHANGELOG.md](docs/CHANGELOG.md) (also in the app: View → What's new).
-- **Every tweak with its expected gain:** [docs/TWEAKS.md](docs/TWEAKS.md) (280 tweaks).
+- **Every tweak with its expected gain:** [docs/TWEAKS.md](docs/TWEAKS.md) (281 tweaks).
 - **Design rules:** [docs/DESIGN.md](docs/DESIGN.md). **Architecture decisions:** [docs/adr/](docs/adr/).
 
 ## Features
@@ -99,7 +99,7 @@ ArchTweaker.exe /preset Gaming | /preset Auto | /hostsupdate | /apply profile.at
 
 **On Linux (Mono):**
 ```sh
-bash tools/build-win.sh 3.38.4.0 out/ArchTweaker.exe   # compiles against the .NET 4.5 reference assemblies, then audits the IL
+bash tools/build-win.sh 3.39.0.0 out/ArchTweaker.exe   # compiles against the .NET 4.5 reference assemblies, then audits the IL
 sh tools/run-tests.sh                                   # unit tests, must end "N passed, 0 failed"
 ```
 The code is C# 5 so that the compiler in the box on Windows can build it ([ADR-0001](docs/adr/0001-mono-build-against-dotnet45-refs.md)). CI builds and tests on Windows Server 2022 and 2025 ([.github/workflows/windows.yml](.github/workflows/windows.yml)).
@@ -118,6 +118,9 @@ The code is C# 5 so that the compiler in the box on Windows can build it ([ADR-0
 | `lang` | Translations (`ru.tsv`) |
 | `docs` | Changelog, tweak list, design rules, ADRs, screenshots |
 | `tools` | Build, tests, signer, generators |
+
+## Translations
+English and Russian are built in. To add your language, see [docs/TRANSLATING.md](docs/TRANSLATING.md): one table file, no code change.
 
 ## Credits
 Several device, power-plan and registry tweaks are adapted from the WinSux scripts by FR33THY (MIT License), which you provided. Each was re-implemented with live detection and an exact undo. Research sources: Microsoft power-settings and StorNVMe power documentation, Intel Wi-Fi roaming guidance, djdallmann/GamingPCSetup, valleyofdoom/PC-Tuning, Blur Busters forums, heise/Neowin (native NVMe).

@@ -21,7 +21,7 @@ namespace ArchTweaker
         }
         public static string Verdict(int n)
         {
-            return n <= Comfortable ? "Comfortable size for Windows" : n <= Heavy ? "Large: watch for slow first lookups after boot" : "Very large: Windows' DNS Client may use high CPU and lookups can stall";
+            return n <= Comfortable ? "Comfortable size for Windows" : n <= Heavy ? "Large: watch for slow first lookups after boot" : "Very large: Windows' DNS Client may use high CPU and lookups can stall. For lists this big, the AdGuard DNS tweak (Internet & Network) blocks at the DNS server instead.";
         }
         public void Set(int n, bool exact) { Count = n; Exact = exact; AccessibleName = (exact ? "" : "About ") + n.ToString("N0") + " domains. " + Verdict(n); Invalidate(); }
         protected override void OnPaint(PaintEventArgs e)

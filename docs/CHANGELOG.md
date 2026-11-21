@@ -6,6 +6,21 @@ Each version groups its changes under these headings, in this order (leave out t
 `### New features` · `### Tweaks` · `### Design` · `### Fixes` · `### Security` · `### Under the hood`.
 A short intro under the version title is fine. The What's new dialog filters by these headings.
 
+## 3.39.0: Measured verdicts, Scheduled tasks, Customize
+
+### New features
+- **Every measured tweak says what it did on this PC.** Besides the green "Proven" chip, a row now shows **No gain here** or **Worse here** when an A/B test or the Tuning assistant measured it with at least 3 runs each. Results from fewer runs stay in the details panel only.
+- **"Optimize safely" also undoes what didn't help.** Applied tweaks that measured no gain or a loss on this PC are undone in the same go. The confirmation says how many, and the log lists them.
+- **New page: Scheduled tasks** (Clean & apps, Pro). Every task on the PC, third-party first. Untick a task to disable it, or run it now. ArchTweaker records the state each task had before its first change, so "Put back all" and "Undo everything" restore it exactly. It never deletes a task. Disabling a Microsoft task asks once per session first.
+- **New page: Customize** (Windows tools, also in Lite). Taskbar alignment (Windows 11), search on the taskbar, seconds on the clock, where File Explorer opens, menu and hover delay, key repeat delay and speed, as drop-downs and number boxes. Each card says when the change takes effect. Every change goes into the undo journal, so "Put back all" and "Undo everything" restore what Windows had.
+- **The setup guide explains the best order:** drivers, then Windows Update until nothing is left, then Store app updates, then tweaks.
+
+### Tweaks
+- **Block ads and trackers with AdGuard DNS** (Internet & Network, moderate). AdGuard's public DNS blocks ad and tracker names for every app, with no hosts-file size limit. On Windows 11 ArchTweaker also registers its DNS-over-HTTPS address, so lookups are encrypted. Plain DNS stays as a fallback. Undo goes back to automatic DNS and removes the address. It can't be on together with "Use Cloudflare DNS". The Hosts blocker points to it when a list is very large.
+
+### Under the hood
+- **A new language needs no code change.** Every `lang/<code>.tsv` becomes a language. Its `# name:` line gives the name in the language list, and Windows starts in that language when the display language matches. [docs/TRANSLATING.md](docs/TRANSLATING.md) explains the steps.
+
 ## 3.38.4: Pages open right after start, risk badges for Store apps
 
 ### New features
