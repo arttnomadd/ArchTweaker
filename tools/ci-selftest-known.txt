@@ -1,3 +1,10 @@
 # Tweak ids allowed to FAIL the self-test on GitHub's Windows Server runners (one per line).
 # Add an id only with a reason: the tweak can't work on a server VM (no such device, service or feature),
 # not because it is broken on a real PC.
+# 3.39: device tweaks find no matching device on the runner VM (basic display adapter, no Wi-Fi, no sound card,
+# virtual USB/storage controllers without the MSI setting), so nothing is written and nothing is detected.
+pp_gpu
+gd_msi
+gd_msi_more
+gd_wifi_roam
+gd_audio_power
