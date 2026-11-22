@@ -1,6 +1,6 @@
 # ArchTweaker 3.40.0
 
-**Why ArchTweaker:** measured, not promised (A/B test any tweak on this PC and keep only the measured wins); exactly undoable; works offline with no account; one small program of about 4 MB; open about every tweak's risk and evidence.
+**Why ArchTweaker:** measured, not promised (A/B test any tweak on this PC and keep only the measured wins); exactly undoable; works offline with no account; one small program of about 3.5 MB; open about every tweak's risk and evidence.
 
 An original Windows 10/11 tweaker for maximum performance and the lowest latency. It measures what each change does on your PC and undoes every change exactly. Black & red dark theme and a light theme, English and Russian.
 
@@ -28,15 +28,16 @@ SmartScreen can warn about a new, unsigned program. Click **More info → Run an
 - **Design rules:** [docs/DESIGN.md](docs/DESIGN.md). **Architecture decisions:** [docs/adr/](docs/adr/).
 
 ## Features
-- **280 tweaks in 14 categories.** Each one reads its real state live, shows its risk, what it can break and its expected gain, and is undone exactly.
+- **281 tweaks in 14 categories.** Each one reads its real state live, shows its risk, what it can break and its expected gain, and is undone exactly.
+- **Measured verdicts on every row.** After an A/B test a tweak shows "Proven", "No gain here" or "Worse here" for this PC, and "Optimize safely" undoes the ones that did not help.
 - **Measure before you keep.** Latency (DPC/ISR), Benchmark with 1 % lows (PresentMon), A/B test and the Tuning assistant, which keeps a tweak only when a Welch's t-test shows at least a 1 % gain on your PC.
 - **Live overlay.** FPS, 1 % low, DPC/ISR time, interrupts per second and timer resolution in a click-through corner box (Ctrl+Shift+F10).
 - **Tuners (Pro).** Interrupt tuner (MSI mode, affinity, priority), Power tuner (A/B tests power-plan values), Tune everything.
 - **PC advisor and Hardware audit.** Finds what holds this PC back: RAM below its rated speed, PCIe link, BIOS settings, drivers, overlays.
-- **Cleanup and apps.** Cleanup with an allowlist of safe paths, Deep clean, Disk space, Uninstaller, UWP apps, Startup, Services.
-- **Windows tools.** Hosts blocker with maintained block lists (StevenBlack, HaGeZi, AdAway and more) and their dates, Context menu, Drivers, Power settings, Bake into ISO (puts registry tweaks into a Windows image offline).
+- **Cleanup and apps.** Cleanup with an allowlist of safe paths, Deep clean, Disk space, Uninstaller, Store apps with risk badges (Safe, Caution, Keep), Startup, Scheduled tasks (exactly undoable, never deleted), Services.
+- **Windows tools.** Customize (taskbar, File Explorer, menu and key settings, all undoable), Hosts blocker with maintained block lists (StevenBlack, HaGeZi, AdAway and more) and their dates, Context menu, Drivers, Power settings, Bake into ISO (puts registry tweaks into a Windows image offline).
 - **Drift guard.** When Windows Update or a driver sets an applied tweak back, a bar says so and re-applies it on your click.
-- **English and Russian**, dark and light themes, keyboard navigation (Ctrl+K finds any page).
+- **English and Russian**, dark and light themes, keyboard navigation (Ctrl+K finds any page, Alt+Left / Alt+Right or the mouse back button move between pages).
 
 ![A tweak page: each row shows what it changes, what it can break and the expected gain](docs/screenshots/tweaks.png)
 
@@ -123,7 +124,7 @@ The code is C# 5 so that the compiler in the box on Windows can build it ([ADR-0
 English and Russian are built in. To add your language, see [docs/TRANSLATING.md](docs/TRANSLATING.md): one table file, no code change.
 
 ## Credits
-Several device, power-plan and registry tweaks are adapted from the WinSux scripts by FR33THY (MIT License), which you provided. Each was re-implemented with live detection and an exact undo. Research sources: Microsoft power-settings and StorNVMe power documentation, Intel Wi-Fi roaming guidance, djdallmann/GamingPCSetup, valleyofdoom/PC-Tuning, Blur Busters forums, heise/Neowin (native NVMe).
+Several device, power-plan and registry tweaks are adapted from the WinSux scripts by FR33THY (MIT License). Each was re-implemented with live detection and an exact undo. Research sources: Microsoft power-settings and StorNVMe power documentation, Intel Wi-Fi roaming guidance, djdallmann/GamingPCSetup, valleyofdoom/PC-Tuning, Blur Busters forums, heise/Neowin (native NVMe).
 
 ## Notes
 - Command tweaks run once when applied. Their checkbox shows what ArchTweaker applied.

@@ -1,6 +1,6 @@
 # ArchTweaker tweak list
 
-Generated from the catalog of ArchTweaker 3.39.0 by `tools/DumpTweaks.cs`. Do not edit by hand.
+Generated from the catalog of ArchTweaker 3.40.0 by `tools/DumpTweaks.cs`. Do not edit by hand.
 
 281 tweaks. **Lite** = shown in Lite mode (safe, not experimental). **Pro** = shown only in Pro mode.
 Impact: **HIGH** = 5 %+ / GBs / seconds · **MEDIUM** = 1–5 % or clearly measurable latency · **LOW** = under 1 %, consistency or ms-level feel · **NONE** = privacy, appearance or convenience.

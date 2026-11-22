@@ -34,7 +34,8 @@ static class DumpTweaks
         if (File.Exists(readme))
         {
             string r = File.ReadAllText(readme);
-            string r2 = System.Text.RegularExpressions.Regex.Replace(r, @"\(\d+ tweaks\)", "(" + all.Count + " tweaks)");
+            // "(281 tweaks)" in the docs list and "**281 tweaks in" in Features (3.40: the second one was missed)
+            string r2 = System.Text.RegularExpressions.Regex.Replace(r, @"(\(|\*\*)\d+ tweaks", m => m.Groups[1].Value + all.Count + " tweaks");
             if (r2 != r) { File.WriteAllText(readme, r2, new UTF8Encoding(false)); Console.WriteLine("README.md: tweak count set to {0}", all.Count); }
         }
         return 0;
