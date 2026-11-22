@@ -15,7 +15,12 @@ namespace ArchTweaker
 ### Tweaks
 - **Block ads and trackers with AdGuard DNS** (Internet & Network, moderate). AdGuard's public DNS blocks ad and tracker names for every app, with no hosts-file size limit. On Windows 11 ArchTweaker also registers its DNS-over-HTTPS address, so lookups are encrypted. Plain DNS stays as a fallback. Undo goes back to automatic DNS and removes the address. It can't be on together with ""Use Cloudflare DNS"". The Hosts blocker points to it when a list is very large.
 
+### Fixes
+- **The command palette (Ctrl+K) opens the page you name.** An exact page name now always comes first, ahead of tweaks and tools that contain the same words. The palette window also has a title, so screen readers announce it.
+- **Scheduled tasks never switches off ArchTweaker's own tasks** (boot guard, maintenance). They carry an ArchTweaker badge and are managed on Tools & backup.
+
 ### Under the hood
+- **The Windows UI tests pass on Windows Server 2022 and 2025**, including the Russian interface and ""apply the Recommended preset, then Undo everything"" on a throwaway VM. Device tweaks that find no device on the test VM are listed as expected in `tools/ci-selftest-known.txt`.
 - **A new language needs no code change.** Every `lang/<code>.tsv` becomes a language. Its `# name:` line gives the name in the language list, and Windows starts in that language when the display language matches. [docs/TRANSLATING.md](docs/TRANSLATING.md) explains the steps.
 
 ## 3.38.4: Pages open right after start, risk badges for Store apps
@@ -102,7 +107,12 @@ ArchTweaker now has its public home at github.com/arttnomadd/ArchTweaker.
 ### Tweaks
 - **Block ads and trackers with AdGuard DNS** (Internet & Network, moderate). AdGuard's public DNS blocks ad and tracker names for every app, with no hosts-file size limit. On Windows 11 ArchTweaker also registers its DNS-over-HTTPS address, so lookups are encrypted. Plain DNS stays as a fallback. Undo goes back to automatic DNS and removes the address. It can't be on together with ""Use Cloudflare DNS"". The Hosts blocker points to it when a list is very large.
 
+### Fixes
+- **The command palette (Ctrl+K) opens the page you name.** An exact page name now always comes first, ahead of tweaks and tools that contain the same words. The palette window also has a title, so screen readers announce it.
+- **Scheduled tasks never switches off ArchTweaker's own tasks** (boot guard, maintenance). They carry an ArchTweaker badge and are managed on Tools & backup.
+
 ### Under the hood
+- **The Windows UI tests pass on Windows Server 2022 and 2025**, including the Russian interface and ""apply the Recommended preset, then Undo everything"" on a throwaway VM. Device tweaks that find no device on the test VM are listed as expected in `tools/ci-selftest-known.txt`.
 - **A new language needs no code change.** Every `lang/<code>.tsv` becomes a language. Its `# name:` line gives the name in the language list, and Windows starts in that language when the display language matches. [docs/TRANSLATING.md](docs/TRANSLATING.md) explains the steps.
 
 ## 3.38.4: Pages open right after start, risk badges for Store apps
