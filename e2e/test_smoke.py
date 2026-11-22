@@ -1,6 +1,7 @@
 # ArchTweaker E2E smoke tests. Navigate every page and confirm the app stays alive and responsive.
 # Locators use the UIA AutomationId, which WinForms takes from Control.Name: nav items set Name to their page name,
 # and the header label exposes AutomationId "pageTitle". The tests run in Pro mode (conftest), except those marked "lite".
+import os
 import time
 import pytest
 
@@ -143,6 +144,9 @@ def test_more_pages_open(app, page):
 
 
 @pytest.mark.smoke
+# 3.39: keyboard focus on a hosted CI VM is not reliable (Ctrl+K lost, or keys typed before the palette opened).
+# The ranking is a unit test (UiTests.Palette_RanksExactPageFirst); this keyboard check runs on real desktops.
+@pytest.mark.skipif(os.environ.get("CI") == "true", reason="keyboard focus is unreliable on hosted CI VMs; ranking is unit-tested")
 def test_command_palette_opens_and_navigates(app):
     # Act: Ctrl+K, type a page name, Enter.
     # 3.38.4: a real click on the page title first, so the keys reach ArchTweaker and not Windows search

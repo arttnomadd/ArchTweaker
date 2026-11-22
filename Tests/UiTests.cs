@@ -32,6 +32,26 @@ static class UiTests
         T.True(string.Join(" ", lines.ToArray()) == "one two three four five six seven eight nine ten", "no words lost");
     }
 
+    // 3.39: what Ctrl+K picks for a query (the keyboard part is an e2e test on real desktops)
+    [Test] public static void Palette_RanksExactPageFirst()
+    {
+        Func<string, string, string, CommandPalette.Cmd> c = (kind, text, search) => new CommandPalette.Cmd { Kind = kind, Text = text, Search = search ?? text };
+        var all = new List<CommandPalette.Cmd>
+        {
+            c("Page", "Tools & backup", null), c("Tool", "Free disk space", null), c("Tweak", "Disk space warning off", "Disk space warning off System"),
+            c("Action", "Disk space report", null), c("Page", "Disk space", null), c("Page", "Cleanup", null),
+        };
+        var r = CommandPalette.Rank(all, "Disk space");
+        T.Eq(r[0].Text, "Disk space", "the exact page name wins");
+        T.True(r.All(x => x.Search.IndexOf("disk", StringComparison.OrdinalIgnoreCase) >= 0 && x.Search.IndexOf("space", StringComparison.OrdinalIgnoreCase) >= 0), "every word must match");
+        T.False(r.Any(x => x.Text == "Tools & backup" || x.Text == "Cleanup"), "pages without the words are left out");
+        T.Eq(CommandPalette.Rank(all, "  disk SPACE ")[0].Text, "Disk space", "case and spaces don't matter");
+        T.Eq(CommandPalette.Rank(all, "disk")[0].Kind, "Page", "starts-with ties: a page before an action or tweak");
+        T.Eq(CommandPalette.Rank(all, "").Count, all.Count, "empty query lists everything");
+        T.Eq(CommandPalette.Rank(all, "")[0].Kind, "Page", "pages first in the full list");
+        T.Eq(CommandPalette.Rank(all, null).Count, all.Count, "null query is empty");
+    }
+
     [Test] public static void EveryAccent_PassesContrast_InBothThemes()
     {
         int keepA = Theme.AccentIndex, keepS = Theme.Scheme; var keepC = Theme.SchemeCustom;

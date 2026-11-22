@@ -13,6 +13,18 @@ namespace ArchTweaker
     public class CommandPalette : Form
     {
         public class Cmd { public string Kind, Text, Search; public Action Run; }
+
+        // What the palette lists for a query, best first (unit-tested). Every word must appear; an exact name wins,
+        // then a name that starts with the first word, then pages before actions before tweaks and tools.
+        public static List<Cmd> Rank(IEnumerable<Cmd> all, string query)
+        {
+            string q = (query ?? "").Trim();
+            var words = q.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            return all.Where(c => words.All(w => (c.Search ?? "").IndexOf(w, StringComparison.OrdinalIgnoreCase) >= 0))
+                      .OrderBy(c => q.Length > 0 && (c.Text ?? "").Equals(q, StringComparison.OrdinalIgnoreCase) ? 0 : 1)   // 3.39: an exact name always wins
+                      .ThenBy(c => words.Length > 0 && (c.Text ?? "").StartsWith(words[0], StringComparison.OrdinalIgnoreCase) ? 0 : 1)
+                      .ThenBy(c => c.Kind == "Page" ? 0 : c.Kind == "Action" ? 1 : 2).Take(60).ToList();
+        }
         readonly TextBox box = new TextBox();
         readonly ListBox list = new ListBox();
         readonly List<Cmd> all;
@@ -59,11 +71,7 @@ namespace ArchTweaker
         void Pick() { if (list.SelectedIndex >= 0 && list.SelectedIndex < shown.Count) { chosen = shown[list.SelectedIndex]; Close(); } }
         void Refilter()
         {
-            var words = box.Text.Trim().Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-            shown = all.Where(c => words.All(w => c.Search.IndexOf(w, StringComparison.OrdinalIgnoreCase) >= 0))
-                       .OrderBy(c => c.Text.Equals(box.Text.Trim(), StringComparison.OrdinalIgnoreCase) ? 0 : 1)   // 3.39: an exact name always wins
-                       .ThenBy(c => words.Length > 0 && c.Text.StartsWith(words[0], StringComparison.OrdinalIgnoreCase) ? 0 : 1)
-                       .ThenBy(c => c.Kind == "Page" ? 0 : c.Kind == "Action" ? 1 : 2).Take(60).ToList();
+            shown = Rank(all, box.Text);
             list.BeginUpdate(); list.Items.Clear(); foreach (var c in shown) list.Items.Add(c.Text); list.EndUpdate();
             if (list.Items.Count > 0) list.SelectedIndex = 0;
         }
