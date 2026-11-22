@@ -203,8 +203,22 @@ def test_apply_safe_preset_then_undo_everything(app):
     app.child_window(title="Undo last apply", control_type="Button").wait("enabled", timeout=300)
     # Act 2: undo everything.
     app.child_window(title="Undo everything", control_type="Button").click_input()
-    dlg = Desktop(backend="uia").window(title="ArchTweaker", control_type="Window", found_index=0)
-    dlg.child_window(title="Undo everything", control_type="Button").click_input()
+    # 3.39: the confirmation is a dialog owned by the main window; UI Automation lists it under the window
+    # (or at the top level). Find its "Undo everything" button, not the one on the main window.
+    pid = app.element_info.process_id
+    confirm = None
+    end = time.time() + 30
+    while confirm is None and time.time() < end:
+        roots = list(app.children(control_type="Window")) + [w for w in Desktop(backend="uia").windows(process=pid) if w.handle != app.handle]
+        for w in roots:
+            hits = [b for b in w.descendants(control_type="Button") if b.window_text() == "Undo everything"]
+            if hits:
+                confirm = hits[0]
+                break
+        if confirm is None:
+            time.sleep(0.5)
+    assert confirm is not None, "the Undo everything confirmation did not open"
+    confirm.click_input()
     # Assert: the app is still alive and nothing is pending.
     app.child_window(auto_id="applyChanges", control_type="Button").wait("visible", timeout=300)
     assert app.is_visible()
