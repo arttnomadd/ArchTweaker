@@ -87,9 +87,20 @@ namespace ArchTweaker
 
         // Reads the states that aren't cached yet on the reader thread, then calls done on the UI thread.
         // If the cache is cleared meanwhile, the read starts again (max 3 times) so done never reports half the states.
+        // 3.40: checks that start a process or call a driver (detect probes, NVIDIA, power plan, tasks, devices)
+        public static bool Slow(Tweak t)
+        {
+            return t.Detect != null || t.Ops.Any(o => o is NvDrsOp || o is PowerOp || o is TaskOp || o is DevDisableOp);
+        }
+        // 3.40: progress of the reads queued so far, for "Checking tweaks: 120 / 281"
+        static int progDone, progTotal;
+        public static void Progress(out int done, out int total) { lock (sync) { done = progDone; total = progTotal; } }
+
         public static void ReadAsync(IEnumerable<Tweak> tweaks, Control ui, Action done)
         {
-            var all = tweaks.Distinct().ToList();
+            // 3.40: fast registry checks first; the slow ones last, so the shared PowerShell probe (warming up in the
+            // background since start) is ready when they need it, instead of the reader waiting on it early
+            var all = tweaks.Distinct().OrderBy(t => Slow(t) ? 1 : 0).ToList();
             if (all.All(t => Get(t).HasValue)) { if (done != null) done(); return; }
             var ctx = SynchronizationContext.Current;   // posts even before `ui` has a window handle
             Enqueue(delegate
@@ -97,11 +108,12 @@ namespace ArchTweaker
                 for (int attempt = 0; attempt < 3; attempt++)
                 {
                     int g = Generation;
+                    lock (sync) { progDone = 0; progTotal = all.Count; }
                     foreach (var t in all)
                     {
                         if (Generation != g) break;
-                        if (Get(t).HasValue) continue;
-                        Put(t, Read(t), g);
+                        if (!Get(t).HasValue) Put(t, Read(t), g);
+                        lock (sync) progDone++;
                     }
                     lock (sync) if (g == gen && holds == 0) break;
                     Thread.Sleep(150);

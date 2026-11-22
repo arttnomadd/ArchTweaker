@@ -1,4 +1,4 @@
-# ArchTweaker 3.39.0
+# ArchTweaker 3.40.0
 
 **Why ArchTweaker:** measured, not promised (A/B test any tweak on this PC and keep only the measured wins); exactly undoable; works offline with no account; one small program of about 4 MB; open about every tweak's risk and evidence.
 
@@ -99,7 +99,7 @@ ArchTweaker.exe /preset Gaming | /preset Auto | /hostsupdate | /apply profile.at
 
 **On Linux (Mono):**
 ```sh
-bash tools/build-win.sh 3.39.0.0 out/ArchTweaker.exe   # compiles against the .NET 4.5 reference assemblies, then audits the IL
+bash tools/build-win.sh 3.40.0.0 out/ArchTweaker.exe   # compiles against the .NET 4.5 reference assemblies, then audits the IL
 sh tools/run-tests.sh                                   # unit tests, must end "N passed, 0 failed"
 ```
 The code is C# 5 so that the compiler in the box on Windows can build it ([ADR-0001](docs/adr/0001-mono-build-against-dotnet45-refs.md)). CI builds and tests on Windows Server 2022 and 2025 ([.github/workflows/windows.yml](.github/workflows/windows.yml)).

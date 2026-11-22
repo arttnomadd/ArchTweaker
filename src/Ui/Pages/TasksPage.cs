@@ -50,7 +50,7 @@ namespace ArchTweaker
             if (data != null) { Fill(); return; }
             Skin.Loading(lv);
             List<SchedTask> d = null;
-            MainForm.Instance.Busy("Reading scheduled tasks…", () => { d = TasksModule.Load(); }, () => { data = d; Fill(); });
+            MainForm.Instance.Load("Reading scheduled tasks…", () => { d = TasksModule.Load(); }, () => { data = d; Fill(); });
         }
         public void Filter(string q) { query = q ?? ""; Fill(); }
 

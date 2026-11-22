@@ -3,7 +3,24 @@ namespace ArchTweaker
 {
     public static class Changelog
     {
-        public const string Text = @"## 3.39.0: Measured verdicts, Scheduled tasks, Customize
+        public const string Text = @"## 3.40.0: Faster refresh, back and forward
+
+### New features
+- **Back and forward between pages.** Alt+Left and Alt+Right, the back and forward buttons on a mouse, the browser keys on a keyboard, and ""Go back"" / ""Go forward"" in the command palette. ArchTweaker remembers the last 30 pages.
+- **Recent pages first in the command palette.** Ctrl+K with nothing typed lists the 5 pages you used last at the top.
+- **Home counts while it reads the tweaks:** ""Checking tweaks: 120 / 281"" instead of a still message.
+
+### Fixes
+- **Pages stay open while a list loads.** Reading apps, tasks, services, drivers, power plans, the PC advisor and other lists no longer turns the sidebar off. Only Apply, Undo and other changes still wait.
+- **The details panel stays on medium windows.** It narrows from 370 to 260 pixels before it hides, so windows of about 1,050 pixels and wider keep it (before: about 1,160).
+- **Disk space follows High Contrast.** The chart uses the system colours when Windows High Contrast is on.
+
+### Under the hood
+- **Refreshing the tweak states is about 2 seconds faster on PCs with an NVIDIA card.** The 9 NVIDIA tweaks each opened a driver-settings session and loaded the whole profile database again. Reads now share one session for 3 seconds, and a change closes it first. Measured on one PC: 1,960 ms → 125 ms for the 9 reads, and 1,950 ms → 21 ms for a repeat read of all 281 tweaks.
+- **The first read of all tweaks does the fast registry checks first.** The checks that start a program or call a driver come last, so the shared PowerShell probe (about 2.5 seconds, started at launch) is ready when they need it, instead of the reader waiting on it early.
+- **Home reads the active power plan from the Windows power API** instead of starting powercfg.exe and reading its text, which also differs between Windows languages.
+
+## 3.39.0: Measured verdicts, Scheduled tasks, Customize
 
 ### New features
 - **Every measured tweak says what it did on this PC.** Besides the green ""Proven"" chip, a row now shows **No gain here** or **Worse here** when an A/B test or the Tuning assistant measured it with at least 3 runs each. Results from fewer runs stay in the details panel only.
@@ -79,23 +96,25 @@ ArchTweaker now has its public home at github.com/arttnomadd/ArchTweaker.
 
 ### Under the hood
 - **The README explains the project in full:** download, requirements, safety and undo, updates and their signature, building on Windows and Linux, tests and the folder layout.
-
-## 3.38.0: Hosts blocker list check
+";
+        public const string All = @"## 3.40.0: Faster refresh, back and forward
 
 ### New features
-- **Each list shows its own date.** After a download, the Hosts blocker reads the date the list's maintainer wrote into the file (""list dated 2026-11-16"") and shows it next to the size. When a list has not been updated for more than half a year, its card says so in amber: it still works, but new ad and tracking servers are missing.
+- **Back and forward between pages.** Alt+Left and Alt+Right, the back and forward buttons on a mouse, the browser keys on a keyboard, and ""Go back"" / ""Go forward"" in the command palette. ArchTweaker remembers the last 30 pages.
+- **Recent pages first in the command palette.** Ctrl+K with nothing typed lists the 5 pages you used last at the top.
+- **Home counts while it reads the tweaks:** ""Checking tweaks: 120 / 281"" instead of a still message.
 
 ### Fixes
-- **List sizes are current.** Every list was checked on 16 Nov 2026. All 15 download addresses work. StevenBlack (≈76,000 domains, updated 15 Nov 2026) and HaGeZi (Light ≈164,000, Windows/Office ≈780, DoH ≈4,000, updated 13–16 Nov 2026) are maintained daily. The sizes shown before the first download now match.
-- **WindowsSpyBlocker says how old it is.** Its spy list last changed in May 2022. The card now says so and points to HaGeZi Windows/Office, which gets updates every day. The list stays for anyone who wants it.
-
-### Design
-- **The list cards are raised surfaces**, like the rest of the app since 3.36. The coloured stripe on the left is gone; the switch shows whether a list is on.
+- **Pages stay open while a list loads.** Reading apps, tasks, services, drivers, power plans, the PC advisor and other lists no longer turns the sidebar off. Only Apply, Undo and other changes still wait.
+- **The details panel stays on medium windows.** It narrows from 370 to 260 pixels before it hides, so windows of about 1,050 pixels and wider keep it (before: about 1,160).
+- **Disk space follows High Contrast.** The chart uses the system colours when Windows High Contrast is on.
 
 ### Under the hood
-- **HaGeZi Multi (≈404,000) and Pro (≈518,000) were not added.** In a Windows hosts file, lists of that size make the DNS Client use a lot of CPU, even at 9 names per line. Light stays the largest HaGeZi choice.
-";
-        public const string All = @"## 3.39.0: Measured verdicts, Scheduled tasks, Customize
+- **Refreshing the tweak states is about 2 seconds faster on PCs with an NVIDIA card.** The 9 NVIDIA tweaks each opened a driver-settings session and loaded the whole profile database again. Reads now share one session for 3 seconds, and a change closes it first. Measured on one PC: 1,960 ms → 125 ms for the 9 reads, and 1,950 ms → 21 ms for a repeat read of all 281 tweaks.
+- **The first read of all tweaks does the fast registry checks first.** The checks that start a program or call a driver come last, so the shared PowerShell probe (about 2.5 seconds, started at launch) is ready when they need it, instead of the reader waiting on it early.
+- **Home reads the active power plan from the Windows power API** instead of starting powercfg.exe and reading its text, which also differs between Windows languages.
+
+## 3.39.0: Measured verdicts, Scheduled tasks, Customize
 
 ### New features
 - **Every measured tweak says what it did on this PC.** Besides the green ""Proven"" chip, a row now shows **No gain here** or **Worse here** when an A/B test or the Tuning assistant measured it with at least 3 runs each. Results from fewer runs stay in the details panel only.

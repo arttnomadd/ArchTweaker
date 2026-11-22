@@ -76,6 +76,7 @@ namespace ArchTweaker
         DirNode hover; readonly ToolTip tip = Tips.New();
         public event EventHandler Navigated;
         public DirNode Current { get { return cur; } }
+        static Color[] HcHues { get { return new[] { SystemColors.Highlight, SystemColors.HotTrack, SystemColors.WindowText, SystemColors.GrayText }; } }
         static readonly Color[] Hues = { Color.FromArgb(225, 29, 46), Color.FromArgb(47, 111, 235), Color.FromArgb(20, 184, 166), Color.FromArgb(255, 176, 32), Color.FromArgb(139, 92, 246), Color.FromArgb(52, 199, 89) };
         public TreemapView()
         {
@@ -118,7 +119,8 @@ namespace ArchTweaker
             int i = 0;
             foreach (var c in cells)
             {
-                var r = c.Value; Color baseC = c.Key.IsFiles ? Theme.Muted : Hues[i++ % Hues.Length];
+                var hues = SystemInformation.HighContrast ? HcHues : Hues;   // 3.40: High Contrast uses the system colours
+                var r = c.Value; Color baseC = c.Key.IsFiles ? Theme.Muted : hues[i++ % hues.Length];
                 Color fill = Gfx.Mix(Theme.Panel, baseC, c.Key == hover ? 0.75 : 0.5);
                 using (var b = new SolidBrush(fill)) g.FillRectangle(b, r);
                 using (var pen = new Pen(Theme.Panel, 2)) g.DrawRectangle(pen, r.X, r.Y, r.Width, r.Height);

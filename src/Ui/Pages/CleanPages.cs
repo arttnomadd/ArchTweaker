@@ -120,7 +120,7 @@ namespace ArchTweaker
         {
             Skin.Loading(lv);
             var icons = new Dictionary<Program32, Bitmap>();
-            MainForm.Instance.Busy("Reading installed programs…", delegate
+            MainForm.Instance.Load("Reading installed programs…", delegate
             {
                 progs = Uninstaller.Load();
                 foreach (var p in progs) icons[p] = AppIcons.FromIconSpec(p.Icon);   // 3.3: DisplayIcon, read off the UI thread
@@ -162,7 +162,7 @@ namespace ArchTweaker
         {
             if (p == null) return;
             List<Leftover> found = null;
-            MainForm.Instance.Busy("Scanning for leftovers…", delegate { found = Uninstaller.ScanLeftovers(p); }, delegate
+            MainForm.Instance.Load("Scanning for leftovers…", delegate { found = Uninstaller.ScanLeftovers(p); }, delegate
             {
                 if (found == null || found.Count == 0) { Dlg.Info("No leftovers found", p.Name + " left no files or registry entries behind."); return; }
                 using (var d = new LeftoverDialog(p.Name, found))

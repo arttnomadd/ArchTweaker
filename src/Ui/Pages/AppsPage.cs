@@ -30,7 +30,7 @@ namespace ArchTweaker
             bar.Controls.Add(Theme.Btn("App settings (Discord, Firefox, Spotify)…", delegate { using (var d = new AppSettingsDialog()) d.ShowDialog(FindForm()); }));   // 3.30
             Controls.Add(lv); Controls.Add(Theme.Note("Safe: nothing else needs it. Caution: a feature or game service stops working. Keep: Windows or other programs need it. Unknown: check what it is first. 'Check known bloat' ticks Safe apps only. Point at a badge to see why.")); Controls.Add(bar);
         }
-        public void OnShow() { if (data != null) { Fill(""); return; } Skin.Loading(lv); MainForm.Instance.Busy("Reading installed apps…", () => { data = AppsModule.Load(); foreach (var a in data) a.Icon = AppIcons.FromPackage(a.InstallLocation); }, () => Fill("")); }
+        public void OnShow() { if (data != null) { Fill(""); return; } Skin.Loading(lv); MainForm.Instance.Load("Reading installed apps…", () => { data = AppsModule.Load(); foreach (var a in data) a.Icon = AppIcons.FromPackage(a.InstallLocation); }, () => Fill("")); }
         public void Filter(string q) { Fill(q); }
         void Fill(string q)
         {

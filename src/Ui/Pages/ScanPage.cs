@@ -51,7 +51,7 @@ namespace ArchTweaker
             filter.Items.AddRange(new object[] { "Show all", "Only ON (active)", "Only OFF (not active)", "Only not available", "OFF with medium/high gain" });
             filter.SelectedIndex = 0; filter.SelectedIndexChanged += delegate { Fill(""); };
             bar.Controls.Add(filter);
-            bar.Controls.Add(Theme.Btn("Show raw system state", delegate { string t = null; MainForm.Instance.Busy("Reading system state…", () => { t = Scanner.RawState(); }, () => { raw.Text = t; }); }));
+            bar.Controls.Add(Theme.Btn("Show raw system state", delegate { string t = null; MainForm.Instance.Load("Reading system state…", () => { t = Scanner.RawState(); }, () => { raw.Text = t; }); }));
             bar.Controls.Add(Theme.Btn("Export report…", delegate { Export(); }));
             summary = new Label { AutoSize = true, ForeColor = Theme.Text, Font = Theme.FB, Margin = new Padding(12, 8, 0, 0) };
             bar.Controls.Add(summary);
@@ -68,7 +68,7 @@ namespace ArchTweaker
             done = true;
             List<ScanRow> r = null;
             Skin.Loading(grid);
-            MainForm.Instance.Busy("Scanning the whole PC…", () => { r = Scanner.Run(null); }, () => { rows = r; Fill(""); });
+            MainForm.Instance.Load("Scanning the whole PC…", () => { r = Scanner.Run(null); }, () => { rows = r; Fill(""); });
         }
 
         void Fill(string q)

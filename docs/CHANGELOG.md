@@ -6,6 +6,23 @@ Each version groups its changes under these headings, in this order (leave out t
 `### New features` · `### Tweaks` · `### Design` · `### Fixes` · `### Security` · `### Under the hood`.
 A short intro under the version title is fine. The What's new dialog filters by these headings.
 
+## 3.40.0: Faster refresh, back and forward
+
+### New features
+- **Back and forward between pages.** Alt+Left and Alt+Right, the back and forward buttons on a mouse, the browser keys on a keyboard, and "Go back" / "Go forward" in the command palette. ArchTweaker remembers the last 30 pages.
+- **Recent pages first in the command palette.** Ctrl+K with nothing typed lists the 5 pages you used last at the top.
+- **Home counts while it reads the tweaks:** "Checking tweaks: 120 / 281" instead of a still message.
+
+### Fixes
+- **Pages stay open while a list loads.** Reading apps, tasks, services, drivers, power plans, the PC advisor and other lists no longer turns the sidebar off. Only Apply, Undo and other changes still wait.
+- **The details panel stays on medium windows.** It narrows from 370 to 260 pixels before it hides, so windows of about 1,050 pixels and wider keep it (before: about 1,160).
+- **Disk space follows High Contrast.** The chart uses the system colours when Windows High Contrast is on.
+
+### Under the hood
+- **Refreshing the tweak states is about 2 seconds faster on PCs with an NVIDIA card.** The 9 NVIDIA tweaks each opened a driver-settings session and loaded the whole profile database again. Reads now share one session for 3 seconds, and a change closes it first. Measured on one PC: 1,960 ms → 125 ms for the 9 reads, and 1,950 ms → 21 ms for a repeat read of all 281 tweaks.
+- **The first read of all tweaks does the fast registry checks first.** The checks that start a program or call a driver come last, so the shared PowerShell probe (about 2.5 seconds, started at launch) is ready when they need it, instead of the reader waiting on it early.
+- **Home reads the active power plan from the Windows power API** instead of starting powercfg.exe and reading its text, which also differs between Windows languages.
+
 ## 3.39.0: Measured verdicts, Scheduled tasks, Customize
 
 ### New features

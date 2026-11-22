@@ -39,7 +39,7 @@ namespace ArchTweaker
         void Load2()
         {
             loaded = true; Skin.Loading(lv);
-            MainForm.Instance.Busy("Reading the driver store…", delegate { pkgs = DriverStore.Scan(); }, delegate
+            MainForm.Instance.Load("Reading the driver store…", delegate { pkgs = DriverStore.Scan(); }, delegate
             {
                 lv.BeginUpdate(); lv.Items.Clear();
                 foreach (var p in pkgs)

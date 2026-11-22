@@ -64,12 +64,47 @@ namespace ArchTweaker
             }
         }
 
+        // 3.40: reads share one loaded session for a few seconds. LoadSettings reads the driver's whole profile
+        // database (100–400 ms), and a state refresh reads 9 settings in a row; each used to load it again.
+        const int ReadReuseMs = 3000;
+        static IntPtr readSession = IntPtr.Zero, readProfile = IntPtr.Zero;
+        static DateTime readAt;
+        static void DropReadSession()
+        {
+            if (readSession == IntPtr.Zero) return;
+            try { Fn<DH>(ID_DestroySession)(readSession); } catch { }
+            readSession = IntPtr.Zero; readProfile = IntPtr.Zero;
+        }
+
         // Opens a DRS session on the base profile, runs work, saves when asked, always destroys the session.
+        // Reads (save = false) reuse a session loaded less than ReadReuseMs ago; a write drops it first, so it
+        // starts from fresh settings and the next read sees the written value.
         static void Session(bool save, Action<IntPtr, IntPtr> work)
         {
             lock (sync)
             {
                 if (!Available) throw new InvalidOperationException("No NVIDIA driver (NvAPI) found.");
+                if (!save)
+                {
+                    if (readSession == IntPtr.Zero || (DateTime.UtcNow - readAt).TotalMilliseconds > ReadReuseMs)
+                    {
+                        DropReadSession();
+                        IntPtr rs;
+                        Check(Fn<DOutH>(ID_CreateSession)(out rs), "CreateSession");
+                        try
+                        {
+                            Check(Fn<DH>(ID_LoadSettings)(rs), "LoadSettings");
+                            IntPtr rp; Check(Fn<DHOutH>(ID_GetBaseProfile)(rs, out rp), "GetBaseProfile");
+                            readSession = rs; readProfile = rp; readAt = DateTime.UtcNow;
+                        }
+                        catch { try { Fn<DH>(ID_DestroySession)(rs); } catch { } throw; }
+                    }
+                    try { work(readSession, readProfile); }
+                    catch (NvApiException ex) { if (!Unsupported(ex)) DropReadSession(); throw; }   // "not supported" is about the setting, not the session
+                    catch { DropReadSession(); throw; }   // a failing session is not reused
+                    return;
+                }
+                DropReadSession();
                 IntPtr s;
                 Check(Fn<DOutH>(ID_CreateSession)(out s), "CreateSession");
                 try

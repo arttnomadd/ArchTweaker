@@ -94,7 +94,7 @@ namespace ArchTweaker
         {
             done = true;
             List<Finding> r = null;
-            MainForm.Instance.Busy("Checking this PC…", () => { HwProbe.Invalidate(); PowerCache.Invalidate(); r = Advisor.Run(); }, () => { findings = r; Fill(); });
+            MainForm.Instance.Load("Checking this PC…", () => { HwProbe.Invalidate(); PowerCache.Invalidate(); r = Advisor.Run(); }, () => { findings = r; Fill(); });
         }
 
         void Fill()

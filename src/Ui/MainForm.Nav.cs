@@ -138,6 +138,8 @@ namespace ArchTweaker
         {
             if (keyData == (Keys.Control | Keys.F)) { search.Focus(); search.SelectAll(); return true; }
             if (keyData == (Keys.Control | Keys.K)) { OpenPalette(); return true; }
+            if (keyData == (Keys.Alt | Keys.Left) || keyData == Keys.BrowserBack) { GoBack(); return true; }      // 3.40
+            if (keyData == (Keys.Alt | Keys.Right) || keyData == Keys.BrowserForward) { GoForward(); return true; }
             if (keyData == (Keys.Control | Keys.Shift | Keys.L)) { SwitchTheme(); return true; }
             if (keyData == (Keys.Control | Keys.Z) && !(ActiveControl is TextBoxBase) && toast.TryAction()) return true;   // 3.2: Undo from the toast
             if (keyData == (Keys.Control | Keys.Enter)) { if (applyBtn.Enabled) ApplyPending(); return true; }
@@ -147,6 +149,20 @@ namespace ArchTweaker
 
 
         public void ShowPage(string name) { ShowPage(name, false); }
+
+        // 3.40: back / forward (Alt+Left / Alt+Right, mouse back / forward buttons, palette)
+        NavHistory history;
+        bool historyMove;
+        NavHistory PageHistory { get { return history ?? (history = new NavHistory(p => p != SEARCH)); } }
+        public bool GoBack() { return Move(PageHistory.Back(current)); }
+        public bool GoForward() { return Move(PageHistory.Forward(current)); }
+        bool Move(string to)
+        {
+            if (to == null || busyCount > 0 && !side.Enabled) return false;
+            historyMove = true;
+            try { ShowPage(to); } finally { historyMove = false; }
+            return true;
+        }
 
         public void ShowPage(string name, bool keepSearch)
         {
@@ -165,6 +181,7 @@ namespace ArchTweaker
                 filterChips.SendToBack();   // docked before the Fill pages
                 pages[name] = page;
             }
+            if (!historyMove) PageHistory.Visit(current, name);
             current = name;
             // 3.33.1: every bar above the page (Pro notice, filter chips) and the page itself change in one layout pass,
             // and the page is laid out again after its first-show DPI scaling. Before, the first visit to a page could
@@ -225,7 +242,9 @@ namespace ArchTweaker
         public void OpenPalette()
         {
             var cmds = new List<CommandPalette.Cmd>();
-            foreach (var name in factories.Keys.Where(k => k != SEARCH))
+            // 3.40: recently used pages first (an empty palette lists them at the top, in this order)
+            var recent = PageHistory.Recent(current, 5).Where(p => factories.ContainsKey(p)).ToList();
+            foreach (var name in recent.Concat(factories.Keys.Where(k => k != SEARCH && !recent.Contains(k))))
             {
                 string n = name;
                 cmds.Add(new CommandPalette.Cmd { Kind = "Page", Text = L.T(n), Search = n + " " + L.T(n), Run = () => ShowPage(n) });
@@ -239,6 +258,8 @@ namespace ArchTweaker
             act("Switch dark / light", () => SwitchTheme());
             for (int i = 0; i < Theme.SchemeNames.Length; i++) { int si = i; act("Colour scheme: " + Theme.SchemeNames[i], () => { if (si == Theme.CustomScheme) PickCustomScheme(); else SetScheme(si); }); }
             for (int i = 0; i < L.Codes.Length; i++) { string c = L.Codes[i]; act("Language: " + L.Names[i], () => SetLanguage(c)); }
+            act("Go back (Alt+Left)", () => GoBack());          // 3.40
+            act("Go forward (Alt+Right)", () => GoForward());
             act("Apply pending changes", () => { if (applyBtn.Enabled) ApplyPending(); });
             act("Undo last apply", () => UndoLast());
             act("Select the picks for this PC", () => SelectAutoPreset());

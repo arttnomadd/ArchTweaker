@@ -34,7 +34,7 @@ namespace ArchTweaker
         void Load2()
         {
             loaded = true; string t = null;
-            MainForm.Instance.Busy("Reading hardware…", () => { t = SysInfo.Gather(); }, () =>
+            MainForm.Instance.Load("Reading hardware…", () => { t = SysInfo.Gather(); }, () =>
             {
                 text = t ?? "";
                 list.SuspendLayout();

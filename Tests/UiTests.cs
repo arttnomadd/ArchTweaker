@@ -32,6 +32,35 @@ static class UiTests
         T.True(string.Join(" ", lines.ToArray()) == "one two three four five six seven eight nine ten", "no words lost");
     }
 
+    // 3.40: back / forward page history
+    [Test] public static void NavHistory_BackAndForward()
+    {
+        var h = new NavHistory(p => p != "Search");
+        T.False(h.CanBack || h.CanForward, "empty at start");
+        h.Visit(null, "Home"); h.Visit("Home", "Privacy"); h.Visit("Privacy", "Latency");
+        T.Eq(h.Back("Latency"), "Privacy", "back one");
+        T.Eq(h.Back("Privacy"), "Home", "back two");
+        T.Eq(h.Back("Home"), null, "nothing before Home");
+        T.Eq(h.Forward("Home"), "Privacy", "forward again");
+        h.Visit("Privacy", "Cleanup");
+        T.False(h.CanForward, "a new page clears forward");
+        T.Eq(h.Back("Cleanup"), "Privacy", "back to where the new page came from");
+        h.Visit("Privacy", "Privacy");
+        T.Eq(h.Back("Privacy"), "Home", "the same page twice is not a step");
+        var s = new NavHistory(p => p != "Search");
+        s.Visit("Home", "Search"); s.Visit("Search", "Gaming");
+        T.Eq(s.Back("Gaming"), "Home", "search results are not a step back");
+        var m = new NavHistory(null);
+        for (int i = 0; i < NavHistory.Max + 10; i++) m.Visit("p" + i, "p" + (i + 1));
+        int n = 0; while (m.Back("x") != null) n++;
+        T.Eq(n, NavHistory.Max, "history keeps the last " + NavHistory.Max + " pages");
+        var r = new NavHistory(null);
+        r.Visit("Home", "A"); r.Visit("A", "B"); r.Visit("B", "A"); r.Visit("A", "C");
+        var rec = r.Recent("C", 5);
+        T.Eq(string.Join(",", rec.ToArray()), "A,B,Home", "recent pages: newest first, each once, not the current one");
+        T.Eq(r.Recent("C", 1).Count, 1, "at most max");
+    }
+
     // 3.39: what Ctrl+K picks for a query (the keyboard part is an e2e test on real desktops)
     [Test] public static void Palette_RanksExactPageFirst()
     {

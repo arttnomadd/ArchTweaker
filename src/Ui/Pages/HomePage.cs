@@ -20,6 +20,17 @@ namespace ArchTweaker
         {
             SetStyle(ControlStyles.UserPaint | ControlStyles.AllPaintingInWmPaint | ControlStyles.OptimizedDoubleBuffer | ControlStyles.ResizeRedraw | ControlStyles.Selectable, true);
             Height = Theme.S(150); TabStop = true; AccessibleRole = AccessibleRole.Diagram; AccessibleName = "Latency chain";
+            // 3.40: while the states load, the placeholder counts them ("Checking tweaks: 120 / 281")
+            progressTimer = new System.Windows.Forms.Timer { Interval = 400 };
+            progressTimer.Tick += delegate { if (Stages.Count > 0) progressTimer.Stop(); Invalidate(); };
+            progressTimer.Start();
+            Disposed += delegate { progressTimer.Dispose(); };
+        }
+        readonly System.Windows.Forms.Timer progressTimer;
+        static string LoadingText()
+        {
+            int done, total; StateCache.Progress(out done, out total);
+            return total > 0 ? L.F("Checking tweaks: {0} / {1}", Math.Min(done, total), total) : L.T("Reading the state of every tweak…");
         }
         int Weakest()
         {
@@ -100,7 +111,7 @@ namespace ArchTweaker
             using (var b = new SolidBrush(BackColor)) g.FillRectangle(b, ClientRectangle);
             var card = new RectangleF(0, 0, Width - 1, Height - Theme.S(6));
             Gfx.Surface(g, card, Theme.Raised, true);
-            if (Stages.Count == 0) { TextRenderer.DrawText(g, L.T("Reading the state of every tweak…"), Theme.F, Rectangle.Round(RectangleF.Inflate(card, -Theme.S(20), 0)), Theme.Muted, TextFormatFlags.VerticalCenter | TextFormatFlags.Left); return; }
+            if (Stages.Count == 0) { TextRenderer.DrawText(g, LoadingText(), Theme.F, Rectangle.Round(RectangleF.Inflate(card, -Theme.S(20), 0)), Theme.Muted, TextFormatFlags.VerticalCenter | TextFormatFlags.Left); return; }
             int weak = Weakest();
             float u = Theme.Scale, rad = Theme.S((float)Theme.Radius);
             // hover / keyboard focus: the station's column lights
@@ -339,8 +350,10 @@ namespace ArchTweaker
         static List<Vital> Vitals()
         {
             var v = new List<Vital>();
-            string plan = Shell.Run("powercfg.exe", "/getactivescheme", true).Trim();
-            int i = plan.IndexOf('('); string pn = i >= 0 ? plan.Substring(i).Trim('(', ')', ' ') : "";
+            // 3.40: the power API instead of a powercfg.exe process (and its localised text)
+            var act = PowerExplorer.Schemes().Where(s => s.Active).ToList();
+            string pn = act.Count > 0 ? act[0].Name : "";
+            string plan = act.Count > 0 ? act[0].Id.ToString() + " (" + pn + ")" : "";
             bool perfPlan = pn.IndexOf("ArchTweaker", StringComparison.OrdinalIgnoreCase) >= 0 || plan.IndexOf(Catalog.MAXPLAN, StringComparison.OrdinalIgnoreCase) >= 0 || plan.IndexOf("e9a42b02", StringComparison.OrdinalIgnoreCase) >= 0 || plan.IndexOf("8c5e7fda", StringComparison.OrdinalIgnoreCase) >= 0;
             v.Add(new Vital { Name = "Power plan", Value = pn.Length > 0 ? pn : "unknown", State = pn.Length == 0 ? Vs.Neutral : perfPlan ? Vs.Good : Vs.Warn });
 

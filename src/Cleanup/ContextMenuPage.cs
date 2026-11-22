@@ -45,7 +45,7 @@ namespace ArchTweaker
             pending.Clear();
             List<CtxItem> l = null;
             Skin.Loading(lv);
-            MainForm.Instance.Busy("Reading context menu entries…", delegate { l = CtxMenu.Load(); }, delegate { items = l ?? new List<CtxItem>(); Render(); Skin.Loaded(lv, "No entries to show. Tick 'Show Windows built-ins' to see the built-in ones."); });
+            MainForm.Instance.Load("Reading context menu entries…", delegate { l = CtxMenu.Load(); }, delegate { items = l ?? new List<CtxItem>(); Render(); Skin.Loaded(lv, "No entries to show. Tick 'Show Windows built-ins' to see the built-in ones."); });
         }
 
         void Render()

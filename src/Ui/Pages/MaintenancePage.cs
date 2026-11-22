@@ -99,7 +99,7 @@ namespace ArchTweaker
         {
             string ap = HealthReport.ActiveProfile();
             if (string.IsNullOrEmpty(ap) || !File.Exists(ap)) { driftLbl.Text = "Set an active profile first."; return; }
-            MainForm.Instance.Busy("Checking drift…", delegate { _drift = Drift.Against(Profile.Read(ap).ToList()).Count; },
+            MainForm.Instance.Load("Checking drift…", delegate { _drift = Drift.Against(Profile.Read(ap).ToList()).Count; },
                 delegate { driftLbl.Text = _drift == 0 ? "In sync — all profile tweaks applied." : _drift + " tweak(s) from the profile are NOT applied."; driftLbl.ForeColor = _drift == 0 ? Theme.Ok : Theme.Warn; });
         }
         int _drift;
@@ -115,7 +115,7 @@ namespace ArchTweaker
         void CheckUpdate()
         {
             UpdateInfo u = null; string err = null;
-            MainForm.Instance.Busy("Checking for updates…", delegate { u = Updater.Check(out err); }, delegate
+            MainForm.Instance.Load("Checking for updates…", delegate { u = Updater.Check(out err); }, delegate
             {
                 if (u == null) { Dlg.Error("Couldn't check for updates", "Check your internet connection and try again.", err); return; }
                 if (!u.Newer) { Dlg.Info("ArchTweaker is up to date", "You have the latest version, " + Program.Version + "."); return; }

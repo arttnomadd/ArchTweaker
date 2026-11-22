@@ -286,8 +286,10 @@ namespace ArchTweaker
         void FitDetails()
         {
             if (details == null) return;
-            int need = (side != null ? side.Width : 0) + Theme.S(560) + details.Width;
-            bool show = detailsWanted && ClientSize.Width >= need;
+            // 3.40: the panel narrows (370 → 260 px) before it hides, so 1,100–1,150 px windows keep it
+            int room = ClientSize.Width - (side != null ? side.Width : 0) - Theme.S(560);
+            bool show = detailsWanted && room >= Theme.S(260);
+            if (show) details.Width = Math.Min(Theme.S(370), room);
             details.Visible = show;   // always set: before the form is shown, Visible reads false for every child
         }
 
@@ -489,6 +491,8 @@ namespace ArchTweaker
         }
 
         public void Busy(string msg, Action work, Action done) { Busy(msg, work, done, true); }
+        // 3.40: read-only background work (page lists, scans): the sidebar stays usable, Apply and Undo wait
+        public void Load(string msg, Action work, Action done) { Busy(msg, work, done, false); }
         // 3.38.4: lockPages false keeps the sidebar usable (start-up backup): only Apply and Undo wait for the work
         public void Busy(string msg, Action work, Action done, bool lockPages)
         {

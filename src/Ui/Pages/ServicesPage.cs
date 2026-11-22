@@ -55,7 +55,7 @@ namespace ArchTweaker
             Controls.Add(grid); Controls.Add(Theme.Note("Changes apply immediately, and Undo can reverse them. On first launch, ArchTweaker saved your original configuration to backup\\services_original.reg.")); Controls.Add(bar);
         }
         bool filling;
-        public void OnShow() { Skin.Loading(grid); MainForm.Instance.Busy("Loading services…", () => { data = ServicesModule.Load(); }, () => Fill("")); }
+        public void OnShow() { Skin.Loading(grid); MainForm.Instance.Load("Loading services…", () => { data = ServicesModule.Load(); }, () => Fill("")); }
         public void Filter(string q) { Fill(q); }
         void Fill(string q)
         {

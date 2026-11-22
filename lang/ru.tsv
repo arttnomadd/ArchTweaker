@@ -3953,3 +3953,6 @@ AdGuard's public DNS answers ad and tracker names with nothing, for every app an
 Ads and trackers blocked for every app at the DNS level, with no hosts-file size limit. Lookup speed about the same as other public DNS.	Реклама и трекеры блокируются для всех приложений на уровне DNS, без ограничения размера файла hosts. Скорость запросов примерно как у других публичных DNS.
 Local names your router serves, provider parental filters, and the odd site that needs an ad or tracker name to work.	Локальные имена, которые раздаёт роутер, родительские фильтры провайдера и редкие сайты, которым для работы нужен рекламный или следящий домен.
 ArchTweaker manages its own tasks (boot guard, maintenance). Change them on Tools & backup.	ArchTweaker сам управляет своими задачами (защита загрузки, обслуживание). Меняйте их на странице «Инструменты и бэкап».
+Go back (Alt+Left)	Назад (Alt+Влево)
+Go forward (Alt+Right)	Вперёд (Alt+Вправо)
+Checking tweaks: {0} / {1}	Проверка твиков: {0} / {1}

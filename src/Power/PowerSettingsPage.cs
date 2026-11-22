@@ -74,7 +74,7 @@ namespace ArchTweaker
         void OnShowForce()
         {
             List<PowerScheme> s = null;
-            MainForm.Instance.Busy("Reading power plans…", delegate { s = PowerExplorer.Schemes(); }, delegate
+            MainForm.Instance.Load("Reading power plans…", delegate { s = PowerExplorer.Schemes(); }, delegate
             {
                 loaded = false;
                 schemes.Items.Clear();
@@ -90,7 +90,7 @@ namespace ArchTweaker
         {
             var s = schemes.SelectedItem as PowerScheme; if (s == null) return;
             List<PowerSetting> l = null; int token = ++loadToken;
-            MainForm.Instance.Busy("Reading power settings…", delegate { l = PowerExplorer.Load(s.Id); }, delegate
+            MainForm.Instance.Load("Reading power settings…", delegate { l = PowerExplorer.Load(s.Id); }, delegate
             {
                 if (token != loadToken) return;          // a newer load is in flight
                 all = l ?? new List<PowerSetting>();

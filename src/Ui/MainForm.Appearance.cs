@@ -13,7 +13,13 @@ namespace ArchTweaker
     {
         protected override void WndProc(ref Message m)
         {
-            const int WM_DPICHANGED = 0x02E0, WM_QUERYENDSESSION = 0x0011;
+            const int WM_DPICHANGED = 0x02E0, WM_QUERYENDSESSION = 0x0011, WM_APPCOMMAND = 0x0319;
+            // 3.40: the mouse's back / forward buttons (and keyboard browser keys) arrive as WM_APPCOMMAND, bubbled up from any child
+            if (m.Msg == WM_APPCOMMAND)
+            {
+                int cmd = (int)(((long)m.LParam >> 16) & 0xFFFF) & ~0xF000;   // GET_APPCOMMAND_LPARAM
+                if ((cmd == 1 && GoBack()) || (cmd == 2 && GoForward())) { m.Result = (IntPtr)1; return; }   // BROWSER_BACKWARD / FORWARD
+            }
             // 3.30: answer "not yet" while a change runs, so Windows shows the block reason (see ShutdownBlock)
             if (m.Msg == WM_QUERYENDSESSION && busyCount > 0) { Log.W("Windows asked to shut down while ArchTweaker was busy: asked it to wait."); m.Result = IntPtr.Zero; return; }
             if (m.Msg == WM_DPICHANGED)
