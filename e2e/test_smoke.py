@@ -191,7 +191,13 @@ def test_apply_safe_preset_then_undo_everything(app):
     rp = app.child_window(title="Create restore point before first apply", control_type="CheckBox")
     if rp.get_toggle_state() == 1:
         rp.click_input()
-    app.child_window(auto_id="applyChanges", control_type="Button").click_input()
+    # 3.39: the preset ticks its tweaks once their states are read (in the background); wait for "Apply N changes"
+    apply_btn = app.child_window(auto_id="applyChanges", control_type="Button")
+    end = time.time() + 180
+    while time.time() < end and not apply_btn.window_text().startswith("Apply "):
+        time.sleep(1)
+    assert apply_btn.window_text().startswith("Apply "), "the preset ticked nothing: " + apply_btn.window_text()
+    apply_btn.click_input()
     review = _dialog(app, "Review changes")
     review.child_window(title_re=r"Apply \d+ changes?", control_type="Button").click_input()
     app.child_window(title="Undo last apply", control_type="Button").wait("enabled", timeout=300)
