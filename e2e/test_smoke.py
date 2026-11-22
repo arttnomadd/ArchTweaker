@@ -212,8 +212,8 @@ def test_russian_interface(app):
     title.wait("visible", timeout=10)
     assert title.window_text() == "Главная"
     item = app.child_window(auto_id="Tools & backup", control_type="TabItem")   # the ID is the English page name
-    item.wait("exists enabled", timeout=60)
-    item.iface_legacy_iaccessible.DoDefaultAction()
+    item.wait("exists visible enabled", timeout=60)
+    item.click_input()   # 3.39: pinned at the bottom of the sidebar, so always on screen
     assert _title(app, "Инструменты и бэкап") == "Инструменты и бэкап"
 
 
