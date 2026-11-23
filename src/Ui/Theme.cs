@@ -465,7 +465,8 @@ namespace ArchTweaker
         }
         public static FlowLayoutPanel Bar()
         {
-            return new FlowLayoutPanel { Dock = DockStyle.Top, Height = 44, Padding = new Padding(0, 6, 0, 6), BackColor = Bg, WrapContents = false };
+            // 3.42: wraps onto a second row instead of cutting the last buttons off (longer languages, narrow windows)
+            return new FlowLayoutPanel { Dock = DockStyle.Top, Height = 44, MinimumSize = new Size(0, 44), Padding = new Padding(0, 6, 0, 6), BackColor = Bg, WrapContents = true, AutoSize = true, AutoSizeMode = AutoSizeMode.GrowAndShrink };
         }
         // vertical-only scrolling for row lists: the horizontal bar appeared for a moment-wide overflow while the
         // vertical bar was being added, and then stayed (2.8)

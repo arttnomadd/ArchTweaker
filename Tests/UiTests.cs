@@ -32,6 +32,39 @@ static class UiTests
         T.True(string.Join(" ", lines.ToArray()) == "one two three four five six seven eight nine ten", "no words lost");
     }
 
+    // 3.42: the layout audit finds a fixed-size label too small for its text, and ignores self-sizing and "…" labels
+    [Test] public static void LayoutAudit_FindsTextThatDoesNotFit()
+    {
+        var f = Theme.F;
+        System.Drawing.Size has, needs;
+        var small = new System.Windows.Forms.Label { AutoSize = false, Width = 60, Height = 16, Font = f, Text = "This sentence is much too long for sixty pixels" };
+        T.True(LayoutAudit.Clipped(small, out has, out needs), "too small: cut off");
+        T.True(needs.Height > has.Height, "needs more height when it wraps");
+        var big = new System.Windows.Forms.Label { AutoSize = false, Width = 600, Height = 40, Font = f, Text = "Short" };
+        T.False(LayoutAudit.Clipped(big, out has, out needs), "fits");
+        var auto = new System.Windows.Forms.Label { AutoSize = true, Font = f, Text = "This sentence is much too long for sixty pixels" };
+        T.False(LayoutAudit.Clipped(auto, out has, out needs), "self-sizing label grows to fit");
+        var ell = new System.Windows.Forms.Label { AutoSize = false, AutoEllipsis = true, Width = 60, Height = 16, Font = f, Text = "This sentence is much too long for sixty pixels" };
+        T.False(LayoutAudit.Clipped(ell, out has, out needs), "a label with ... cuts on purpose");
+        var btn = new System.Windows.Forms.Button { AutoSize = false, Width = 50, Height = 30, Font = f, Text = "Open in Power Options" };
+        T.True(LayoutAudit.Clipped(btn, out has, out needs), "narrow button: cut off");
+    }
+
+    [Test] public static void LayoutAudit_FindsControlsPastTheirPanel()
+    {
+        using (var p = new System.Windows.Forms.Panel { Width = 100, Height = 40 })
+        {
+            var l = new System.Windows.Forms.Label { AutoSize = false, Left = 10, Width = 200, Height = 20, Text = "x", AutoEllipsis = true };
+            p.Controls.Add(l);
+            System.Drawing.Size has, needs;
+            T.True(LayoutAudit.Overflows(l, out has, out needs), "runs past the right edge");
+            l.Width = 50;
+            T.False(LayoutAudit.Overflows(l, out has, out needs), "inside the panel");
+            var clips = LayoutAudit.Check(p, "test");
+            T.True(clips.Count == 0, "Check finds nothing in a panel that fits");
+        }
+    }
+
     // 3.40: back / forward page history
     [Test] public static void NavHistory_BackAndForward()
     {

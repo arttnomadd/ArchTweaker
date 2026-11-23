@@ -47,6 +47,11 @@ def app(request, tmp_path):
     else:
         env["ARCHTWEAKER_NO_WIZARD"] = "1"
 
+    # 3.42: tests marked "layout" ask the app to open every page and write the text that doesn't fit
+    if request.node.get_closest_marker("layout"):
+        env["ARCHTWEAKER_LAYOUT_AUDIT"] = str(tmp_path / "layout.txt")
+        request.node.layout_report = env["ARCHTWEAKER_LAYOUT_AUDIT"]
+
     # ArchTweaker self-elevates via its manifest; from an elevated shell this launches without a UAC prompt.
     proc = subprocess.Popen([APP_PATH], env=env)
     pw = Application(backend="uia").connect(process=proc.pid, timeout=LAUNCH_TIMEOUT)

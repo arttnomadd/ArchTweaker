@@ -150,6 +150,29 @@ namespace ArchTweaker
 
         public void ShowPage(string name) { ShowPage(name, false); }
 
+        // 3.42: opens every page once and writes the text that doesn't fit (see LayoutAudit)
+        public void RunLayoutAudit(string file)
+        {
+            Log.W("Layout audit ({0}): {1} pages", L.Lang, factories.Count);
+            var clips = new List<LayoutAudit.Clip>();
+            clips.AddRange(LayoutAudit.Check(this, "(window)", content));   // sidebar, header, status bar; pages below
+            foreach (var name in factories.Keys.ToList())
+            {
+                try
+                {
+                    Log.W("Layout audit: {0}", name);
+                    ShowPage(name);
+                    Application.DoEvents();
+                    Control pg;
+                    if (pages.TryGetValue(name, out pg)) clips.AddRange(LayoutAudit.Check(pg, name));
+                }
+                catch (Exception ex) { Log.W("Layout audit: page {0}: {1}", name, ex.Message); }
+            }
+            ShowPage("Home");
+            LayoutAudit.Write(file, L.Lang, clips);
+            Log.W("Layout audit ({0}): {1} cut-off text(s), report {2}", L.Lang, clips.Count, file);
+        }
+
         // 3.40: back / forward (Alt+Left / Alt+Right, mouse back / forward buttons, palette)
         NavHistory history;
         bool historyMove;

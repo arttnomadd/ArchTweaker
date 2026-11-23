@@ -145,8 +145,8 @@ namespace ArchTweaker
             right = new Panel { Dock = DockStyle.Right, Width = 380, BackColor = Theme.Panel, Padding = new Padding(16, 12, 16, 12), AutoScroll = true };
             var flow = new FlowLayoutPanel { Dock = DockStyle.Top, AutoSize = true, FlowDirection = FlowDirection.TopDown, WrapContents = false, BackColor = Theme.Panel };
             Func<string, Label> head = t => new Label { Text = t, Font = Theme.FB, ForeColor = Theme.Text, AutoSize = true, Margin = new Padding(0, 10, 0, 4), UseMnemonic = false };
-            Func<string, Label> note = t => new Label { Text = t, ForeColor = Theme.Muted, Font = Theme.FS, AutoSize = true, MaximumSize = new Size(340, 0), Margin = new Padding(0, 0, 0, 4), UseMnemonic = false };
-            Func<string, bool, CheckBox> opt = (t, v) => new TickBox { Text = t, Checked = v, ForeColor = Theme.Text, FlatStyle = FlatStyle.Flat, AutoSize = true, MaximumSize = new Size(340, 0), Margin = new Padding(0, 2, 0, 2), UseMnemonic = false };
+            Func<string, Label> note = t => new Label { Text = t, ForeColor = Theme.Muted, Font = Theme.FS, AutoSize = true, MaximumSize = new Size(320, 0), Margin = new Padding(0, 0, 0, 4), UseMnemonic = false };
+            Func<string, bool, CheckBox> opt = (t, v) => new TickBox { Text = t, Checked = v, ForeColor = Theme.Text, FlatStyle = FlatStyle.Flat, AutoSize = true, MaximumSize = new Size(320, 0), Margin = new Padding(0, 2, 0, 2), UseMnemonic = false };
 
             flow.Controls.Add(head("Options"));
             compact = opt("Compact file: 9 domains per line", cfg.Compact);

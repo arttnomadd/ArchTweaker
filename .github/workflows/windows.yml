@@ -78,6 +78,20 @@ jobs:
           AT_LANG: ru
         run: python -m pytest e2e -m ru --junitxml=out/e2e-ru.xml
 
+      # 3.42: every page in every interface language: no label, button or check box may cut its text off
+      - name: Layout check in every language
+        env:
+          APP_PATH: ${{ github.workspace }}\out\ArchTweaker.exe
+          LAUNCH_TIMEOUT: "40"
+        run: |
+          $failed = @()
+          foreach ($l in "en","ru","de","es","it") {
+            $env:AT_LANG = $l
+            python -m pytest e2e -m layout --junitxml=out/e2e-layout-$l.xml
+            if ($LASTEXITCODE -ne 0) { $failed += $l }
+          }
+          if ($failed.Count) { Write-Error ("Text cut off in: " + ($failed -join ", ")); exit 1 }
+
       - name: Apply the Recommended preset, then Undo everything (throwaway CI VM)
         env:
           APP_PATH: ${{ github.workspace }}\out\ArchTweaker.exe

@@ -271,7 +271,9 @@ namespace ArchTweaker
             tips.SetToolTip(undoLastBtn, L.T("Reverts only the tweaks from your most recent Apply."));
             tips.SetToolTip(applyBtn, L.T("Review and apply the ticked changes (Ctrl+Enter)."));
             tailLine = new Label { AutoSize = false, Width = 420, Height = 22, ForeColor = Theme.Muted, Font = Theme.FS, Margin = new Padding(12, 9, 0, 0), AutoEllipsis = true, UseMnemonic = false, Visible = !logOpen };
-            rpCheck = new TickBox { Text = "Create restore point before first apply", Checked = true, ForeColor = Theme.Muted, AutoSize = true, Margin = new Padding(8, 8, 0, 0) };
+            // 3.42: short label so the Apply bar fits in German and Italian; the tooltip has the whole sentence
+            rpCheck = new TickBox { Text = "Restore point first", Checked = true, ForeColor = Theme.Muted, AutoSize = true, Margin = new Padding(8, 8, 0, 0) };
+            tips.SetToolTip(rpCheck, L.T("Create a restore point before the first apply (recommended)"));
             if (Mode.Lite) { rpCheck.Checked = true; rpCheck.Enabled = false; }   // 3.23: always on in Lite
             status = new Label { AutoSize = true, ForeColor = Theme.Muted, Margin = new Padding(16, 9, 0, 0) };
             actions.Controls.AddRange(new Control[] { applyBtn, discardBtn, undoLastBtn, undoAll, logToggle, rpCheck, status, tailLine });
@@ -394,6 +396,13 @@ namespace ArchTweaker
                 int h = Mode.HiddenApplied();
                 Notify(h > 0 ? L.F("Lite mode hides {0} applied Pro tweak(s). They stay applied. Undo everything still covers them, or switch to Pro to see them.", h) : L.T("Lite mode is on. Only safe tweaks and tools are shown."), Toast.Kind.Ok);
             };   // 3.19: a tuning test cut short by a crash or close
+            Shown += delegate   // 3.42: ARCHTWEAKER_LAYOUT_AUDIT=<file> opens every page and reports cut-off text
+            {
+                if (string.IsNullOrEmpty(LayoutAudit.ReportFile)) return;
+                var t = new System.Windows.Forms.Timer { Interval = 2500 };
+                t.Tick += delegate { t.Stop(); t.Dispose(); if (!IsDisposed) RunLayoutAudit(LayoutAudit.ReportFile); };
+                t.Start();
+            };
             Shown += delegate { StartupTrace.Mark("window shown"); BeginInvoke((Action)(() => StartupTrace.FinishLater())); };   // 3.8: /trace
             Shown += delegate { if (AppearanceFlyout.Reopen) { AppearanceFlyout.Reopen = false; BeginInvoke((Action)OpenAppearance); } };   // 3.10.4: back to the flyout after a change rebuilt the window
             Shown += delegate

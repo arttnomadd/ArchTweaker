@@ -46,6 +46,7 @@ static class Runner
             .SelectMany(ty => ty.GetMethods(BindingFlags.Public | BindingFlags.Static))
             .Where(m => m.GetCustomAttributes(typeof(TestAttribute), false).Any())
             .OrderBy(m => m.DeclaringType.Name).ThenBy(m => m.Name).ToList();
+        L.Use("en");   // 3.42: the tests expect English text, whatever language this PC's ArchTweaker uses
         Console.WriteLine("Running " + methods.Count + " tests\n");
         string cls = null;
         foreach (var m in methods)

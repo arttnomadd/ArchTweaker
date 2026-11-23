@@ -3956,3 +3956,4 @@ ArchTweaker manages its own tasks (boot guard, maintenance). Change them on Tool
 Go back (Alt+Left)	Zurück (Alt+Links)
 Go forward (Alt+Right)	Vor (Alt+Rechts)
 Checking tweaks: {0} / {1}	Tweaks werden geprüft: {0} / {1}
+Restore point first	Zuerst Wiederherstellungspunkt

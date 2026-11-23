@@ -188,7 +188,7 @@ def test_apply_safe_preset_then_undo_everything(app):
     preset.select("Recommended")
     app.child_window(title="Select preset", control_type="Button").click_input()
     # Act 1: apply through the review dialog (no restore point on CI).
-    rp = app.child_window(title="Create restore point before first apply", control_type="CheckBox")
+    rp = app.child_window(title="Restore point first", control_type="CheckBox")
     if rp.get_toggle_state() == 1:
         rp.click_input()
     # 3.39: the preset ticks its tweaks once their states are read (in the background); wait for "Apply N changes"
@@ -235,6 +235,29 @@ def test_russian_interface(app):
     item.wait("exists visible enabled", timeout=60)
     item.click_input()   # 3.39: pinned at the bottom of the sidebar, so always on screen
     assert _title(app, "Инструменты и бэкап") == "Инструменты и бэкап"
+
+
+@pytest.mark.layout
+@pytest.mark.timeout(300)
+def test_layout_fits(app, request):
+    """3.42: in the language AT_LANG (default English), no fixed-size label, button or check box cuts its text off.
+    The app opens every page itself (ARCHTWEAKER_LAYOUT_AUDIT) and writes one line per cut-off text."""
+    report = request.node.layout_report
+    # Arrange / Act: the app writes the report about 3 s after start-up, once every page has been opened
+    deadline = time.time() + 240
+    while not os.path.exists(report) and time.time() < deadline:
+        time.sleep(1)
+    assert os.path.exists(report), "the layout audit wrote no report"
+    with open(report, encoding="utf-8") as f:
+        lines = f.read().splitlines()
+    # keep a copy for the CI artifacts
+    os.makedirs(os.path.join(os.path.dirname(__file__), "artifacts"), exist_ok=True)
+    with open(os.path.join(os.path.dirname(__file__), "artifacts", "layout-%s.txt" % os.environ.get("AT_LANG", "en")), "w", encoding="utf-8") as f:
+        f.write("\n".join(lines))
+    # Assert
+    assert " in 0 checked" not in lines[0], "the audit checked no controls: " + lines[0]
+    clips = [l for l in lines[1:] if l.strip()]
+    assert not clips, "%d text(s) cut off:\n%s" % (len(clips), "\n".join(clips))
 
 
 # ---- 3.2 ----
@@ -284,7 +307,7 @@ def test_arrow_keys_walk_the_tweak_list(app):
     # Arrange: focus the first tweak row on a page.
     assert _nav(app, "Privacy") == "Privacy"
     rows = app.descendants(control_type="CheckBox")
-    rows = [r for r in rows if r.window_text() and r.window_text() != "Create restore point before first apply"]
+    rows = [r for r in rows if r.window_text() and r.window_text() != "Restore point first"]
     assert len(rows) >= 2, "expected tweak rows on Privacy"
     rows[0].set_focus()
     # Act
