@@ -116,7 +116,7 @@ namespace ArchTweaker
             var bar = Theme.Bar();
             bar.Controls.Add(Theme.Lead("Download lists and apply", delegate { Run(true); }));
             bar.Controls.Add(Theme.Btn("Apply from saved copies", delegate { Run(false); }));
-            bar.Controls.Add(Theme.Btn("Remove block", delegate { MainForm.Instance.Busy("Removing the hosts block…", HostsModule.Remove, () => { auto.Checked = false; Refresh2(); }); }));
+            bar.Controls.Add(Theme.Btn("Remove block", delegate { AppShell.Current.Busy("Removing the hosts block…", HostsModule.Remove, () => { auto.Checked = false; Refresh2(); }); }));
             bar.Controls.Add(Theme.Btn("Open hosts in Notepad", delegate { Shell.OpenVisible("notepad.exe", HostsModule.File_); }));
             state = new Label { AutoSize = true, Font = Theme.FB, Margin = new Padding(12, 8, 0, 0), UseMnemonic = false };
             bar.Controls.Add(state);
@@ -200,7 +200,7 @@ namespace ArchTweaker
             if (autoChanged)
             {
                 bool on = cfg.AutoUpdate;
-                MainForm.Instance.Busy(on ? "Creating the weekly update task…" : "Removing the weekly update task…", () => { if (on) HostsEngine.InstallTask(); else HostsEngine.RemoveTask(); }, Refresh2);
+                AppShell.Current.Busy(on ? "Creating the weekly update task…" : "Removing the weekly update task…", () => { if (on) HostsEngine.InstallTask(); else HostsEngine.RemoveTask(); }, Refresh2);
             }
         }
 
@@ -223,7 +223,7 @@ namespace ArchTweaker
         {
             SyncLists();
             string q = check.Text, r = null;
-            MainForm.Instance.Busy("Checking " + q + "…", () => { r = HostsEngine.Explain(cfg, q); }, () => { checkResult.Text = r; checkResult.ForeColor = r.Contains("BLOCKED") ? Theme.Accent : Theme.Text; });
+            AppShell.Current.Busy("Checking " + q + "…", () => { r = HostsEngine.Explain(cfg, q); }, () => { checkResult.Text = r; checkResult.ForeColor = r.Contains("BLOCKED") ? Theme.Accent : Theme.Text; });
         }
 
         void Run(bool online)
@@ -231,7 +231,7 @@ namespace ArchTweaker
             SyncLists(); SyncOptions();
             if (cfg.Sources.Count == 0 && !HostsEngine.Lines(cfg.Custom).Any()) { Log.W("Pick at least one list (or add your own domains) first."); return; }
             BuildResult r = null;
-            MainForm.Instance.Busy(online ? "Downloading block lists…" : "Building from saved copies…", () => { r = HostsEngine.Update(cfg, online, null); }, () =>
+            AppShell.Current.Busy(online ? "Downloading block lists…" : "Building from saved copies…", () => { r = HostsEngine.Update(cfg, online, null); }, () =>
             {
                 loaded = false; Refresh2();
                 if (r == null) return;

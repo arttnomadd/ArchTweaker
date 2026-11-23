@@ -73,7 +73,7 @@ namespace ArchTweaker
 
             var trayOn = new SwitchBox { Text = "Show the ArchTweaker icon in the notification area", Checked = Tray.Enabled, AutoSize = true, ForeColor = Theme.Text, FlatStyle = FlatStyle.Flat, Margin = new Padding(0, 2, 0, 2) };
             var trayClose = new SwitchBox { Text = "Closing the window keeps ArchTweaker running in the notification area", Checked = Tray.CloseToTray, Enabled = Tray.Enabled, AutoSize = true, ForeColor = Theme.Text, FlatStyle = FlatStyle.Flat, Margin = new Padding(0, 2, 0, 2) };
-            trayOn.CheckedChanged += delegate { Tray.Enabled = trayOn.Checked; trayClose.Enabled = trayOn.Checked; MainForm.Instance.Notify("Takes effect the next time ArchTweaker starts.", Toast.Kind.Ok); };
+            trayOn.CheckedChanged += delegate { Tray.Enabled = trayOn.Checked; trayClose.Enabled = trayOn.Checked; AppShell.Current.Notify("Takes effect the next time ArchTweaker starts.", Toast.Kind.Ok); };
             trayClose.CheckedChanged += delegate { Tray.CloseToTray = trayClose.Checked; };
             Group("Notification area icon", trayOn, trayClose,
                 new Label { Text = "The icon's menu switches power plans, re-asserts your active profile and cleans temp files without opening the window.", ForeColor = Theme.Muted, Font = Theme.FS, AutoSize = true, UseMnemonic = false, Tag = "note" });

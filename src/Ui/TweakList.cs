@@ -180,14 +180,14 @@ namespace ArchTweaker
         }
         void Flip()
         {
-            if (!available || !state.HasValue) { MainForm.Instance.ShowDetails(T); return; }
-            if (Locked && !DangerZone.Ensure(FindForm())) { MainForm.Instance.ShowDetails(T); return; }
+            if (!available || !state.HasValue) { AppShell.Current.ShowDetails(T); return; }
+            if (Locked && !DangerZone.Ensure(FindForm())) { AppShell.Current.ShowDetails(T); return; }
             shown = !shown;
             Motion.Slide(this, () => knob, v => knob = v, shown, Rectangle.Inflate(swR, Theme.S(4), Theme.S(4)));
             MainForm.Instance.SetPending(T, shown);
-            SetPendingChip(MainForm.Instance.Pending.ContainsKey(T));
+            SetPendingChip(AppShell.Current.Pending.ContainsKey(T));
             Invalidate(); AccessibilityNotifyClients(AccessibleEvents.StateChange, -1);
-            MainForm.Instance.ShowDetails(T);
+            AppShell.Current.ShowDetails(T);
         }
 
         // ---- layout (96-dpi units through Theme.S)
@@ -255,7 +255,7 @@ namespace ArchTweaker
         protected override void OnPaint(PaintEventArgs e)
         {
             var g = e.Graphics;
-            bool pend = MainForm.Instance != null && MainForm.Instance.Pending.ContainsKey(T);
+            bool pend = MainForm.Instance != null && AppShell.Current.Pending.ContainsKey(T);
             Color bg = pend ? Theme.PendingBg : hover ? Theme.PanelHover : Theme.Raised;
             // 3.36: a raised surface per row. The state lives in the switch, the title weight and the chips; a pending
             // change also gets an amber hairline round the row (no coloured edge stripe).
@@ -342,7 +342,7 @@ namespace ArchTweaker
         protected override void OnPreviewKeyDown(PreviewKeyDownEventArgs e) { if (IsInputKey(e.KeyCode)) e.IsInputKey = true; base.OnPreviewKeyDown(e); }
         protected override void OnGotFocus(EventArgs e)
         {
-            MarkSelected(); Invalidate(); MainForm.Instance.ShowDetails(T);
+            MarkSelected(); Invalidate(); AppShell.Current.ShowDetails(T);
             var sp = Parent as ScrollableControl; if (sp != null) sp.ScrollControlIntoView(this);
             base.OnGotFocus(e);
         }
@@ -436,7 +436,7 @@ namespace ArchTweaker
             foreach (var r in rows)
             {
                 bool p;
-                bool? pend = MainForm.Instance.Pending.TryGetValue(r.T, out p) ? (bool?)p : null;
+                bool? pend = AppShell.Current.Pending.TryGetValue(r.T, out p) ? (bool?)p : null;
                 r.Load(r.T.Applicable ? StateCache.Get(r.T) : (bool?)false, pend);
                 r.SetRecommended(r.T.Applicable && Recommend.Has(r.T) && StateCache.Get(r.T) == false);
             }

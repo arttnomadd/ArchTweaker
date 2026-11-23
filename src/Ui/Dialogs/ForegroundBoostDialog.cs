@@ -50,7 +50,7 @@ namespace ArchTweaker
             try { ForegroundBoost.Set(v); }
             catch (Exception ex) { Dlg.Error("ArchTweaker could not set the value", ex.Message); return; }
             Fill();
-            if (MainForm.Instance != null) { MainForm.Instance.Notify(L.F("Win32PrioritySeparation is 0x{0}. It takes effect at once.", v.ToString("X2")), Toast.Kind.Ok); MainForm.Instance.RefreshAll(); }
+            if (MainForm.Instance != null) { AppShell.Current.Notify(L.F("Win32PrioritySeparation is 0x{0}. It takes effect at once.", v.ToString("X2")), Toast.Kind.Ok); AppShell.Current.RefreshAll(); }
         }
     }
 }

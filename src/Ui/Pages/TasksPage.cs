@@ -26,7 +26,7 @@ namespace ArchTweaker
             {
                 if (lv.SelectedItems.Count == 0) return;
                 var t = (SchedTask)lv.SelectedItems[0].Tag;
-                MainForm.Instance.Busy("Starting the task…", () => TasksModule.Run(t), () => Log.Say("Started the task '{0}'.", t.Name));
+                AppShell.Current.Busy("Starting the task…", () => TasksModule.Run(t), () => Log.Say("Started the task '{0}'.", t.Name));
             }));
             bar.Controls.Add(Theme.Btn("Put back all", delegate
             {
@@ -34,7 +34,7 @@ namespace ArchTweaker
                 if (n == 0) { Log.Say("No scheduled task was changed from this page."); return; }
                 if (!Dlg.Confirm(L.F("Put back {0} task(s)?", n), "Each task ArchTweaker changed here goes back to the state it had before.", "Put back")) return;
                 int done = 0;
-                MainForm.Instance.Busy("Putting tasks back…", () => { done = TasksModule.RestoreAll(); data = null; }, () => { Log.Say("Put back {0} scheduled task(s).", done); OnShow(); });
+                AppShell.Current.Busy("Putting tasks back…", () => { done = TasksModule.RestoreAll(); data = null; }, () => { Log.Say("Put back {0} scheduled task(s).", done); OnShow(); });
             }));
             hideMs = new TickBox { Text = "Hide Microsoft tasks", Checked = false, AutoSize = true, ForeColor = Theme.Text, Margin = new Padding(8, 6, 0, 0) };
             hideMs.CheckedChanged += delegate { Fill(); };
@@ -50,7 +50,7 @@ namespace ArchTweaker
             if (data != null) { Fill(); return; }
             Skin.Loading(lv);
             List<SchedTask> d = null;
-            MainForm.Instance.Load("Reading scheduled tasks…", () => { d = TasksModule.Load(); }, () => { data = d; Fill(); });
+            AppShell.Current.LoadData("Reading scheduled tasks…", () => { d = TasksModule.Load(); }, () => { data = d; Fill(); });
         }
         public void Filter(string q) { query = q ?? ""; Fill(); }
 

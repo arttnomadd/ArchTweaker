@@ -30,7 +30,7 @@ namespace ArchTweaker
             {
                 act = Theme.Btn(pend.Count == 1 ? "Select 1 tweak" : "Select " + pend.Count + " tweaks", delegate
                 {
-                    MainForm.Instance.SelectIds(pend.Select(t => t.Id));
+                    AppShell.Current.SelectIds(pend.Select(t => t.Id));
                     act.Text = "Selected"; act.Enabled = false;
                     Log.W("Advisor: selected {0} for '{1}'. Review on the tweak pages, then click Apply.", string.Join(", ", pend.Select(t => t.Title).ToArray()), f.Title);
                 });
@@ -94,7 +94,7 @@ namespace ArchTweaker
         {
             done = true;
             List<Finding> r = null;
-            MainForm.Instance.Load("Checking this PC…", () => { HwProbe.Invalidate(); PowerCache.Invalidate(); r = Advisor.Run(); }, () => { findings = r; Fill(); });
+            AppShell.Current.LoadData("Checking this PC…", () => { HwProbe.Invalidate(); PowerCache.Invalidate(); r = Advisor.Run(); }, () => { findings = r; Fill(); });
         }
 
         void Fill()
@@ -124,7 +124,7 @@ namespace ArchTweaker
         {
             if (findings == null) return;
             var ids = findings.SelectMany(x => x.Pending).Select(t => t.Id).Distinct().ToList();
-            MainForm.Instance.SelectIds(ids);
+            AppShell.Current.SelectIds(ids);
             Log.W("Advisor: {0} tweaks selected for this PC. Review them on the tweak pages, then click Apply.", ids.Count);
         }
     }

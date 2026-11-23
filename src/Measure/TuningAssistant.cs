@@ -283,7 +283,7 @@ namespace ArchTweaker
             int m = int.Parse((string)max.SelectedItem, CultureInfo.InvariantCulture);
             List<Tweak> c = null;
             findBtn.Enabled = false;
-            MainForm.Instance.Busy("Finding tweaks to test…", delegate { c = Tuner.Candidates(m); }, delegate
+            AppShell.Current.Busy("Finding tweaks to test…", delegate { c = Tuner.Candidates(m); }, delegate
             {
                 findBtn.Enabled = true;
                 lv.BeginUpdate(); lv.Items.Clear();
@@ -309,7 +309,7 @@ namespace ArchTweaker
             int secsV = Secs, roundsV = Rounds;
             Action<string> say = Theme.SayTo(this, status);
             TuneResult res = null;
-            MainForm.Instance.Busy("Tuning…", delegate { res = Tuner.Run(g, picks, secsV, roundsV, say); }, delegate
+            AppShell.Current.Busy("Tuning…", delegate { res = Tuner.Run(g, picks, secsV, roundsV, say); }, delegate
             {
                 running = false; stopBtn.Enabled = false; findBtn.Enabled = true; status.Text = "";
                 last = res; reportBtn.Enabled = res != null && res.Report != null;
@@ -326,7 +326,7 @@ namespace ArchTweaker
                 }
                 int k = res.Steps.Count(x => x.Kept);
                 Log.Say("Tuning assistant: {0} of {1} tweak(s) helped and stay on.{2}", k, res.Steps.Count, res.Error != null ? " " + res.Error : "");
-                MainForm.Instance.RefreshAll();
+                AppShell.Current.RefreshAll();
                 Estimate();
                 if (res.Report != null) Shell.OpenVisible("explorer.exe", "\"" + res.Report + "\"");
             });

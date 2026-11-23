@@ -12,7 +12,7 @@ namespace ArchTweaker
     public interface IPage { void OnShow(); void Filter(string q); }
 
     // ================= MAIN FORM =================
-    public partial class MainForm : Form
+    public partial class MainForm : Form, IShell
     {
         Panel side, content, bottom;
         Label pageTitle, pageGlyph, pageSub, status; float underline; readonly ToolTip subTip = Tips.New();

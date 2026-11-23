@@ -148,7 +148,7 @@ namespace ArchTweaker
             running = true; runBtn.Enabled = false;
             BenchResult res = null;
             Action<string> step = Theme.SayTo(this, status);
-            MainForm.Instance.Busy("Running the benchmark…", delegate { res = Bench.Run(g, ts, fs, step); }, delegate
+            AppShell.Current.Busy("Running the benchmark…", delegate { res = Bench.Run(g, ts, fs, step); }, delegate
             {
                 running = false; runBtn.Enabled = true; status.Text = "";
                 Reload();

@@ -41,7 +41,7 @@ namespace ArchTweaker
         void Load(bool net)
         {
             string st = null; List<WinappEntry> det = null;
-            MainForm.Instance.Busy(net ? "Downloading Winapp2 rules…" : "Scanning from saved copy…",
+            AppShell.Current.Busy(net ? "Downloading Winapp2 rules…" : "Scanning from saved copy…",
                 delegate { det = Winapp.Load(net, out st); if (det != null) foreach (var e in det) Winapp.Measure(e); },
                 delegate { entries = det ?? new List<WinappEntry>(); status.Text = st ?? "Scan failed."; Render(); loaded = true; });
         }
@@ -76,17 +76,17 @@ namespace ArchTweaker
         {
             if (!loaded) return;
             var sel = checks.Where(kv => kv.Value.Checked).Select(kv => kv.Key).ToList();
-            if (sel.Count == 0) { MainForm.Instance.Notify("Nothing selected. Tick at least one item to clean.", Toast.Kind.Warn); return; }
+            if (sel.Count == 0) { AppShell.Current.Notify("Nothing selected. Tick at least one item to clean.", Toast.Kind.Warn); return; }
             string nsel = sel.Count + (sel.Count == 1 ? " item" : " items");
             if (!Dlg.Confirm("Clean " + nsel + "?", "Cleanup deletes files permanently. They don't go to the Recycle Bin.", "Delete files", "Cancel", true)) return;
             long freed = 0; int skipped = 0;
-            MainForm.Instance.Busy("Cleaning…",
+            AppShell.Current.Busy("Cleaning…",
                 delegate { foreach (var e in sel) { try { int sk; freed += Winapp.Clean(e, out sk); skipped += sk; } catch (Exception ex) { Log.W("Clean failed for {0}: {1}", e.Name, ex.Message); } Winapp.Measure(e); } },
                 delegate
                 {
                     Log.W("Deep clean freed {0}{1}", Fmt(freed), skipped > 0 ? " (" + skipped + " file(s) in use or skipped)" : "");
                     string msg = skipped == 0 ? L.F("Freed {0}.", Fmt(freed)) : skipped == 1 ? L.F("Freed {0}. 1 file is in use, so Cleanup skipped it.", Fmt(freed)) : L.F("Freed {0}. {1} files are in use, so Cleanup skipped them.", Fmt(freed), skipped);
-                    MainForm.Instance.Notify(msg, skipped > 0 ? Toast.Kind.Warn : Toast.Kind.Ok);
+                    AppShell.Current.Notify(msg, skipped > 0 ? Toast.Kind.Warn : Toast.Kind.Ok);
                     Render();
                 });
         }
@@ -120,7 +120,7 @@ namespace ArchTweaker
         {
             Skin.Loading(lv);
             var icons = new Dictionary<Program32, Bitmap>();
-            MainForm.Instance.Load("Reading installed programs…", delegate
+            AppShell.Current.LoadData("Reading installed programs…", delegate
             {
                 progs = Uninstaller.Load();
                 foreach (var p in progs) icons[p] = AppIcons.FromIconSpec(p.Icon);   // 3.3: DisplayIcon, read off the UI thread
@@ -147,7 +147,7 @@ namespace ArchTweaker
             // 3.2.1: per-user entries can be written by any program the user runs, and ArchTweaker runs the command as administrator
             if (p.Hive == Hive.HKCU && !Dlg.Confirm("Run this per-user uninstaller as administrator?", "This entry is in your user registry, which any program you run can change. Check that the command below really belongs to \"" + p.Name + "\" before running it.", "Run it", "Cancel", true, (p.QuietUninstall.Length > 0 ? p.QuietUninstall : p.UninstallString))) return;
             int rc = 0;
-            MainForm.Instance.Busy("Uninstalling " + p.Name + "…", delegate { rc = Uninstaller.Run(p, false); }, delegate
+            AppShell.Current.Busy("Uninstalling " + p.Name + "…", delegate { rc = Uninstaller.Run(p, false); }, delegate
             {
                 OnShow();
                 if (!thenLeftovers) return;
@@ -162,14 +162,14 @@ namespace ArchTweaker
         {
             if (p == null) return;
             List<Leftover> found = null;
-            MainForm.Instance.Load("Scanning for leftovers…", delegate { found = Uninstaller.ScanLeftovers(p); }, delegate
+            AppShell.Current.LoadData("Scanning for leftovers…", delegate { found = Uninstaller.ScanLeftovers(p); }, delegate
             {
                 if (found == null || found.Count == 0) { Dlg.Info("No leftovers found", p.Name + " left no files or registry entries behind."); return; }
                 using (var d = new LeftoverDialog(p.Name, found))
                     if (d.ShowDialog() == DialogResult.OK && d.Chosen.Count > 0)
                     {
                         long freed = 0; int failed = 0;
-                        MainForm.Instance.Busy("Removing leftovers…", delegate { freed = Uninstaller.RemoveLeftovers(d.Chosen, out failed); },
+                        AppShell.Current.Busy("Removing leftovers…", delegate { freed = Uninstaller.RemoveLeftovers(d.Chosen, out failed); },
                             delegate { Log.W("Leftover cleanup recovered {0} (folders moved to backup){1}.", Units.MbGb(freed), failed > 0 ? "; " + failed + " item(s) failed — see log" : ""); });
                     }
             });

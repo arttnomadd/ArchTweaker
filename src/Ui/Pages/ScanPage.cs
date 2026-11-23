@@ -34,8 +34,8 @@ namespace ArchTweaker
             {
                 if (e.RowIndex < 0) return;
                 var r = (ScanRow)grid.Rows[e.RowIndex].Tag;
-                MainForm.Instance.ShowPage(r.T.Category);
-                MainForm.Instance.ShowDetails(r.T);
+                AppShell.Current.ShowPage(r.T.Category);
+                AppShell.Current.ShowDetails(r.T);
             };
 
             raw = new TextBox { Dock = DockStyle.Fill, Multiline = true, ReadOnly = true, ScrollBars = ScrollBars.Both, WordWrap = false, BackColor = Theme.LogBg, ForeColor = Theme.Text, BorderStyle = BorderStyle.None, Font = Theme.Mono,
@@ -51,7 +51,7 @@ namespace ArchTweaker
             filter.Items.AddRange(new object[] { "Show all", "Only ON (active)", "Only OFF (not active)", "Only not available", "OFF with medium/high gain" });
             filter.SelectedIndex = 0; filter.SelectedIndexChanged += delegate { Fill(""); };
             bar.Controls.Add(filter);
-            bar.Controls.Add(Theme.Btn("Show raw system state", delegate { string t = null; MainForm.Instance.Load("Reading system state…", () => { t = Scanner.RawState(); }, () => { raw.Text = t; }); }));
+            bar.Controls.Add(Theme.Btn("Show raw system state", delegate { string t = null; AppShell.Current.LoadData("Reading system state…", () => { t = Scanner.RawState(); }, () => { raw.Text = t; }); }));
             bar.Controls.Add(Theme.Btn("Export report…", delegate { Export(); }));
             summary = new Label { AutoSize = true, ForeColor = Theme.Text, Font = Theme.FB, Margin = new Padding(12, 8, 0, 0) };
             bar.Controls.Add(summary);
@@ -68,7 +68,7 @@ namespace ArchTweaker
             done = true;
             List<ScanRow> r = null;
             Skin.Loading(grid);
-            MainForm.Instance.Load("Scanning the whole PC…", () => { r = Scanner.Run(null); }, () => { rows = r; Fill(""); });
+            AppShell.Current.LoadData("Scanning the whole PC…", () => { r = Scanner.Run(null); }, () => { rows = r; Fill(""); });
         }
 
         void Fill(string q)

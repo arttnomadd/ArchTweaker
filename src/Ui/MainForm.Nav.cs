@@ -228,9 +228,9 @@ namespace ArchTweaker
         NavHistory history;
         bool historyMove;
         NavHistory PageHistory { get { return history ?? (history = new NavHistory(p => p != SEARCH)); } }
-        public bool GoBack() { return Move(PageHistory.Back(current)); }
-        public bool GoForward() { return Move(PageHistory.Forward(current)); }
-        bool Move(string to)
+        public bool GoBack() { return MoveTo(PageHistory.Back(current)); }
+        public bool GoForward() { return MoveTo(PageHistory.Forward(current)); }
+        bool MoveTo(string to)
         {
             if (to == null || busyCount > 0 && !side.Enabled) return false;
             historyMove = true;

@@ -207,7 +207,7 @@ namespace ArchTweaker
             var keep = CleanExclude.All.Where(e => !listed.Contains(e, StringComparer.OrdinalIgnoreCase)).ToList();
             keep.AddRange(lv.Items.Cast<ListViewItem>().Where(i => !i.Checked).Select(i => (string)i.Tag));
             CleanExclude.Save(keep);
-            MainForm.Instance.Notify(keep.Count == 0 ? "No exclusions: Cleanup cleans everything in the list." : keep.Count + (keep.Count == 1 ? " item excluded from cleaning." : " items excluded from cleaning."), Toast.Kind.Ok);
+            AppShell.Current.Notify(keep.Count == 0 ? "No exclusions: Cleanup cleans everything in the list." : keep.Count + (keep.Count == 1 ? " item excluded from cleaning." : " items excluded from cleaning."), Toast.Kind.Ok);
             Close();
         }
     }

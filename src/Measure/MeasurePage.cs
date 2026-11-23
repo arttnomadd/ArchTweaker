@@ -60,7 +60,7 @@ namespace ArchTweaker
         void Measure(bool baseline)
         {
             MetricSet m = null;
-            MainForm.Instance.Busy("Measuring…", delegate { m = Meter.Capture(300); }, delegate
+            AppShell.Current.Busy("Measuring…", delegate { m = Meter.Capture(300); }, delegate
             {
                 if (m == null) { App("Measurement failed — see log."); return; }
                 if (baseline) { before = m; MeasureRuns.Save(m, true); App("[baseline] " + m.Line()); }
@@ -73,7 +73,7 @@ namespace ArchTweaker
         void NetworkTest()
         {
             NetTest.Stat router = null, net = null; string gw = null;
-            MainForm.Instance.Busy("Pinging the router and the internet (about 30 s)…", delegate
+            AppShell.Current.Busy("Pinging the router and the internet (about 30 s)…", delegate
             {
                 gw = NetTest.Gateway();
                 if (gw != null) router = NetTest.Run(gw, 60, 200);
@@ -91,7 +91,7 @@ namespace ArchTweaker
         {
             if (!Dlg.Confirm("Run the bufferbloat test?", "ArchTweaker pings 1.1.1.1 for 10 s at rest, 10 s while it downloads from speed.cloudflare.com and 10 s while it uploads there. It fills your line, so pause other downloads first. On a fast line this moves a few hundred MB.", "Run the test")) return;
             Bufferbloat.Result r = null;
-            MainForm.Instance.Busy("Testing latency at rest, while downloading and while uploading (about 30 s)…", delegate { r = Bufferbloat.Run(10); }, delegate
+            AppShell.Current.Busy("Testing latency at rest, while downloading and while uploading (about 30 s)…", delegate { r = Bufferbloat.Run(10); }, delegate
             {
                 if (r == null) { App("[bufferbloat] " + L.T("The test failed. Details are in the log.")); return; }
                 App("[bufferbloat] " + r.Idle.Line());
@@ -108,7 +108,7 @@ namespace ArchTweaker
             int s; if (!int.TryParse(secs.Text.Trim(), out s)) s = 15;
             string p = proc.Text.Trim(); if (p.Length == 0) { App("Enter a process name, for example game.exe."); return; }
             FrameStats fs = null; string err = null;
-            MainForm.Instance.Busy("Capturing " + s + "s of frametimes…", delegate { fs = PresentMon.Capture(p, s, out err); }, delegate
+            AppShell.Current.Busy("Capturing " + s + "s of frametimes…", delegate { fs = PresentMon.Capture(p, s, out err); }, delegate
             { App(fs != null ? "[frames " + p + "] " + fs.Describe() : "PresentMon: " + err); });
         }
     }

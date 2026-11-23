@@ -289,7 +289,7 @@ namespace ArchTweaker
             running = true; runBtn.Enabled = false; stopBtn.Enabled = true; backBtn.Enabled = false;
             List<PowerTrial> res = null; string err = null;
             Action<string> say = Theme.SayTo(this, status);
-            MainForm.Instance.Busy("Tuning power settings…", delegate { res = PowerTuner.Run(g, s, r, say, out err); }, delegate
+            AppShell.Current.Busy("Tuning power settings…", delegate { res = PowerTuner.Run(g, s, r, say, out err); }, delegate
             {
                 running = false; runBtn.Enabled = true; stopBtn.Enabled = false; backBtn.Enabled = PowerTuner.HasBackup; status.Text = "";
                 lv.BeginUpdate(); lv.Items.Clear();
@@ -309,7 +309,7 @@ namespace ArchTweaker
         void Back()
         {
             int n = 0; string errs = null;
-            MainForm.Instance.Busy("Putting back the original values…", () => { n = PowerTuner.RestoreAll(out errs); }, () =>
+            AppShell.Current.Busy("Putting back the original values…", () => { n = PowerTuner.RestoreAll(out errs); }, () =>
             {
                 backBtn.Enabled = PowerTuner.HasBackup;
                 if (errs == null) Log.Say("Power tuner: {0} original value(s) put back.", n);

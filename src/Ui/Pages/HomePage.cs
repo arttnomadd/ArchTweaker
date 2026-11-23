@@ -93,7 +93,7 @@ namespace ArchTweaker
         }
         protected override void OnMouseLeave(EventArgs e) { hover = -1; Invalidate(); base.OnMouseLeave(e); }
         protected override void OnMouseClick(MouseEventArgs e) { if (hover >= 0) Open(hover); base.OnMouseClick(e); }
-        void Open(int i) { if (i >= 0 && i < Stages.Count) MainForm.Instance.ShowPage(Stages[i].Page); }
+        void Open(int i) { if (i >= 0 && i < Stages.Count) AppShell.Current.ShowPage(Stages[i].Page); }
         protected override bool IsInputKey(Keys k) { return k == Keys.Left || k == Keys.Right || base.IsInputKey(k); }
         protected override void OnKeyDown(KeyEventArgs e)
         {
@@ -232,8 +232,8 @@ namespace ArchTweaker
             // 3.33: the main action is on the score card at the top; here only the other one of the pair
             actions.Controls.Add(wide(Mode.Lite ? Theme.Btn("Select the picks for this PC", delegate { MainForm.Instance.SelectAutoPreset(); }) : Theme.Btn("Optimize safely", delegate { MainForm.Instance.OptimizeSafely(); })));
             actions.Controls.Add(wide(Theme.Btn("Measure Sleep(1) precision", delegate { Measure(); })));
-            actions.Controls.Add(wide(Theme.Btn("See why: open PC advisor", delegate { MainForm.Instance.ShowPage("PC advisor"); })));
-            actions.Controls.Add(wide(Theme.Btn("Scan the whole PC", delegate { MainForm.Instance.ShowPage("System scan"); })));
+            actions.Controls.Add(wide(Theme.Btn("See why: open PC advisor", delegate { AppShell.Current.ShowPage("PC advisor"); })));
+            actions.Controls.Add(wide(Theme.Btn("Scan the whole PC", delegate { AppShell.Current.ShowPage("System scan"); })));
             actions.Controls.Add(wide(Theme.Btn("Why ArchTweaker?", delegate { WhyArchTweaker.Show(); })));   // 3.34
             lastTest = new Label { ForeColor = Theme.Muted, Font = Theme.FS, AutoSize = false, Size = new Size(300, 60), Margin = new Padding(0, 4, 0, 0), UseMnemonic = false };
             actions.Controls.Add(lastTest);
@@ -285,7 +285,7 @@ namespace ArchTweaker
         void Measure()
         {
             string r = null;
-            MainForm.Instance.Busy("Measuring Sleep(1) × 500…", () => { r = LatencyTest.SleepPrecision(500); }, () => { Log.W(r); ShowLast(); Refresh2(); });
+            AppShell.Current.Busy("Measuring Sleep(1) × 500…", () => { r = LatencyTest.SleepPrecision(500); }, () => { Log.W(r); ShowLast(); Refresh2(); });
         }
 
         public void Refresh2()

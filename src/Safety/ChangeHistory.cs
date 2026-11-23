@@ -197,7 +197,7 @@ namespace ArchTweaker
             lv.SelectedIndexChanged += delegate { undo.Enabled = SelectedSession() != null; };
             lv.MouseClick += (s2, e2) => { var it = lv.GetItemAt(e2.X, e2.Y); var h = it == null ? null : it.Tag as HistEntry; if (h != null) Toggle(h); };
             lv.KeyDown += (s2, e2) => { if (e2.KeyCode == Keys.Space && lv.SelectedItems.Count > 0) { var h = lv.SelectedItems[0].Tag as HistEntry; if (h != null) { Toggle(h); e2.Handled = true; } } };
-            lv.ItemActivate += delegate { var r = lv.SelectedItems.Count == 0 ? null : lv.SelectedItems[0].Tag as ChangeRow; if (r != null) MainForm.Instance.ShowDetails(r.T); };
+            lv.ItemActivate += delegate { var r = lv.SelectedItems.Count == 0 ? null : lv.SelectedItems[0].Tag as ChangeRow; if (r != null) AppShell.Current.ShowDetails(r.T); };
             Controls.Add(lv); Controls.Add(note); Controls.Add(bar);
             History.Changed += OnHistory; Disposed += delegate { History.Changed -= OnHistory; };
         }
@@ -281,7 +281,7 @@ namespace ArchTweaker
         {
             var sb = new StringBuilder();
             foreach (var c in rows) sb.Append(c.Session.When.ToString("yyyy-MM-dd HH:mm")).Append('\t').Append(c.T.Title).Append('\t').Append(c.Setting).Append('\t').Append(c.Before).Append('\t').Append(c.Written).Append("\r\n");
-            if (sb.Length > 0) try { Clipboard.SetText(sb.ToString()); MainForm.Instance.Notify("Change history copied", Toast.Kind.Ok); } catch { }
+            if (sb.Length > 0) try { Clipboard.SetText(sb.ToString()); AppShell.Current.Notify("Change history copied", Toast.Kind.Ok); } catch { }
         }
     }
 }

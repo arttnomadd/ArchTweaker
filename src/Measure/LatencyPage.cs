@@ -27,7 +27,7 @@ namespace ArchTweaker
             var top = new FlowLayoutPanel { Dock = DockStyle.Top, AutoSize = true, BackColor = Theme.Bg, Padding = new Padding(0, 0, 0, Theme.S(6)) };
             timer = new Label { AutoSize = true, Font = Theme.FB, ForeColor = Theme.Text, Margin = new Padding(0, 0, Theme.S(24), 0), UseMnemonic = false };
             summary = new Label { AutoSize = true, Font = Theme.F, ForeColor = Theme.Muted, UseMnemonic = false };
-            fix = Theme.Btn("Fix counters", delegate { MainForm.Instance.Busy("Rebuilding counters…", Tools.RebuildPerfCounters, delegate { if (!IsDisposed && Visible) Start(); }); });   // 3.17.1
+            fix = Theme.Btn("Fix counters", delegate { AppShell.Current.Busy("Rebuilding counters…", Tools.RebuildPerfCounters, delegate { if (!IsDisposed && Visible) Start(); }); });   // 3.17.1
             fix.Visible = false; fix.Margin = new Padding(Theme.S(12), 0, 0, 0);
             top.Controls.Add(timer); top.Controls.Add(summary); top.Controls.Add(fix);
             bars.Dock = DockStyle.Top; bars.Height = Theme.S(210);
@@ -37,7 +37,7 @@ namespace ArchTweaker
             bar.Controls.Add(secs);
             bar.Controls.Add(Theme.Lead("Find slow drivers", delegate { Trace(); }));
             bar.Controls.Add(Theme.Btn("Copy report", delegate { CopyReport(); }));
-            bar.Controls.Add(Theme.Btn("Open Measure page", delegate { MainForm.Instance.ShowPage("Measure"); }));
+            bar.Controls.Add(Theme.Btn("Open Measure page", delegate { AppShell.Current.ShowPage("Measure"); }));
             // 3.14: off by default; 30 s after each apply that is live at once
             var auto = new SwitchBox { Text = "Scan after each apply", Checked = AfterApplyScan.Enabled, ForeColor = Theme.Text, Margin = new Padding(12, 2, 0, 0), AccessibleDescription = "Records driver activity for 30 seconds after each apply that needs no restart." };
             auto.CheckedChanged += delegate { AfterApplyScan.Enabled = auto.Checked; };
@@ -85,7 +85,7 @@ namespace ArchTweaker
         void Trace()
         {
             List<DriverStat> res = null; string err = null; int n = Seconds;
-            MainForm.Instance.Busy(L.F("Recording driver activity for {0} seconds…", n), delegate { res = DriverTrace.Run(n, out err); }, delegate
+            AppShell.Current.Busy(L.F("Recording driver activity for {0} seconds…", n), delegate { res = DriverTrace.Run(n, out err); }, delegate
             {
                 if (res == null)
                 {
@@ -127,20 +127,20 @@ namespace ArchTweaker
             var tw = Catalog.All.Where(t => adv.Ids.Contains(t.Id) && t.Applicable).ToList();
             string body = head + "\r\n\r\n" + L.T(adv.What) + "\r\n" + L.T(adv.Try) + (tw.Count > 0 ? "\r\n\r\n" + L.T("Tweaks that address it:") + "\r\n" + string.Join("\r\n", tw.Select(t => "• " + L.T(t.Title) + (StateCache.Get(t) == true ? "  (" + L.T("on") + ")" : "")).ToArray()) : "");
             var off = tw.Where(t => StateCache.Get(t) != true).ToList();
-            if (off.Count > 0) { if (Dlg.Confirm(d.Driver, body, L.F("Select {0} tweaks", off.Count))) MainForm.Instance.SelectIds(off.Select(t => t.Id)); }
+            if (off.Count > 0) { if (Dlg.Confirm(d.Driver, body, L.F("Select {0} tweaks", off.Count))) AppShell.Current.SelectIds(off.Select(t => t.Id)); }
             else Dlg.Info(d.Driver, body);
         }
 
         // 3.8: the scan as text, for a forum post or a support request
         void CopyReport()
         {
-            if (last == null) { MainForm.Instance.Notify(L.T("Run a scan first."), Toast.Kind.Warn); return; }
+            if (last == null) { AppShell.Current.Notify(L.T("Run a scan first."), Toast.Kind.Warn); return; }
             var sb = new System.Text.StringBuilder();
             sb.AppendLine("ArchTweaker " + Program.Version + " · slow-driver scan · " + DateTime.Now.ToString("yyyy-MM-dd HH:mm") + " · " + OSInfo.Name);
             sb.AppendLine(string.Format("{0,-28} {1,10} {2,10} {3,8} {4,8} {5,8} {6,7}", "Driver", "Worst DPC", "Worst ISR", "DPCs", "ISRs", ">=500us", ">=1ms"));
             foreach (var d in last.Where(x => x.Dpcs + x.Isrs > 0).Take(40))
                 sb.AppendLine(string.Format("{0,-28} {1,10:0} {2,10:0} {3,8} {4,8} {5,8} {6,7}", d.Driver, d.DpcMaxUs, d.IsrMaxUs, d.Dpcs, d.Isrs, d.Over500, d.Over1000));
-            try { Clipboard.SetText(sb.ToString()); MainForm.Instance.Notify(L.T("Report copied."), Toast.Kind.Ok); } catch { }
+            try { Clipboard.SetText(sb.ToString()); AppShell.Current.Notify(L.T("Report copied."), Toast.Kind.Ok); } catch { }
         }
     }
 

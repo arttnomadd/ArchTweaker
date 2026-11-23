@@ -80,7 +80,7 @@ namespace ArchTweaker
         {
             loaded = true;
             var rows = new List<KeyValuePair<Tweak, bool>>(); var no = new List<KeyValuePair<Tweak, string>>();
-            MainForm.Instance.Load("Reading tweak states…", delegate
+            AppShell.Current.LoadData("Reading tweak states…", delegate
             {
                 foreach (var t in Catalog.All)
                 {
@@ -132,7 +132,7 @@ namespace ArchTweaker
                 if (!IsoBake.SafePath(iso)) { Dlg.Error("This path can't be used", "Rename the file or folder so the path has no quote marks."); return; }
                 List<IsoEdition> list = null; string err = null;
                 eds.Items.Clear(); isoBox.Text = ""; Ready();
-                MainForm.Instance.Load("Reading the editions in the ISO…", delegate { list = IsoBake.Inspect(iso, out err); }, delegate
+                AppShell.Current.LoadData("Reading the editions in the ISO…", delegate { list = IsoBake.Inspect(iso, out err); }, delegate
                 {
                     if (list == null || list.Count == 0) { Dlg.Error("Not a Windows setup ISO", err ?? "ArchTweaker found no editions in this ISO."); return; }
                     isoBox.Text = iso;
@@ -182,7 +182,7 @@ namespace ArchTweaker
             running = true; bakeBtn.Enabled = false;
             Action<string> say = Theme.SayTo(this, status);
             IsoBakeResult r = null;
-            MainForm.Instance.Busy("Baking the tweaks into the ISO…", delegate { r = IsoBake.Run(job, say); }, delegate
+            AppShell.Current.Busy("Baking the tweaks into the ISO…", delegate { r = IsoBake.Run(job, say); }, delegate
             {
                 running = false; status.Text = ""; Ready();
                 if (r == null) { Dlg.Error("Bake into ISO stopped", "Details are in the log: " + Paths.LogFile); return; }

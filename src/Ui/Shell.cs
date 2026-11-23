@@ -228,11 +228,11 @@ namespace ArchTweaker
                     action = Mode.Lite ? "Optimize safely" : "Select the picks for this PC"; go = () => { if (Mode.Lite) MainForm.Instance.OptimizeSafely(); else MainForm.Instance.SelectAutoPreset(); }; break;
                 case 1:
                     value = h.SpeedApplied + " / " + h.SpeedTotal;
-                    action = "Open PC advisor"; go = () => MainForm.Instance.ShowPage("PC advisor"); break;
+                    action = "Open PC advisor"; go = () => AppShell.Current.ShowPage("PC advisor"); break;
                 case 2:
                     value = h.Drifted == 0 ? "None" : h.Drifted.ToString();
                     tone = h.Drifted == 0 ? Theme.Ok : Theme.Warn;
-                    action = h.Drifted == 0 ? "Check what changed" : "Fix them"; go = () => MainForm.Instance.ShowPage("What changed"); break;
+                    action = h.Drifted == 0 ? "Check what changed" : "Fix them"; go = () => AppShell.Current.ShowPage("What changed"); break;
                 case 3:
                     value = h.RestartPending ? "Needed" : "Not needed"; tone = h.RestartPending ? Theme.Warn : Theme.Ok;
                     if (h.RestartPending) { action = "Restart now"; go = () => MainForm.Instance.RestartNowPublic(); }
@@ -241,7 +241,7 @@ namespace ArchTweaker
                     double days = (DateTime.Now - h.LastClean).TotalDays;
                     value = h.LastClean == DateTime.MinValue ? "Never" : days < 1 ? "Today" : (int)days + (((int)days) == 1 ? " day ago" : " days ago");
                     tone = days <= 14 ? Theme.Ok : Theme.Warn;
-                    action = "Clean up"; go = () => MainForm.Instance.ShowPage("Cleanup"); break;
+                    action = "Clean up"; go = () => AppShell.Current.ShowPage("Cleanup"); break;
             }
         }
     }

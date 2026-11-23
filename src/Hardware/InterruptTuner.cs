@@ -449,7 +449,7 @@ namespace ArchTweaker
             running = true; runBtn.Enabled = false; stopBtn.Enabled = true; restoreBtn.Enabled = false; lv.Enabled = false;
             IrqTuneResult res = null;
             Action<string> say = Theme.SayTo(this, status);
-            MainForm.Instance.Busy("Tuning interrupts…", delegate { res = IrqTuner.Run(devs, s, r, say); }, delegate
+            AppShell.Current.Busy("Tuning interrupts…", delegate { res = IrqTuner.Run(devs, s, r, say); }, delegate
             {
                 running = false; runBtn.Enabled = true; stopBtn.Enabled = false; lv.Enabled = true; status.Text = "";
                 Fill();
@@ -466,7 +466,7 @@ namespace ArchTweaker
             if (running) return;
             if (!Dlg.Confirm("Put back the original settings?", L.T("ArchTweaker writes the interrupt settings from before the first tuning run back to each tested device and restarts it."), "Put back", destructive: false)) return;
             string err = null; int n = 0;
-            MainForm.Instance.Busy("Putting back the original settings…", delegate { n = IrqTuner.RestoreAll(out err); }, delegate
+            AppShell.Current.Busy("Putting back the original settings…", delegate { n = IrqTuner.RestoreAll(out err); }, delegate
             {
                 Log.Say("Original interrupt settings put back on {0} device(s).", n);
                 if (err != null) Dlg.Error("Some devices did not change", err);

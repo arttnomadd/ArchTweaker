@@ -74,7 +74,7 @@ namespace ArchTweaker
         void OnShowForce()
         {
             List<PowerScheme> s = null;
-            MainForm.Instance.Load("Reading power plans…", delegate { s = PowerExplorer.Schemes(); }, delegate
+            AppShell.Current.LoadData("Reading power plans…", delegate { s = PowerExplorer.Schemes(); }, delegate
             {
                 loaded = false;
                 schemes.Items.Clear();
@@ -90,7 +90,7 @@ namespace ArchTweaker
         {
             var s = schemes.SelectedItem as PowerScheme; if (s == null) return;
             List<PowerSetting> l = null; int token = ++loadToken;
-            MainForm.Instance.Load("Reading power settings…", delegate { l = PowerExplorer.Load(s.Id); }, delegate
+            AppShell.Current.LoadData("Reading power settings…", delegate { l = PowerExplorer.Load(s.Id); }, delegate
             {
                 if (token != loadToken) return;          // a newer load is in flight
                 all = l ?? new List<PowerSetting>();
@@ -178,7 +178,7 @@ namespace ArchTweaker
             uint? wa = ac != p.Ac ? (uint?)ac : null, wd = dc != p.Dc ? (uint?)dc : null;   // only the side(s) you changed
             if (!wa.HasValue && !wd.HasValue) { Log.W("No change for '{0}'.", p.Name); return; }
             string err = null;
-            MainForm.Instance.Busy("Writing power setting…", delegate { try { PowerExplorer.Write(p, wa, wd); } catch (Exception ex) { err = ex.Message; } }, delegate
+            AppShell.Current.Busy("Writing power setting…", delegate { try { PowerExplorer.Write(p, wa, wd); } catch (Exception ex) { err = ex.Message; } }, delegate
             {
                 if (err != null) Dlg.Error("Couldn't set the power value", "Windows rejected the change, so the value is unchanged.", err);
                 Render(); UpdateRevert();
@@ -189,7 +189,7 @@ namespace ArchTweaker
         {
             var p = cur; if (p == null) return;
             bool hide = !p.Hidden;
-            MainForm.Instance.Busy(hide ? "Hiding…" : "Unhiding…", delegate { PowerExplorer.SetHidden(p, hide); }, delegate { Render(); SetEditor(p); });
+            AppShell.Current.Busy(hide ? "Hiding…" : "Unhiding…", delegate { PowerExplorer.SetHidden(p, hide); }, delegate { Render(); SetEditor(p); });
         }
 
         void CopyCmd()
@@ -204,7 +204,7 @@ namespace ArchTweaker
         {
             if (PowerExplorer.EditedCount() == 0) { Dlg.Info("Nothing to revert", "You have not edited power values on this page."); return; }
             if (!Dlg.Confirm("Revert your power edits?", "Every setting you changed on this page goes back to the value it had before.", "Revert edits", "Keep edits")) return;
-            MainForm.Instance.Busy("Restoring power values…", delegate { PowerExplorer.RevertAll(); }, delegate { LoadSettings(); });
+            AppShell.Current.Busy("Restoring power values…", delegate { PowerExplorer.RevertAll(); }, delegate { LoadSettings(); });
         }
     }
 }

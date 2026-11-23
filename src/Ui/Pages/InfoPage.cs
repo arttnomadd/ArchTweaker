@@ -21,7 +21,7 @@ namespace ArchTweaker
             list.Resize += delegate { Fit(); };
             var bar = Theme.Bar();
             bar.Controls.Add(Theme.Btn("Refresh", delegate { Load2(); }));
-            bar.Controls.Add(Theme.Btn("Copy all", delegate { if (text.Length > 0) try { Clipboard.SetText(text); MainForm.Instance.Notify("System info copied", Toast.Kind.Ok); } catch { } }));
+            bar.Controls.Add(Theme.Btn("Copy all", delegate { if (text.Length > 0) try { Clipboard.SetText(text); AppShell.Current.Notify("System info copied", Toast.Kind.Ok); } catch { } }));
             Controls.Add(list); Controls.Add(bar);
         }
         bool loaded;
@@ -34,7 +34,7 @@ namespace ArchTweaker
         void Load2()
         {
             loaded = true; string t = null;
-            MainForm.Instance.Load("Reading hardware…", () => { t = SysInfo.Gather(); }, () =>
+            AppShell.Current.LoadData("Reading hardware…", () => { t = SysInfo.Gather(); }, () =>
             {
                 text = t ?? "";
                 list.SuspendLayout();

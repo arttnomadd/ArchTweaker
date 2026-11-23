@@ -26,7 +26,7 @@ namespace ArchTweaker
             bar.Controls.Add(Theme.Btn("Tick all old drivers", delegate { foreach (ListViewItem it in lv.Items) it.Checked = ((DriverPkg)it.Tag).Removable; }));
             bar.Controls.Add(Theme.Btn("Rescan", delegate { Load2(); }));
             bar.Controls.Add(Theme.Btn("Ghost devices…", delegate { using (var g = new GhostDialog()) g.ShowDialog(FindForm()); }));   // 3.5
-            bar.Controls.Add(Theme.Btn("NVIDIA telemetry tweak", delegate { MainForm.Instance.ShowPage(Cat.Gpu); }));
+            bar.Controls.Add(Theme.Btn("NVIDIA telemetry tweak", delegate { AppShell.Current.ShowPage(Cat.Gpu); }));
             total = new Label { AutoSize = true, ForeColor = Theme.Text, Font = Theme.FB, Margin = new Padding(12, 8, 0, 0), UseMnemonic = false };
             bar.Controls.Add(total);
             lv.ItemCheck += (s, e) => { var p = lv.Items[e.Index].Tag as DriverPkg; if (p != null && e.NewValue == CheckState.Checked && !p.Removable) e.NewValue = CheckState.Unchecked; };
@@ -39,7 +39,7 @@ namespace ArchTweaker
         void Load2()
         {
             loaded = true; Skin.Loading(lv);
-            MainForm.Instance.Load("Reading the driver store…", delegate { pkgs = DriverStore.Scan(); }, delegate
+            AppShell.Current.LoadData("Reading the driver store…", delegate { pkgs = DriverStore.Scan(); }, delegate
             {
                 lv.BeginUpdate(); lv.Items.Clear();
                 foreach (var p in pkgs)
@@ -57,13 +57,13 @@ namespace ArchTweaker
         void Remove()
         {
             var sel = lv.Items.Cast<ListViewItem>().Where(i => i.Checked).Select(i => (DriverPkg)i.Tag).Where(p => p.Removable).ToList();
-            if (sel.Count == 0) { MainForm.Instance.Notify("Nothing ticked. Tick the old drivers to remove.", Toast.Kind.Warn); return; }
+            if (sel.Count == 0) { AppShell.Current.Notify("Nothing ticked. Tick the old drivers to remove.", Toast.Kind.Warn); return; }
             if (!Dlg.Confirm("Remove " + sel.Count + (sel.Count == 1 ? " old driver?" : " old drivers?"), "ArchTweaker exports each package to the backup folder first. Windows refuses drivers that a device still uses.", "Remove", "Cancel", true,
                 string.Join("\n", sel.Select(p => "• " + p.Original + " " + p.Version + " (" + p.Inf + ")").ToArray()))) return;
             int n = 0; string backup = null;
-            MainForm.Instance.Busy("Removing old drivers…", delegate { n = DriverStore.Remove(sel, out backup); }, delegate
+            AppShell.Current.Busy("Removing old drivers…", delegate { n = DriverStore.Remove(sel, out backup); }, delegate
             {
-                MainForm.Instance.Notify(n + (n == 1 ? " old driver removed." : " old drivers removed.") + " " + L.T("Backup:") + " " + backup, Toast.Kind.Ok);
+                AppShell.Current.Notify(n + (n == 1 ? " old driver removed." : " old drivers removed.") + " " + L.T("Backup:") + " " + backup, Toast.Kind.Ok);
                 Load2();
             });
         }

@@ -36,7 +36,7 @@ namespace ArchTweaker
         void Load2()
         {
             Skin.Loading(lv);
-            MainForm.Instance.Busy("Comparing with the last apply…", delegate { diffs = Snapshot.Diff(); }, delegate
+            AppShell.Current.Busy("Comparing with the last apply…", delegate { diffs = Snapshot.Diff(); }, delegate
             {
                 lv.BeginUpdate(); lv.Items.Clear();
                 foreach (var d in diffs)
@@ -54,11 +54,11 @@ namespace ArchTweaker
         void Fix()
         {
             var sel = lv.Items.Cast<ListViewItem>().Where(i => i.Checked).Select(i => (SnapDiff)i.Tag).Where(d => d.CanFix).ToList();
-            if (sel.Count == 0) { MainForm.Instance.Notify("Nothing ticked.", Toast.Kind.Warn); return; }
+            if (sel.Count == 0) { AppShell.Current.Notify("Nothing ticked.", Toast.Kind.Warn); return; }
             int ok = 0;
-            MainForm.Instance.Busy("Fixing…", delegate { foreach (var d in sel) if (Snapshot.Fix(d)) ok++; Native.BroadcastSettingChange(); }, delegate
+            AppShell.Current.Busy("Fixing…", delegate { foreach (var d in sel) if (Snapshot.Fix(d)) ok++; Native.BroadcastSettingChange(); }, delegate
             {
-                MainForm.Instance.Notify(ok + (ok == 1 ? " change put back." : " changes put back."), ok == sel.Count ? Toast.Kind.Ok : Toast.Kind.Warn);
+                AppShell.Current.Notify(ok + (ok == 1 ? " change put back." : " changes put back."), ok == sel.Count ? Toast.Kind.Ok : Toast.Kind.Warn);
                 Load2();
             });
         }

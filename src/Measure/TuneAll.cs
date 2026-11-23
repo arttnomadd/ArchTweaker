@@ -141,7 +141,7 @@ namespace ArchTweaker
             running = true; runBtn.Enabled = false; stopBtn.Enabled = true; reportBtn.Enabled = false; summary.Text = "";
             TuneAllResult res = null;
             Action<string> say = Theme.SayTo(this, status);
-            MainForm.Instance.Busy("Tuning everything…", delegate { res = TuneAll.Run(g, s, 2, a, b, c, say); }, delegate
+            AppShell.Current.Busy("Tuning everything…", delegate { res = TuneAll.Run(g, s, 2, a, b, c, say); }, delegate
             {
                 running = false; runBtn.Enabled = true; stopBtn.Enabled = false; status.Text = "";
                 if (res == null) return;
@@ -150,7 +150,7 @@ namespace ArchTweaker
                     + (res.Cancelled ? "  " + L.T("You stopped the run before the end.") : "") + (res.Error != null ? "  " + res.Error : "")
                     + (res.Notes.Count > 0 ? "\r\n" + string.Join("\r\n", res.Notes.ToArray()) : "");
                 Log.Say("Tune everything: {0}", summary.Text);
-                MainForm.Instance.RefreshAll();
+                AppShell.Current.RefreshAll();
             });
         }
     }

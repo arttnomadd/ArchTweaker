@@ -32,6 +32,49 @@ static class UiTests
         T.True(string.Join(" ", lines.ToArray()) == "one two three four five six seven eight nine ten", "no words lost");
     }
 
+    // 3.42: pages talk to the main window through IShell; a test can put a fake in place
+    sealed class FakeShell : IShell
+    {
+        public readonly List<string> Said = new List<string>();
+        public string Page;
+        public void Busy(string msg, Action work, Action done) { Busy(msg, work, done, true); }
+        public void Busy(string msg, Action work, Action done, bool lockPages) { Said.Add(msg); work(); if (done != null) done(); }
+        public void LoadData(string msg, Action work, Action done) { Busy(msg, work, done, false); }
+        public void Notify(string msg, Toast.Kind kind) { Said.Add(msg); }
+        public void ShowPage(string name) { Page = name; }
+        public void ShowDetails(Tweak t) { }
+        public void RefreshAll() { }
+        public void SelectIds(IEnumerable<string> ids) { }
+        readonly Dictionary<Tweak, bool> pending = new Dictionary<Tweak, bool>();
+        public Dictionary<Tweak, bool> Pending { get { return pending; } }
+    }
+
+    [Test] public static void AppShell_UsesTheFakeInTests()
+    {
+        var f = new FakeShell();
+        AppShell.Use(f);
+        try
+        {
+            T.True(AppShell.Current == f, "the fake is in place");
+            bool ran = false;
+            AppShell.Current.Busy("Working…", () => ran = true, null);
+            AppShell.Current.ShowPage("Latency");
+            T.True(ran && f.Said.Contains("Working…") && f.Page == "Latency", "calls reach the fake");
+        }
+        finally { AppShell.Use(null); }
+        T.True(AppShell.Current == MainForm.Instance, "Use(null) puts the main window back");
+    }
+
+    [Test] public static void Pages_UseAppShell_NotMainFormInstance()
+    {
+        string root = TestHelp.RepoRoot();
+        if (TestHelp.SkipWithoutSources(root)) return;
+        var rx = new Regex(@"MainForm\.Instance\.(Busy|LoadData|Notify|ShowPage|ShowDetails|RefreshAll|Pending)");
+        var bad = Directory.GetFiles(Path.Combine(root, "src"), "*.cs", SearchOption.AllDirectories)
+            .Where(f => !Path.GetFileName(f).StartsWith("MainForm") && rx.IsMatch(File.ReadAllText(f))).Select(Path.GetFileName).ToArray();
+        T.True(bad.Length == 0, "use AppShell.Current for these: " + string.Join(", ", bad));
+    }
+
     // 3.42: pinned pages
     [Test] public static void PinnedPages_ToggleAndLimits()
     {

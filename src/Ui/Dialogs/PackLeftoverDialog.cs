@@ -43,7 +43,7 @@ namespace ArchTweaker
             var pick = lv.Items.Cast<ListViewItem>().Where(i => i.Checked).Select(i => (PackLeftover)i.Tag).ToList();
             if (pick.Count == 0) return;
             int n = Leftovers.Fix(pick);
-            MainForm.Instance.Notify(n == 1 ? "1 leftover value fixed. Restart to finish." : n + " leftover values fixed. Restart to finish.", Toast.Kind.Ok);
+            AppShell.Current.Notify(n == 1 ? "1 leftover value fixed. Restart to finish." : n + " leftover values fixed. Restart to finish.", Toast.Kind.Ok);
             Reload();
         }
     }

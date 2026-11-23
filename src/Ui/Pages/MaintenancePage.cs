@@ -37,7 +37,7 @@ namespace ArchTweaker
                 {
                     if (_suppress) return;
                     bool want = cb.Checked; bool ok = true;
-                    MainForm.Instance.Busy(want ? "Scheduling…" : "Removing task…",
+                    AppShell.Current.Busy(want ? "Scheduling…" : "Removing task…",
                         delegate { if (want) ok = Maint.Install(tt); else Maint.Remove(tt); },
                         delegate { if (want && !ok) { _suppress = true; cb.Checked = false; _suppress = false; Dlg.Error("Couldn't create the scheduled task", "Scheduling needs administrator rights. Details are in the log: " + Paths.LogFile); } });
                 };
@@ -49,13 +49,13 @@ namespace ArchTweaker
                 Theme.Btn("Export diagnostics", delegate
                 {
                     string path = null, err = null;
-                    MainForm.Instance.Busy("Collecting diagnostics…", delegate { try { path = Diagnostics.Export(); } catch (Exception ex) { err = ex.Message; } },
+                    AppShell.Current.Busy("Collecting diagnostics…", delegate { try { path = Diagnostics.Export(); } catch (Exception ex) { err = ex.Message; } },
                         delegate { if (path != null) Shell.OpenVisible("explorer.exe", "/select,\"" + path + "\""); else Dlg.Error("Couldn't export diagnostics", "Details are in the log: " + Paths.LogFile, err); });
                 }),
                 Theme.Btn("Download tweak updates", delegate
                 {
                     string err = null;
-                    MainForm.Instance.Busy("Downloading the tweak overlay…", delegate { err = Overlay.Fetch(); },
+                    AppShell.Current.Busy("Downloading the tweak overlay…", delegate { err = Overlay.Fetch(); },
                         delegate { if (err == null) Dlg.Info("Tweak updates downloaded", "Restart ArchTweaker to load them."); else Dlg.Error("Couldn't download tweak updates", "Your tweak list is unchanged.", err); });
                 }),
                 Note("Export diagnostics saves one zip to the desktop: the log, the undo journal, a health report and system details. ArchTweaker uploads nothing. " +
@@ -63,7 +63,7 @@ namespace ArchTweaker
                     (Overlay.Loaded > 0 ? "  " + Overlay.Loaded + " downloaded tweak(s) are loaded now." : "")));
 
             Group("Reports",
-                Theme.Btn("Generate health report", delegate { _report = null; MainForm.Instance.Busy("Building report…", delegate { _report = HealthReport.Generate(true); }, delegate { if (_report != null) Shell.OpenVisible("explorer.exe", "\"" + _report + "\""); else Dlg.Error("Couldn't build the health report", "Details are in the log: " + Paths.LogFile); }); }),
+                Theme.Btn("Generate health report", delegate { _report = null; AppShell.Current.Busy("Building report…", delegate { _report = HealthReport.Generate(true); }, delegate { if (_report != null) Shell.OpenVisible("explorer.exe", "\"" + _report + "\""); else Dlg.Error("Couldn't build the health report", "Details are in the log: " + Paths.LogFile); }); }),
                 Note("A self-contained HTML page: specs, every applied tweak, profile drift, and cleanup potential. Good for sharing or support."));
         }
         string _report;
@@ -99,7 +99,7 @@ namespace ArchTweaker
         {
             string ap = HealthReport.ActiveProfile();
             if (string.IsNullOrEmpty(ap) || !File.Exists(ap)) { driftLbl.Text = "Set an active profile first."; return; }
-            MainForm.Instance.Load("Checking drift…", delegate { _drift = Drift.Against(Profile.Read(ap).ToList()).Count; },
+            AppShell.Current.LoadData("Checking drift…", delegate { _drift = Drift.Against(Profile.Read(ap).ToList()).Count; },
                 delegate { driftLbl.Text = _drift == 0 ? "In sync — all profile tweaks applied." : _drift + " tweak(s) from the profile are NOT applied."; driftLbl.ForeColor = _drift == 0 ? Theme.Ok : Theme.Warn; });
         }
         int _drift;
@@ -108,19 +108,19 @@ namespace ArchTweaker
             string ap = HealthReport.ActiveProfile();
             if (string.IsNullOrEmpty(ap) || !File.Exists(ap)) { driftLbl.Text = "Set an active profile first."; return; }
             int n = 0;
-            MainForm.Instance.Busy("Re-asserting profile…", delegate { n = Drift.Reassert(Drift.Against(Profile.Read(ap).ToList())); },
+            AppShell.Current.Busy("Re-asserting profile…", delegate { n = Drift.Reassert(Drift.Against(Profile.Read(ap).ToList())); },
                 delegate { Log.W("Re-asserted {0} tweak(s).", n); CheckDrift(); });
         }
 
         void CheckUpdate()
         {
             UpdateInfo u = null; string err = null;
-            MainForm.Instance.Load("Checking for updates…", delegate { u = Updater.Check(out err); }, delegate
+            AppShell.Current.LoadData("Checking for updates…", delegate { u = Updater.Check(out err); }, delegate
             {
                 if (u == null) { Dlg.Error("Couldn't check for updates", "Check your internet connection and try again.", err); return; }
                 if (!u.Newer) { Dlg.Info("ArchTweaker is up to date", "You have the latest version, " + Program.Version + "."); return; }
                 if (!Dlg.Confirm("Update to " + u.Version + "?", "ArchTweaker downloads the update, checks its SHA-256 hash and relaunches. Apply or discard pending changes first.", "Update now", "Not now", false, string.IsNullOrEmpty(u.Notes) ? null : u.Notes)) return;
-                MainForm.Instance.Busy("Downloading " + u.Version + "…", delegate { _upErr = Updater.Download(u); }, delegate
+                AppShell.Current.Busy("Downloading " + u.Version + "…", delegate { _upErr = Updater.Download(u); }, delegate
                 {
                     if (_upErr != null) Dlg.Error("Update failed", "Your current version is unchanged. Try again later.", _upErr);
                     else Application.Exit();

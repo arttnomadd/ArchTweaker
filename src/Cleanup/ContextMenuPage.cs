@@ -45,7 +45,7 @@ namespace ArchTweaker
             pending.Clear();
             List<CtxItem> l = null;
             Skin.Loading(lv);
-            MainForm.Instance.Load("Reading context menu entries…", delegate { l = CtxMenu.Load(); }, delegate { items = l ?? new List<CtxItem>(); Render(); Skin.Loaded(lv, "No entries to show. Tick 'Show Windows built-ins' to see the built-in ones."); });
+            AppShell.Current.LoadData("Reading context menu entries…", delegate { l = CtxMenu.Load(); }, delegate { items = l ?? new List<CtxItem>(); Render(); Skin.Loaded(lv, "No entries to show. Tick 'Show Windows built-ins' to see the built-in ones."); });
         }
 
         void Render()
@@ -72,7 +72,7 @@ namespace ArchTweaker
             if (changes.Any(kv => kv.Key.Builtin && !kv.Value) &&
                 !Dlg.Confirm("Turn off a Windows built-in entry?", "Some Windows features use it. You can turn it back on here or with Undo everything.", "Turn off", "Cancel", true)) return;
             int fail = 0;
-            MainForm.Instance.Busy("Applying context menu changes…", delegate
+            AppShell.Current.Busy("Applying context menu changes…", delegate
             {
                 foreach (var kv in changes)
                 {

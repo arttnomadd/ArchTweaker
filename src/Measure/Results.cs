@@ -126,7 +126,7 @@ namespace ArchTweaker
         {
             if (!Dlg.Confirm("Put back everything the tuners changed?", "The Interrupt tuner and the Power tuner keep the settings from before their first run. ArchTweaker writes those back. Tweaks that the Tuning assistant kept are normal applies: Undo last or Change history takes them back.", "Put back", "Cancel")) return;
             string msg = null;
-            MainForm.Instance.Busy("Putting back the tuner changes…", () => { msg = Results.PutBackTunerChanges(); }, () => { Log.Say("{0}", msg); Reload(); });
+            AppShell.Current.Busy("Putting back the tuner changes…", () => { msg = Results.PutBackTunerChanges(); }, () => { Log.Say("{0}", msg); Reload(); });
         }
     }
 }

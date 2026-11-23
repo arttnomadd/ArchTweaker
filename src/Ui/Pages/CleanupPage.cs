@@ -31,7 +31,7 @@ namespace ArchTweaker
             bar.Controls.Add(Theme.Btn("Preview…", delegate
             {
                 var sel = targets.Where(t => checks[t].Checked && t.Dirs != null).ToList();
-                if (sel.Count == 0) { MainForm.Instance.Notify("Tick at least one item to preview.", Toast.Kind.Warn); return; }
+                if (sel.Count == 0) { AppShell.Current.Notify("Tick at least one item to preview.", Toast.Kind.Warn); return; }
                 CleanPreview.Open(MainForm.Instance, sel); Scan();
             }));
             bar.Controls.Add(Theme.Btn("Select all", delegate { foreach (var r in checks.Values) r.Checked = true; }));
@@ -53,7 +53,7 @@ namespace ArchTweaker
         void Scan()
         {
             scanned = true;
-            MainForm.Instance.Busy("Measuring…", () => { foreach (var t in targets) CleanupModule.Measure(t); }, () =>
+            AppShell.Current.Busy("Measuring…", () => { foreach (var t in targets) CleanupModule.Measure(t); }, () =>
             {
                 foreach (var t in targets) checks[t].SizeText = t.Title == "Event logs" ? "" : CleanupModule.Fmt(t.Size);
                 UpdateTotal();
@@ -62,9 +62,9 @@ namespace ArchTweaker
         void Clean()
         {
             var sel = targets.Where(t => checks[t].Checked).ToList();
-            if (sel.Count == 0) { MainForm.Instance.Notify("Nothing selected. Tick at least one item to clean.", Toast.Kind.Warn); return; }
+            if (sel.Count == 0) { AppShell.Current.Notify("Nothing selected. Tick at least one item to clean.", Toast.Kind.Warn); return; }
             long freed = 0; int skipped = 0;
-            MainForm.Instance.Busy("Cleaning…", () =>
+            AppShell.Current.Busy("Cleaning…", () =>
             {
                 foreach (var t in sel)
                 {
@@ -75,7 +75,7 @@ namespace ArchTweaker
             {
                 string fr = CleanupModule.Fmt(freed);
                 string msg = skipped == 0 ? L.F("Freed {0}.", fr) : skipped == 1 ? L.F("Freed {0}. 1 file is in use, so Cleanup skipped it. Close open apps or restart, then clean again.", fr) : L.F("Freed {0}. {1} files are in use, so Cleanup skipped them. Close open apps or restart, then clean again.", fr, skipped);
-                MainForm.Instance.Notify(msg, skipped > 0 ? Toast.Kind.Warn : Toast.Kind.Ok);
+                AppShell.Current.Notify(msg, skipped > 0 ? Toast.Kind.Warn : Toast.Kind.Ok);
                 CleanSettings.MarkCleaned(freed);
                 Scan();
             });

@@ -523,7 +523,7 @@ namespace ArchTweaker
 
         public void Busy(string msg, Action work, Action done) { Busy(msg, work, done, true); }
         // 3.40: read-only background work (page lists, scans): the sidebar stays usable, Apply and Undo wait
-        public void Load(string msg, Action work, Action done) { Busy(msg, work, done, false); }
+        public void LoadData(string msg, Action work, Action done) { Busy(msg, work, done, false); }
         // 3.38.4: lockPages false keeps the sidebar usable (start-up backup): only Apply and Undo wait for the work
         public void Busy(string msg, Action work, Action done, bool lockPages)
         {

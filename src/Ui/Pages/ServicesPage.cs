@@ -39,7 +39,7 @@ namespace ArchTweaker
             bar.Controls.Add(Theme.Btn("Disable telemetry and safe services", delegate
             {
                 if (data == null) return;
-                MainForm.Instance.Busy("Disabling services…", () => { foreach (var s in data.Where(x => x.Group == "Telemetry" || x.Group == "Safe")) Svc.SetStart(s.Name, 4, false); }, OnShow);
+                AppShell.Current.Busy("Disabling services…", () => { foreach (var s in data.Where(x => x.Group == "Telemetry" || x.Group == "Safe")) Svc.SetStart(s.Name, 4, false); }, OnShow);
             }));
             bar.Controls.Add(Theme.Btn("Backup to .reg", delegate
             {
@@ -49,13 +49,13 @@ namespace ArchTweaker
             bar.Controls.Add(Theme.Btn("Restore from .reg", delegate
             {
                 using (var d = new OpenFileDialog { Filter = "Registry file|*.reg", InitialDirectory = Paths.Backups })
-                    if (d.ShowDialog() == DialogResult.OK) MainForm.Instance.Busy("Restoring services…", () => ServicesModule.Restore(d.FileName), OnShow);
+                    if (d.ShowDialog() == DialogResult.OK) AppShell.Current.Busy("Restoring services…", () => ServicesModule.Restore(d.FileName), OnShow);
             }));
             bar.Controls.Add(Theme.Btn("Refresh", delegate { OnShow(); }));
             Controls.Add(grid); Controls.Add(Theme.Note("Changes apply immediately, and Undo can reverse them. On first launch, ArchTweaker saved your original configuration to backup\\services_original.reg.")); Controls.Add(bar);
         }
         bool filling;
-        public void OnShow() { Skin.Loading(grid); MainForm.Instance.Load("Loading services…", () => { data = ServicesModule.Load(); }, () => Fill("")); }
+        public void OnShow() { Skin.Loading(grid); AppShell.Current.LoadData("Loading services…", () => { data = ServicesModule.Load(); }, () => Fill("")); }
         public void Filter(string q) { Fill(q); }
         void Fill(string q)
         {

@@ -30,7 +30,7 @@ namespace ArchTweaker
             bar.Controls.Add(Theme.Btn("App settings (Discord, Firefox, Spotify)…", delegate { using (var d = new AppSettingsDialog()) d.ShowDialog(FindForm()); }));   // 3.30
             Controls.Add(lv); Controls.Add(Theme.Note("Safe: nothing else needs it. Caution: a feature or game service stops working. Keep: Windows or other programs need it. Unknown: check what it is first. 'Check known bloat' ticks Safe apps only. Point at a badge to see why.")); Controls.Add(bar);
         }
-        public void OnShow() { if (data != null) { Fill(""); return; } Skin.Loading(lv); MainForm.Instance.Load("Reading installed apps…", () => { data = AppsModule.Load(); foreach (var a in data) a.Icon = AppIcons.FromPackage(a.InstallLocation); }, () => Fill("")); }
+        public void OnShow() { if (data != null) { Fill(""); return; } Skin.Loading(lv); AppShell.Current.LoadData("Reading installed apps…", () => { data = AppsModule.Load(); foreach (var a in data) a.Icon = AppIcons.FromPackage(a.InstallLocation); }, () => Fill("")); }
         public void Filter(string q) { Fill(q); }
         void Fill(string q)
         {
@@ -69,7 +69,7 @@ namespace ArchTweaker
             if (sel.Any(a => a.Risk == AppRisk.Keep)) body = L.T("Windows or other programs need the apps marked Keep.") + " " + L.T(body);
             if (!Dlg.Confirm("Remove " + napps + "?", body, "Remove " + napps, "Cancel", true, string.Join("\n", lines))) return;
             bool d = deprov.Checked;
-            MainForm.Instance.Busy("Removing apps…", () => { AppsModule.Remove(sel, d); data = AppsModule.Load(); foreach (var a in data) a.Icon = AppIcons.FromPackage(a.InstallLocation); }, () => Fill(""));
+            AppShell.Current.Busy("Removing apps…", () => { AppsModule.Remove(sel, d); data = AppsModule.Load(); foreach (var a in data) a.Icon = AppIcons.FromPackage(a.InstallLocation); }, () => Fill(""));
         }
     }
 }

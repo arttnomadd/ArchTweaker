@@ -49,7 +49,7 @@ namespace ArchTweaker
         void RemoveTicked()
         {
             var pick = lv.Items.Cast<ListViewItem>().Where(i => i.Checked).Select(i => (GhostDevice)i.Tag).ToList();
-            if (pick.Count == 0) { MainForm.Instance.Notify("Tick the devices to remove first.", Toast.Kind.Warn); return; }
+            if (pick.Count == 0) { AppShell.Current.Notify("Tick the devices to remove first.", Toast.Kind.Warn); return; }
             if (!Dlg.Confirm("Remove " + pick.Count + (pick.Count == 1 ? " ghost device?" : " ghost devices?"), "Their drivers stay installed, so Windows sets up each device again if you connect it later. Undo can't bring the entries back, but you lose nothing.", "Remove", "Cancel", true,
                 string.Join("\n", pick.Take(15).Select(p => "• " + p.Name).ToArray()) + (pick.Count > 15 ? "\n…" : ""))) return;
             // 3.27.1: off the UI thread, and the message says what did not work
@@ -63,9 +63,9 @@ namespace ArchTweaker
                 if (IsDisposed) { tm.Stop(); tm.Dispose(); return; }
                 if (th.IsAlive) return;
                 tm.Stop(); tm.Dispose(); Enabled = true; Cursor = Cursors.Default;
-                if (err != null) MainForm.Instance.Notify(L.T("Could not remove the ghost devices:") + " " + err, Toast.Kind.Warn);
-                else if (failed > 0) MainForm.Instance.Notify(L.F("{0} removed, {1} not removed. The log says why.", n, failed), Toast.Kind.Warn);
-                else MainForm.Instance.Notify(n == 1 ? "1 ghost device removed." : n + " ghost devices removed.", Toast.Kind.Ok);
+                if (err != null) AppShell.Current.Notify(L.T("Could not remove the ghost devices:") + " " + err, Toast.Kind.Warn);
+                else if (failed > 0) AppShell.Current.Notify(L.F("{0} removed, {1} not removed. The log says why.", n, failed), Toast.Kind.Warn);
+                else AppShell.Current.Notify(n == 1 ? "1 ghost device removed." : n + " ghost devices removed.", Toast.Kind.Ok);
                 Load2();
             };
             tm.Start();

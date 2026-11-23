@@ -90,11 +90,11 @@ namespace ArchTweaker
             }
             if (!Dlg.Confirm("Start the A/B test?", ArchTweaker.L.F("ArchTweaker measures the PC idle, applies '{0}' and measures again. It takes about 2 minutes. Leave the PC idle.", ArchTweaker.L.T(t.Title)), "Start")) return;
             string v = null; bool worse = false;
-            MainForm.Instance.Busy("Measuring…", () =>
+            AppShell.Current.Busy("Measuring…", () =>
             {
                 var a = RebootAB.Measure(null); t.Apply(); System.Threading.Thread.Sleep(5000); var b = RebootAB.Measure(null);
                 bool better; v = RebootAB.Verdict(a, b, out worse, out better);
-            }, () => { ShowResult(t, v, worse); MainForm.Instance.RefreshAll(); });
+            }, () => { ShowResult(t, v, worse); AppShell.Current.RefreshAll(); });
         }
 
         // shown after a restart test finishes (also from the main window after a restart)
@@ -105,9 +105,9 @@ namespace ArchTweaker
             if (Dlg.Confirm(ArchTweaker.L.F("A/B test result: {0}", ArchTweaker.L.T(t.Title)), verdict + "\r\n" + head, "Undo the tweak", "Keep it"))
             {
                 t.Revert(); StateCache.Clear();
-                MainForm.Instance.Notify(t.Reboot ? ArchTweaker.L.T("Undone. Restart to finish.") : ArchTweaker.L.T("Undone."), Toast.Kind.Ok);
+                AppShell.Current.Notify(t.Reboot ? ArchTweaker.L.T("Undone. Restart to finish.") : ArchTweaker.L.T("Undone."), Toast.Kind.Ok);
             }
-            MainForm.Instance.RefreshAll();
+            AppShell.Current.RefreshAll();
         }
 
         void Run()
@@ -124,7 +124,7 @@ namespace ArchTweaker
             if (!Dlg.Confirm("Run the A/B test for about " + minutes + " min?", ArchTweaker.L.F("Keep the game in the same scene the whole time. ArchTweaker turns \"{0}\" off {1} times and on {1} times, then puts it back as it is now.", ArchTweaker.L.T(t.Title), n), "Start test", "Cancel")) return;
             ABResult r = null;
             App("— " + DateTime.Now.ToString("HH:mm") + "  " + t.Title);
-            MainForm.Instance.Busy("A/B test running…", delegate
+            AppShell.Current.Busy("A/B test running…", delegate
             {
                 r = ABTest.Run(t, p, s, n, line => { try { BeginInvoke((Action)(() => App("  " + line))); } catch { } });
             }, delegate

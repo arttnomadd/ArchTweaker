@@ -47,7 +47,7 @@ namespace ArchTweaker
             if ((m == 2 || m == 3) && t.Impact < 2) return false;
             if (m == 4 && t.Impact < 3) return false;   // 3.2
             if (m == 5 && StateCache.Get(t) != true) return false;
-            if (m == 6 && (MainForm.Instance == null || !MainForm.Instance.Pending.ContainsKey(t))) return false;
+            if (m == 6 && (MainForm.Instance == null || !AppShell.Current.Pending.ContainsKey(t))) return false;
             if (m == 7 && !ChangedOutside(t)) return false;
             if (m == 8 && !t.Reboot && !t.Relogon) return false;
             if (m == 9) { var pr = ProofStore.Get(t.Id); if (pr == null) return false; string w9; if (!pr.Value.Helped || pr.Value.Stale(out w9)) return false; }   // 3.34
@@ -58,7 +58,7 @@ namespace ArchTweaker
         }
         public static bool Shown(Tweak t)
         {
-            bool p; if (MainForm.Instance != null && MainForm.Instance.Pending.TryGetValue(t, out p)) return p;
+            bool p; if (MainForm.Instance != null && AppShell.Current.Pending.TryGetValue(t, out p)) return p;
             return t.Applicable && StateCache.Get(t) == true;
         }
     }
@@ -218,7 +218,7 @@ namespace ArchTweaker
             foreach (var t in Catalog.All)
             {
                 if (!Mode.Allows(t)) continue;   // 3.22
-                bool p; bool pend = MainForm.Instance.Pending.TryGetValue(t, out p);
+                bool p; bool pend = AppShell.Current.Pending.TryGetValue(t, out p);
                 bool? known = t.Applicable ? StateCache.Get(t) : (bool?)false;
                 bool applied = known ?? false;
                 if (!TweakFilter.Pass(t, pend ? p : applied, q)) continue;
@@ -227,7 +227,7 @@ namespace ArchTweaker
                     lastCat = t.Category;
                     var cl = new LinkLabel { Text = t.Category, AutoSize = true, Font = Theme.FB, LinkColor = Theme.Accent, ActiveLinkColor = Theme.Strong, LinkBehavior = LinkBehavior.HoverUnderline, Margin = new Padding(0, n == 0 ? 0 : 10, 0, 6), UseMnemonic = false };
                     string cat = t.Category;
-                    cl.LinkClicked += delegate { MainForm.Instance.ShowPage(cat); };
+                    cl.LinkClicked += delegate { AppShell.Current.ShowPage(cat); };
                     Controls.Add(cl);
                 }
                 TweakRow r;
