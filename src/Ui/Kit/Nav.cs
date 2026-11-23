@@ -140,7 +140,7 @@ namespace ArchTweaker
             var old = g.SmoothingMode; g.SmoothingMode = SmoothingMode.AntiAlias;
             using (var p = Gfx.Round(new RectangleF(r.X + 0.5f, r.Y + 0.5f, r.Width - 1, r.Height - 1), r.Height / 2f)) using (var b = new SolidBrush(Theme.Warn)) g.FillPath(b, p);
             g.SmoothingMode = old;
-            Color ink = AccentMaker.Contrast(Color.White, Theme.Warn) >= 4.5 ? Color.White : Color.FromArgb(22, 22, 22);
+            Color ink = Theme.InkOn(Theme.Warn);
             TextRenderer.DrawText(g, "+" + n, Theme.FT, r, ink, TextFormatFlags.VerticalCenter | TextFormatFlags.HorizontalCenter | TextFormatFlags.NoPrefix);
         }
         int PillWidth() { return Math.Max(Theme.S(36), TextRenderer.MeasureText(Count, Theme.FT, Size.Empty, TextFormatFlags.NoPadding).Width + Theme.S(12)); }

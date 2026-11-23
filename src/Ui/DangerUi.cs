@@ -109,7 +109,7 @@ namespace ArchTweaker
             // the unlock button is red, so it never looks like the safe default
             EventHandler paint = delegate
             {
-                ok.BackColor = ok.Enabled ? Theme.Bad : Theme.Panel; ok.ForeColor = ok.Enabled ? Color.White : Theme.Muted;
+                ok.BackColor = ok.Enabled ? Theme.Bad : Theme.Panel; ok.ForeColor = ok.Enabled ? Theme.InkOn(Theme.Bad) : Theme.Muted;
                 ok.FlatAppearance.BorderColor = ok.Enabled ? Theme.Bad : Theme.Border;
                 ok.FlatAppearance.MouseOverBackColor = ok.Enabled ? Gfx.Mix(Theme.Bad, Color.Black, 0.15) : Theme.Panel;
             };

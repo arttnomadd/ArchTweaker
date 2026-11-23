@@ -127,7 +127,7 @@ namespace ArchTweaker
                 if (r.Width > 60 && r.Height > 34)
                 {
                     var tr = Rectangle.Round(new RectangleF(r.X + 6, r.Y + 4, r.Width - 12, r.Height - 8));
-                    Color ink = AccentMaker.Contrast(Color.White, fill) >= 4.5 ? Color.White : Color.Black;
+                    Color ink = Theme.InkOn(fill);
                     TextRenderer.DrawText(g, (c.Key.IsFiles ? L.T("Files in this folder") : c.Key.Name) + "\n" + CleanupModule.Fmt(c.Key.Size), Theme.FS, tr, ink, TextFormatFlags.WordBreak | TextFormatFlags.EndEllipsis | TextFormatFlags.NoPrefix);
                 }
             }

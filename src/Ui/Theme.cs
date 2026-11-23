@@ -19,6 +19,10 @@ namespace ArchTweaker
         // 3.36 depth tokens, derived from the scheme in Derive() (never set by hand): Line = hairline between and around
         // surfaces, Raised = a card on the page background, Hi = the 1 px light edge on top of a raised surface (dark only),
         // AccentSoft = a quiet accent tint for the one thing that needs attention, ShadowA = shadow strength (alpha)
+        // 3.42: text or a tick drawn on a coloured fill: white when it reads well enough on the fill, else near-black.
+        // One rule for every badge, pill and swatch (it was picked in five places with three different blacks).
+        public static readonly Color InkDark = Color.FromArgb(11, 11, 12);
+        public static Color InkOn(Color fill, double min = 4.5) { return AccentMaker.Contrast(Color.White, fill) >= min ? Color.White : InkDark; }
         public static Color Line, Raised, Hi, AccentSoft, AccentInk; public static int ShadowA;   // AccentInk: the accent as small text, ≥ 4.5:1 on Panel
 
         // ---- Carbon design system (2.4.1): one token set; every page reads only these tokens ----
@@ -284,7 +288,7 @@ namespace ArchTweaker
             }
             // 3.1: "on / applied" state uses the status green, so red stays for the brand and the main action
             On = Ok; OnHover = Gfx.Mix(Ok, dark ? Color.White : Color.Black, 0.16);
-            OnInk = AccentMaker.Contrast(Color.White, On) >= 4.5 ? Color.White : Color.FromArgb(11, 11, 12);
+            OnInk = InkOn(On);
             Progress = ProgressColour(ProgressIndex, dark, On, Accent, Panel, Text);
             Risk = dark ? C("#FF7EB6") : C("#9F1853");   // Carbon Magenta 40 / 70: ≥ 3:1 on every panel
             Exp = dark ? C("#BE95FF") : C("#6929C4");    // Carbon Purple 40 / 70

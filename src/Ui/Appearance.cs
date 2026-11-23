@@ -396,7 +396,7 @@ namespace ArchTweaker
                     if (cur)
                     {
                         using (var pen = new Pen(Theme.Strong, 2f * u)) g.DrawEllipse(pen, RectangleF.Inflate(d, 2.5f * u, 2.5f * u));
-                        if (!custom) Tick(g, d, AccentMaker.Contrast(Color.White, Theme.AccentSwatch(h.Index)) >= 3 ? Color.White : Color.Black);
+                        if (!custom) Tick(g, d, Theme.InkOn(Theme.AccentSwatch(h.Index), 3));
                     }
                     break;
                 }

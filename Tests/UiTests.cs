@@ -32,6 +32,18 @@ static class UiTests
         T.True(string.Join(" ", lines.ToArray()) == "one two three four five six seven eight nine ten", "no words lost");
     }
 
+    // 3.42: one rule for text on a coloured fill
+    [Test] public static void InkOn_PicksTheReadableInk()
+    {
+        T.True(Theme.InkOn(System.Drawing.Color.FromArgb(20, 20, 60)) == System.Drawing.Color.White, "white on dark blue");
+        T.True(Theme.InkOn(System.Drawing.Color.FromArgb(250, 220, 90)) == Theme.InkDark, "dark on yellow");
+        var root = TestHelp.RepoRoot();
+        if (root == null) return;
+        var raw = Directory.GetFiles(Path.Combine(root, "src"), "*.cs", SearchOption.AllDirectories)
+            .Where(f => !f.EndsWith("Theme.cs") && File.ReadAllText(f).Contains("Contrast(Color.White,")).Select(Path.GetFileName).ToArray();
+        T.True(raw.Length == 0, "use Theme.InkOn instead of a local white/black pick: " + string.Join(", ", raw));
+    }
+
     // 3.42: the layout audit finds a fixed-size label too small for its text, and ignores self-sizing and "…" labels
     [Test] public static void LayoutAudit_FindsTextThatDoesNotFit()
     {
