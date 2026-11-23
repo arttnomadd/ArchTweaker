@@ -283,14 +283,45 @@ namespace ArchTweaker
 
         public void ReviewPending() { if (applyBtn.Enabled) ApplyPending(); }
 
+        // 3.42: true while the details panel is open over the list on a window too narrow to dock it
+        bool detailsFloat;
+        bool DetailsDockable { get { return ClientSize.Width - (side != null ? side.Width : 0) - Theme.S(560) >= Theme.S(260); } }
+
         void FitDetails()
         {
             if (details == null) return;
             // 3.40: the panel narrows (370 → 260 px) before it hides, so 1,100–1,150 px windows keep it
             int room = ClientSize.Width - (side != null ? side.Width : 0) - Theme.S(560);
             bool show = detailsWanted && room >= Theme.S(260);
-            if (show) details.Width = Math.Min(Theme.S(370), room);
+            if (show) { detailsFloat = false; details.Dock = DockStyle.Right; details.Width = Math.Min(Theme.S(370), room); }
+            else if (detailsWanted && detailsFloat)
+            {   // 3.42: too narrow to dock: the panel slides in over the right side of the page, under the header
+                details.Dock = DockStyle.None;
+                int w = Math.Min(Theme.S(340), Math.Max(Theme.S(240), content.Width - Theme.S(80)));
+                details.Bounds = new Rectangle(content.Right - w, content.Top, w, content.Height);
+                details.BringToFront();
+                show = true;
+            }
+            if (detClose != null) detClose.Visible = show && detailsFloat;
             details.Visible = show;   // always set: before the form is shown, Visible reads false for every child
+        }
+
+        // 3.42: a click on a row or Enter: show the details, and open the panel over the list if it can't dock.
+        // Focus moves (arrow keys) and switch flips only fill the panel, so they never cover the list.
+        public void OpenDetails(Tweak t)
+        {
+            ShowDetails(t);
+            if (!DetailsDockable && detailsWanted && !detailsFloat)
+            {
+                detailsFloat = true; FitDetails();
+            }
+        }
+
+        public bool CloseFloatingDetails()
+        {
+            if (!detailsFloat) return false;
+            detailsFloat = false; FitDetails();
+            return true;
         }
 
         public void RefreshHomeTiles() { Control hp; if (pages.TryGetValue("Home", out hp)) ((HomePage)hp).RefreshTiles(); }

@@ -88,7 +88,7 @@ namespace ArchTweaker
         public static MainForm Instance;
         static bool restorePointDone, backupDone;
         string current;
-        Panel details; Label detTitle, detBadge; TextBox detBox; Tweak detTweak; LinkLabel detLink, detForget; StatTiles detStats;
+        Panel details; Label detTitle, detBadge, detClose; TextBox detBox; Tweak detTweak; LinkLabel detLink, detForget; StatTiles detStats;
         Action<string> logHandler;
 
         public MainForm() : this(null) { }
@@ -315,6 +315,10 @@ namespace ArchTweaker
             details = new Panel { Dock = DockStyle.Right, Width = 370, BackColor = Theme.Panel };
             var detInner = new Panel { Dock = DockStyle.Fill, BackColor = Theme.Panel, Padding = new Padding(16, 14, 12, 10) };
             detTitle = new Label { Dock = DockStyle.Top, Height = 54, Font = Theme.Semi(12f), ForeColor = Theme.Strong, Text = "Tweak details" };
+            // 3.42: on a narrow window the panel opens over the list; this closes it again (Esc does too)
+            detClose = new Label { Text = "✕", Tag = "notr", AutoSize = false, Size = new Size(28, 28), TextAlign = ContentAlignment.MiddleCenter, Dock = DockStyle.Right, ForeColor = Theme.Muted, Cursor = Cursors.Hand, Visible = false, AccessibleName = "Close details", AccessibleRole = AccessibleRole.PushButton };
+            detClose.Click += delegate { CloseFloatingDetails(); };
+            detTitle.Controls.Add(detClose);
             detBadge = new Label { Dock = DockStyle.Top, Height = 24, Font = Theme.FT, ForeColor = Theme.Accent };
             detBox = new TextBox { Dock = DockStyle.Fill, Multiline = true, ReadOnly = true, WordWrap = true, ScrollBars = ScrollBars.Vertical, BorderStyle = BorderStyle.None, BackColor = Theme.Panel, ForeColor = Theme.Text, Font = Theme.F,
                 Text = L.T("Select a tweak (click it, or Tab to its switch) to see what it does and its state. You also see the exact registry values, services, tasks, power settings and commands it changes, and how Undo restores each one.") };

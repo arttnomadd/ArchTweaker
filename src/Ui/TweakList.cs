@@ -313,14 +313,14 @@ namespace ArchTweaker
             if (e.Button == MouseButtons.Left)
             {
                 Focus(); MarkSelected();
-                if (HitSwitch.Contains(e.Location) || titleR.Contains(e.Location)) Flip(); else MainForm.Instance.ShowDetails(T);
+                if (HitSwitch.Contains(e.Location) || titleR.Contains(e.Location)) Flip(); else MainForm.Instance.OpenDetails(T);
             }
             base.OnMouseClick(e);
         }
         protected override void OnKeyDown(KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Space) { Flip(); e.Handled = true; }
-            else if (e.KeyCode == Keys.Enter) { MainForm.Instance.ShowDetails(T); e.Handled = true; }
+            else if (e.KeyCode == Keys.Enter) { MainForm.Instance.OpenDetails(T); e.Handled = true; }
             // 3.2: arrow keys walk the list like a list box; Home/End jump to the first/last row shown
             else if ((e.KeyCode == Keys.Up || e.KeyCode == Keys.Down) && Parent != null) { Parent.SelectNextControl(this, e.KeyCode == Keys.Down, true, false, false); e.Handled = true; }
             else if ((e.KeyCode == Keys.Home || e.KeyCode == Keys.End) && Parent != null)

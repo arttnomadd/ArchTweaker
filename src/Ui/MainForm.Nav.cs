@@ -143,6 +143,7 @@ namespace ArchTweaker
             if (keyData == (Keys.Control | Keys.Shift | Keys.L)) { SwitchTheme(); return true; }
             if (keyData == (Keys.Control | Keys.Z) && !(ActiveControl is TextBoxBase) && toast.TryAction()) return true;   // 3.2: Undo from the toast
             if (keyData == (Keys.Control | Keys.Enter)) { if (applyBtn.Enabled) ApplyPending(); return true; }
+            if (keyData == Keys.Escape && CloseFloatingDetails()) return true;   // 3.42
             if (keyData == Keys.Escape && search.Text.Length > 0) { search.Text = ""; return true; }
             return base.ProcessCmdKey(ref msg, keyData);
         }
@@ -238,7 +239,7 @@ namespace ArchTweaker
             pageTitle.Text = name; SetPageGlyph(name); UpdateSubtitle();
             pages[name].AccessibleName = name; A11y.Fill(pages[name], name); Theme.NativeTheme(pages[name]);
             bool tweaky = pages[name] is TweakPage || pages[name] is SearchPage;
-            detailsWanted = tweaky; FitDetails();
+            detailsWanted = tweaky; detailsFloat = false; FitDetails();
             // 3.2: a tweak page opens with its summary in the details panel instead of the last tweak from another page
             if (pages[name] is TweakPage && (detTweak == null || detTweak.Category != name)) ShowCategorySummary(name);
             // 3.14: presets tick tweaks, so they show only where a tweak list or its summary is in view
