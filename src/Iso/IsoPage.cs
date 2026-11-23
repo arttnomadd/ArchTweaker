@@ -47,7 +47,7 @@ namespace ArchTweaker
             bar3.Controls.Add(status);
 
             oscState = Theme.GrowToFit(new Label { Dock = DockStyle.Top, Height = 22, ForeColor = Theme.Muted, Font = Theme.FS, UseMnemonic = false, Tag = "notr", Padding = new Padding(2, 4, 2, 0) });
-            skipped = new Label { Dock = DockStyle.Bottom, Height = 24, ForeColor = Theme.Muted, Font = Theme.FS, UseMnemonic = false, Tag = "notr", Padding = new Padding(2, 4, 2, 0), Cursor = Cursors.Hand };
+            skipped = Theme.GrowToFit(new Label { Dock = DockStyle.Bottom, Height = 24, ForeColor = Theme.Muted, Font = Theme.FS, UseMnemonic = false, Tag = "notr", Padding = new Padding(2, 4, 2, 0), Cursor = Cursors.Hand });   // 3.42: two lines when it needs them
             skipped.Click += delegate { ShowLeftOut(); };
 
             var edHead = new Label { Text = "Editions", Font = Theme.FB, ForeColor = Theme.Text, Dock = DockStyle.Top, Height = 26, TextAlign = ContentAlignment.BottomLeft, UseMnemonic = false };
