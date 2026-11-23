@@ -275,6 +275,18 @@ def _menu_item(title, timeout=10):
     return None
 
 
+def _pick_from_menu(target, title):
+    """Opens the item's context menu and picks its only entry: by name when UI Automation shows the menu,
+    else with the keyboard (Down, Enter), as WinForms popup menus don't always appear in the UIA tree."""
+    from pywinauto.keyboard import send_keys
+    target.right_click_input()
+    entry = _menu_item(title, timeout=4)
+    if entry is not None:
+        entry.click_input()
+    else:
+        send_keys("{DOWN}{ENTER}")
+
+
 @pytest.mark.smoke
 def test_pin_a_page_to_the_top_and_unpin_it(app):
     """3.42: right-click a sidebar page, Pin to the top: a copy shows under Home; Unpin removes it again."""
@@ -287,20 +299,14 @@ def test_pin_a_page_to_the_top_and_unpin_it(app):
         item = app.child_window(auto_id="Latency", control_type="TabItem")
         item.wait("exists visible enabled", timeout=30)
         # Act: pin it
-        item.right_click_input()
-        pin = _menu_item("Pin to the top")
-        assert pin is not None, "the sidebar menu has no 'Pin to the top'"
-        pin.click_input()
+        _pick_from_menu(item, "Pin to the top")
         # Assert: the pinned copy exists, with its own ID
         pinned = app.child_window(auto_id="pin:Latency", control_type="TabItem")
         pinned.wait("exists", timeout=10)
         # Act: unpin from the copy
         box.set_edit_text("")
         pinned.wait("visible", timeout=10)
-        pinned.right_click_input()
-        unpin = _menu_item("Unpin from the top")
-        assert unpin is not None, "the pinned page's menu has no 'Unpin from the top'"
-        unpin.click_input()
+        _pick_from_menu(pinned, "Unpin from the top")
         # Assert
         pinned.wait_not("exists", timeout=10)
     finally:
