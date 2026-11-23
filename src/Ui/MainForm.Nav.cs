@@ -117,6 +117,22 @@ namespace ArchTweaker
         }
 
 
+        // 3.42: on a narrow window the header's right side gives way to the page title: the search box narrows first,
+        // then the preset picker hides (presets are also on Home and in Ctrl+K). Before, it covered the title.
+        Control headerSearch, headerRight, headerTitle;
+        bool presetsWanted;
+        void FitHeader()
+        {
+            if (headerRight == null || headerSearch == null) return;
+            preset.Visible = selectPreset.Visible = presetsWanted;
+            headerSearch.Width = Theme.S(260);
+            int titleNeeds = pageTitle.Right + Theme.S(16);
+            Func<bool> fits = () => headerRight.GetPreferredSize(Size.Empty).Width + titleNeeds <= headerRight.Parent.ClientSize.Width - headerRight.Parent.Padding.Horizontal;
+            if (!fits()) headerSearch.Width = Theme.S(170);
+            if (!fits() && presetsWanted) preset.Visible = selectPreset.Visible = false;
+            if (!fits()) headerSearch.Width = Theme.S(120);
+        }
+
         // ---- 3.42: pinned pages
         FlowLayoutPanel navPanel;
         readonly List<NavItem> pinItems = new List<NavItem>();
@@ -294,7 +310,7 @@ namespace ArchTweaker
             if (pages[name] is TweakPage && (detTweak == null || detTweak.Category != name)) ShowCategorySummary(name);
             // 3.14: presets tick tweaks, so they show only where a tweak list or its summary is in view
             bool presets = tweaky || pages[name] is HomePage || pages[name] is AdvisorPage;
-            preset.Visible = selectPreset.Visible = presets;
+            presetsWanted = presets; FitHeader();
             filterChips.Visible = tweaky; UpdateOutsideBar();
             proBar.Visible = Mode.Pro && (Mode.ProPage(name) || name == Cat.Danger || (pages[name] is TweakPage && !Catalog.All.Any(t => t.Category == name && Mode.LiteTweak(t))));   // 3.29
             if (tweaky) filterChips.Recount(pages[name] is TweakPage ? name : null);

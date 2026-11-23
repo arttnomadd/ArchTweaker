@@ -46,7 +46,7 @@ namespace ArchTweaker
             status = Theme.StatusText();
             bar3.Controls.Add(status);
 
-            oscState = new Label { Dock = DockStyle.Top, Height = 22, ForeColor = Theme.Muted, Font = Theme.FS, UseMnemonic = false, Tag = "notr", Padding = new Padding(2, 4, 2, 0) };
+            oscState = Theme.GrowToFit(new Label { Dock = DockStyle.Top, Height = 22, ForeColor = Theme.Muted, Font = Theme.FS, UseMnemonic = false, Tag = "notr", Padding = new Padding(2, 4, 2, 0) });
             skipped = new Label { Dock = DockStyle.Bottom, Height = 24, ForeColor = Theme.Muted, Font = Theme.FS, UseMnemonic = false, Tag = "notr", Padding = new Padding(2, 4, 2, 0), Cursor = Cursors.Hand };
             skipped.Click += delegate { ShowLeftOut(); };
 

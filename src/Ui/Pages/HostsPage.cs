@@ -91,6 +91,7 @@ namespace ArchTweaker
             desc.Height = TextRenderer.MeasureText(desc.Text, desc.Font, new Size(w, 1000), TextFormatFlags.WordBreak).Height + 1;
             int y = desc.Bottom + 3;
             if (hasCaution) { caution.Location = new Point(x, y); caution.Width = w; caution.Height = TextRenderer.MeasureText(caution.Text, caution.Font, new Size(w, 1000), TextFormatFlags.WordBreak).Height + 1; y = caution.Bottom + 2; }
+            meta.MaximumSize = new Size(w, 0);   // 3.42: wraps on a narrow window instead of running past the card
             meta.Location = new Point(x, y);
             Height = meta.Bottom + 12 + Theme.S(3);   // room for the card's shadow
         }

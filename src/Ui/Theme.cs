@@ -537,12 +537,19 @@ namespace ArchTweaker
         public static Label Note(string text)
         {
             var l = new Label { Text = text, ForeColor = Muted, Font = FS, Dock = DockStyle.Top, Height = 34, Padding = new Padding(2, 4, 0, 0) };
+            return GrowToFit(l, S(6));
+        }
+
+        // A docked label whose height follows its text: one line on a wide window, more lines on a narrow one or in a
+        // longer language (3.42: status lines were cut to their first line on 1024 px screens)
+        public static Label GrowToFit(Label l, int extra = 0)
+        {
             EventHandler fit = delegate
             {
                 if (l.IsDisposed || l.Width <= 0) return;
                 int w = Math.Max(S(80), l.ClientSize.Width - l.Padding.Horizontal);
-                int h = TextRenderer.MeasureText(L.T(l.Text ?? ""), l.Font, new Size(w, 0), TextFormatFlags.WordBreak | TextFormatFlags.NoPrefix).Height + l.Padding.Vertical + S(6);
-                if (Math.Abs(l.Height - h) > 1) l.Height = h;
+                int h = TextRenderer.MeasureText(L.T(l.Text ?? ""), l.Font, new Size(w, 0), TextFormatFlags.WordBreak | TextFormatFlags.NoPrefix).Height + l.Padding.Vertical + extra;
+                if (Math.Abs(l.Height - h) > 1) l.Height = Math.Max(h, l.MinimumSize.Height);
             };
             l.Resize += fit; l.TextChanged += fit; l.FontChanged += fit;
             return l;

@@ -82,7 +82,7 @@ namespace ArchTweaker
 
             status = Theme.StatusText();
             bar2.Controls.Add(status);
-            pmState = new Label { Dock = DockStyle.Top, AutoSize = false, Height = 22, ForeColor = Theme.Muted, Font = Theme.FS, UseMnemonic = false, Tag = "notr", Padding = new Padding(2, 4, 2, 0) };
+            pmState = Theme.GrowToFit(new Label { Dock = DockStyle.Top, AutoSize = false, Height = 22, ForeColor = Theme.Muted, Font = Theme.FS, UseMnemonic = false, Tag = "notr", Padding = new Padding(2, 4, 2, 0) });
             var head = new Label { Text = "Saved runs", Font = Theme.FB, ForeColor = Theme.Text, Dock = DockStyle.Top, Height = 28, TextAlign = ContentAlignment.BottomLeft, UseMnemonic = false };
 
             Controls.Add(lv); Controls.Add(head); Controls.Add(compare.Trend); Controls.Add(compare);

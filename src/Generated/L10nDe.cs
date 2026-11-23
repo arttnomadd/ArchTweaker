@@ -487,8 +487,8 @@ Apply changes	Änderungen anwenden
 Discard changes	Änderungen verwerfen
 Undo everything	Alles rückgängig machen
 Undo last apply	Letzte Anwendung rückgängig
-Hide log	Protokoll ausblenden
-Show log	Protokoll anzeigen
+Hide log	Protokoll aus
+Show log	Protokoll
 Reverts only the tweaks from your most recent Apply.	Macht nur die Tweaks Ihrer letzten Anwendung rückgängig.
 Review and apply the ticked changes (Ctrl+Enter).	Die angehakten Änderungen prüfen und anwenden (Strg+Eingabe).
 Create restore point before first apply	Vor der ersten Anwendung Wiederherstellungspunkt erstellen

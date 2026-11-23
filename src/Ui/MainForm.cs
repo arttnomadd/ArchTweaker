@@ -210,6 +210,7 @@ namespace ArchTweaker
             var right = new FlowLayoutPanel { Dock = DockStyle.Right, AutoSize = true, WrapContents = false, BackColor = Theme.Bg };
             search = new TextBox { Width = 240, BackColor = Theme.Panel, ForeColor = Theme.Text, BorderStyle = BorderStyle.None };
             var searchField = new SearchField(search, 260) { Margin = new Padding(0, 3, 12, 0) };
+            headerSearch = searchField; headerRight = right; headerTitle = titleBox;
             SetCue(search, "Search all tweaks  (Ctrl+F)"); search.AccessibleName = "Search all tweaks";
             search.TextChanged += delegate { OnSearch(); };
             // 3.12: chips above the list replace the "Show" drop-down
@@ -257,6 +258,7 @@ namespace ArchTweaker
                 Motion.Run(strip, dt => { t = Math.Min(1, t + dt / Theme.Ms.Small); double e = 1 - Math.Pow(1 - t, 3); underline = (float)(from + (to - from) * e); strip.Invalidate(); return t >= 1; });
             };
             pageTitle.SizeChanged += follow; pageTitle.LocationChanged += follow;
+            top.Resize += delegate { FitHeader(); }; pageTitle.SizeChanged += delegate { FitHeader(); };   // 3.42
 
             // ---- bottom bar + log
             logOpen = sessionLog;   // 3.10.1: closed at every start; a rebuild (theme, language) keeps the current state
@@ -278,9 +280,20 @@ namespace ArchTweaker
             rpCheck = new TickBox { Text = "Restore point first", Checked = true, ForeColor = Theme.Muted, AutoSize = true, Margin = new Padding(8, 8, 0, 0) };
             tips.SetToolTip(rpCheck, L.T("Create a restore point before the first apply (recommended)"));
             if (Mode.Lite) { rpCheck.Checked = true; rpCheck.Enabled = false; }   // 3.23: always on in Lite
+            rpCheck.AccessibleName = L.T("Restore point first");
             status = new Label { AutoSize = true, ForeColor = Theme.Muted, Margin = new Padding(16, 9, 0, 0) };
             actions.Controls.AddRange(new Control[] { applyBtn, discardBtn, undoLastBtn, undoAll, logToggle, rpCheck, status, tailLine });
             // 3.33: the status line takes the rest of the bar, so its text is cut only when the window is really narrow
+            // 3.42: on a narrow window the restore-point box keeps its box and drops its label (the tooltip and the
+            // screen-reader name still say what it is), so the label is never cut in half
+            actions.Layout += delegate
+            {
+                string full = L.T("Restore point first");
+                int need = TextRenderer.MeasureText(full, rpCheck.Font).Width + Theme.S(24);
+                bool room = rpCheck.Left + need <= actions.ClientSize.Width - actions.Padding.Right;
+                string want = room ? full : "";
+                if (rpCheck.Text != want) rpCheck.Text = want;
+            };
             actions.Layout += delegate { if (tailLine.Visible) { int w = actions.ClientSize.Width - tailLine.Left - Theme.S(12); if (w > Theme.S(120) && w != tailLine.Width) tailLine.Width = w; } };
             logBox = new TextBox { Dock = DockStyle.Fill, Multiline = true, ReadOnly = true, ScrollBars = ScrollBars.Vertical, BackColor = Theme.LogBg, ForeColor = Theme.LogFg, BorderStyle = BorderStyle.None, Font = Theme.Mono, AccessibleName = "Activity log" };
             // 3.2: log filter and a support copy. The whole session's log lives in LogStore, so the filter can change after the fact.
