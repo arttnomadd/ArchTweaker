@@ -62,6 +62,9 @@ namespace ArchTweaker
             new System.Threading.Thread(() => RegSnapshot.CleanupLargeOnce()) { IsBackground = true }.Start();
             MainForm form;
             StartupTrace.Mark("admin check done");
+            // 3.42: the tweak catalog builds on a second thread while the UI thread compiles the main window (both ~150 ms);
+            // Catalog.All holds its lock until the list is complete, so the window just waits if it gets there first
+            new System.Threading.Thread(() => { try { var n = Catalog.All.Count; } catch (Exception ex) { Log.W("Catalog warm-up: {0}", ex.Message); } }) { IsBackground = true, Name = "ArchTweaker catalog" }.Start();
             try { form = new MainForm(); StartupTrace.Mark("main window built"); }
             catch (Exception ex)
             {

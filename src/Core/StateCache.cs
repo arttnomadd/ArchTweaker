@@ -60,6 +60,8 @@ namespace ArchTweaker
         }
 
         // ---- one dedicated reader thread with a queue (state checks share caches and locks; parallel reads only contend)
+        // 3.42: measured again with a second lane for the slow checks: cold 681 ms one by one vs 743 ms in two lanes,
+        // warm 48 vs 69 ms (281 tweaks, 68 slow). One thread stays.
         static readonly Queue<Action> jobs = new Queue<Action>();
         static Thread reader;
         static void Enqueue(Action job)
