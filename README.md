@@ -1,6 +1,6 @@
 # ArchTweaker 3.41.0
 
-**Why ArchTweaker:** measured, not promised (A/B test any tweak on this PC and keep only the measured wins); exactly undoable; works offline with no account; one small program of about 3.5 MB; open about every tweak's risk and evidence.
+**Why ArchTweaker:** measured, not promised (A/B test any tweak on this PC and keep only the measured wins); exactly undoable; works offline with no account; one small program of about 6 MB (with five interface languages); open about every tweak's risk and evidence.
 
 An original Windows 10/11 tweaker for maximum performance and the lowest latency. It measures what each change does on your PC and undoes every change exactly. Black & red dark theme and a light theme, in English, Russian, German, Spanish and Italian.
 
