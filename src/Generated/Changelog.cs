@@ -3,7 +3,17 @@ namespace ArchTweaker
 {
     public static class Changelog
     {
-        public const string Text = @"## 3.42.1: New update-signing key
+        public const string Text = @"## 3.43.0: Stutter finder, and why the PC is slow right now
+
+### New features
+- **Stutter finder** (Measure & test). Start a game, pick it, click Find stutters and keep playing for 30, 60 or 120 seconds. ArchTweaker records every frame (PresentMon), every driver delay of 250 µs or more (DPC/ISR), every program that starts, and the CPU and disk load, all on one clock. Then it lists each slow frame with what happened at that moment, for example ""NVIDIA graphics driver (nvlddmkm.sys) held a CPU for 2.1 ms"" or ""MsMpEng.exe started at that moment"", and says what to do about the main cause. A slow frame takes 2.5 × the median frame time and at least 8 ms more.
+- **Why is my PC slow right now?** A button on Home and in Ctrl+K. A 2-second check of CPU, memory, disk, the busiest programs, Windows Update, Defender scans, Search indexing, the power plan, battery saver and the CPU speed (heat or power limits). It answers in up to five plain sentences, worst first, each with the page that fixes it.
+
+### Under the hood
+- **The driver trace reports each long DPC/ISR as it happens,** with its time on the same clock as PresentMon (`--qpc_time`).
+- **Rule engines with tests.** Both features decide in pure functions (StutterFinder.Analyze, SlowNow.Analyze), and unit tests cover every cause.
+
+## 3.42.1: New update-signing key
 
 Install this version by hand. 3.38.2 to 3.42.0 trust an update-signing key that is no longer available, so their update check can't offer 3.42.1. From 3.42.1 on, Tools & backup → Check for updates works again.
 
@@ -76,23 +86,18 @@ Install this version by hand. 3.38.2 to 3.42.0 trust an update-signing key that 
 ### Under the hood
 - **The Windows UI tests pass on Windows Server 2022 and 2025**, including the Russian interface and ""apply the Recommended preset, then Undo everything"" on a throwaway VM. Device tweaks that find no device on the test VM are listed as expected in `tools/ci-selftest-known.txt`.
 - **A new language needs no code change.** Every `lang/<code>.tsv` becomes a language. Its `# name:` line gives the name in the language list, and Windows starts in that language when the display language matches. [docs/TRANSLATING.md](docs/TRANSLATING.md) explains the steps.
-
-## 3.38.4: Pages open right after start, risk badges for Store apps
+";
+        public const string All = @"## 3.43.0: Stutter finder, and why the PC is slow right now
 
 ### New features
-- **Every Store app has a risk badge on the Apps (UWP) page.** **Safe:** nothing else needs it, and the Microsoft Store has it. **Caution:** a feature or game service stops working, for example Game Pass without the Xbox app, HEIC photos without the HEIF codec, or Win+Shift+S without Snipping Tool. **Keep:** Windows or other programs need it, like the Microsoft Store, App Installer (winget) or Windows Security. **Unknown:** ArchTweaker doesn't know it, so check what it is first. Point at a badge to see why.
-- **""Check known bloat"" ticks Safe apps only.** Before, it skipped only apps whose name said ""needed"" or ""keep"".
-- **Removing a Caution or Keep app says what stops working.** The confirmation lists those apps first, each with the reason, and warns when one is marked Keep.
-
-### Fixes
-- **The sidebar works while ArchTweaker backs up the services at first start.** On a new PC, the first start saves the original service settings. Until that was done, the whole sidebar was off and clicks on a page did nothing, which on a slow PC took several seconds. Now only Apply and Undo wait for the backup.
-- **Screen readers read ""Input & Latency"" correctly in the page title.** The ""&"" was dropped, so the title was read as ""Input  Latency"".
-- **A screen reader's ""Open"" on a sidebar item waits while ArchTweaker is busy,** like a click does.
+- **Stutter finder** (Measure & test). Start a game, pick it, click Find stutters and keep playing for 30, 60 or 120 seconds. ArchTweaker records every frame (PresentMon), every driver delay of 250 µs or more (DPC/ISR), every program that starts, and the CPU and disk load, all on one clock. Then it lists each slow frame with what happened at that moment, for example ""NVIDIA graphics driver (nvlddmkm.sys) held a CPU for 2.1 ms"" or ""MsMpEng.exe started at that moment"", and says what to do about the main cause. A slow frame takes 2.5 × the median frame time and at least 8 ms more.
+- **Why is my PC slow right now?** A button on Home and in Ctrl+K. A 2-second check of CPU, memory, disk, the busiest programs, Windows Update, Defender scans, Search indexing, the power plan, battery saver and the CPU speed (heat or power limits). It answers in up to five plain sentences, worst first, each with the page that fixes it.
 
 ### Under the hood
-- **The Windows UI tests pass again.** They opened pages before the sidebar was ready, read the page title before it changed, looked for pages that Lite mode hides, and used names that changed in 3.36 and 3.37. They now open a page by typing its name into ""Find a page"" and clicking the item, so closed or scrolled sections don't matter. They find dialogs under the main window, read the View menu from ArchTweaker's own process, run in Pro mode (one test checks what Lite hides), and use the current names. ""Find a page"" has a fixed UI Automation ID too. The Apply button has a fixed UI Automation ID, because its text changes (""Nothing to apply"", ""Apply 3 changes"").
-";
-        public const string All = @"## 3.42.1: New update-signing key
+- **The driver trace reports each long DPC/ISR as it happens,** with its time on the same clock as PresentMon (`--qpc_time`).
+- **Rule engines with tests.** Both features decide in pure functions (StutterFinder.Analyze, SlowNow.Analyze), and unit tests cover every cause.
+
+## 3.42.1: New update-signing key
 
 Install this version by hand. 3.38.2 to 3.42.0 trust an update-signing key that is no longer available, so their update check can't offer 3.42.1. From 3.42.1 on, Tools & backup → Check for updates works again.
 

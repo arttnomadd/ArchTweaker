@@ -1,8 +1,8 @@
 {
- "version": "3.42.1",
- "serial": "1795420717",
- "url": "https://github.com/arttnomadd/ArchTweaker/releases/download/v3.42.1/ArchTweaker.exe",
- "sha256": "3b5a4f7210d5bd9c69d8f32aca79f7565855eaaa6cc9568879d293d13fa654bd",
- "notes": "New update-signing key. Pinned pages, every language fits.",
- "sig": "flYAsZlVuO5eoqdALK0lX8igvmk2lF23iRNdnQVGyFCTkSCcwRWG6+CkqChaWZBY3TlyGLyfLAC5/Qr/9z4jmZgLC2maKQg0pNG9xFDZmJ8zjFBSO8BRj/TfmzkRIjfgPi1IzELmy1Y6tNtLTyVFtqLLduMRxYlTRAaKeQEK3Aag36i7JDyguU6AalmTJn/Mu0D60u3CPj4alImWJhfV8JUvZ/hT7gGjYVeY6UiG2/7hNVZgEmocTY7S0Ocsi/mQ8FNal2FEcVKAscPgqd5NBdab/ZK11vEiV1mr/gkJB8VOWQu/eKK2L2zM647lLyeHHXd1zbjXALX040yIrh/0oZ2hFcxlfU0m20CIWYs4CdawocXT1j82Boizjv6melsMv5/He6GGWnEC3tN7EihV6bLHO3fC5X3jz8ZySQZJ7o0XnOcv9IVr1bZ146Hxjd0j/qa7ozQc4GVr77evTAe9hOv3ozHcDNuMrZJc63PdcNRBD2UDdlR2Qxo5zDYmz1t4"
+ "version": "3.43.0",
+ "serial": "1795467812",
+ "url": "https://github.com/arttnomadd/ArchTweaker/releases/download/v3.43.0/ArchTweaker.exe",
+ "sha256": "1571b508e3587e49b650c884789bc0a17f3ae04386801d28e330e3858a51b218",
+ "notes": "Stutter finder, and why the PC is slow right now.",
+ "sig": "YXFDbBThXRaaV+81rdDxc7AbP/wuZU6siyyn02CZFRKFU6qbcraZMq5qCRR6EV6fQFiKa5NnNdE6+cy7Pa3cfL8z5i8auQGb23KmqwCzfuaGVSff87gEhfOo2GNdfqT2r5RI2rdq+WAJq+FxRfcMbHC29bniSfxsxzdus3PkBRu5fJoKfqQevi+dTc2Z0d7evQpNiggI10OoRowjRCF7Pm0c19++T5twHAGw1ZBdb8G5dxpAiUQKVah7yXOVYr4U4DQjSgYlgFs+wCItFUtTHeQVu91PCFA2z1hd423WFMPCgH/kzPqkOh9eBaCtocvE8X2g3UY7J++fwwUKx7DPMGFAvQreAO9jsSd5vB3bxco1ic9pfj5WW0wK/nvIczb8fAPHXTRoZRfY/aAUkdtgOJi5tZRlZ/L7cvPeDW+lmYC58HayGpufbydJjjDnaxBf2zKPVKnuBgYJZ9Fceha5Hw1QsIg2bpZW4HMooKnNUj9VonJ/B7fGmRVYCz0LDVUz"
 }

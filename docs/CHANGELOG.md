@@ -6,6 +6,16 @@ Each version groups its changes under these headings, in this order (leave out t
 `### New features` · `### Tweaks` · `### Design` · `### Fixes` · `### Security` · `### Under the hood`.
 A short intro under the version title is fine. The What's new dialog filters by these headings.
 
+## 3.43.0: Stutter finder, and why the PC is slow right now
+
+### New features
+- **Stutter finder** (Measure & test). Start a game, pick it, click Find stutters and keep playing for 30, 60 or 120 seconds. ArchTweaker records every frame (PresentMon), every driver delay of 250 µs or more (DPC/ISR), every program that starts, and the CPU and disk load, all on one clock. Then it lists each slow frame with what happened at that moment, for example "NVIDIA graphics driver (nvlddmkm.sys) held a CPU for 2.1 ms" or "MsMpEng.exe started at that moment", and says what to do about the main cause. A slow frame takes 2.5 × the median frame time and at least 8 ms more.
+- **Why is my PC slow right now?** A button on Home and in Ctrl+K. A 2-second check of CPU, memory, disk, the busiest programs, Windows Update, Defender scans, Search indexing, the power plan, battery saver and the CPU speed (heat or power limits). It answers in up to five plain sentences, worst first, each with the page that fixes it.
+
+### Under the hood
+- **The driver trace reports each long DPC/ISR as it happens,** with its time on the same clock as PresentMon (`--qpc_time`).
+- **Rule engines with tests.** Both features decide in pure functions (StutterFinder.Analyze, SlowNow.Analyze), and unit tests cover every cause.
+
 ## 3.42.1: New update-signing key
 
 Install this version by hand. 3.38.2 to 3.42.0 trust an update-signing key that is no longer available, so their update check can't offer 3.42.1. From 3.42.1 on, Tools & backup → Check for updates works again.

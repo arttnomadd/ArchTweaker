@@ -1,4 +1,4 @@
-# ArchTweaker 3.42.1
+# ArchTweaker 3.43.0
 
 **Why ArchTweaker:** measured, not promised (A/B test any tweak on this PC and keep only the measured wins); exactly undoable; works offline with no account; one small program of about 6 MB (with five interface languages); open about every tweak's risk and evidence.
 
@@ -31,6 +31,8 @@ SmartScreen can warn about a new, unsigned program. Click **More info → Run an
 - **281 tweaks in 14 categories.** Each one reads its real state live, shows its risk, what it can break and its expected gain, and is undone exactly.
 - **Measured verdicts on every row.** After an A/B test a tweak shows "Proven", "No gain here" or "Worse here" for this PC, and "Optimize safely" undoes the ones that did not help.
 - **Measure before you keep.** Latency (DPC/ISR), Benchmark with 1 % lows (PresentMon), A/B test and the Tuning assistant, which keeps a tweak only when a Welch's t-test shows at least a 1 % gain on your PC.
+- **Stutter finder.** While a game runs it records every frame, every long driver delay, every program that starts and the CPU and disk load on one clock, then shows each slow frame with what caused it ("NVIDIA graphics driver held a CPU for 2.1 ms").
+- **Why is my PC slow right now?** One click on Home: a 2-second check of CPU, memory, disk, Windows Update, Defender scans, power plan and CPU speed, answered in up to five plain sentences with the page that fixes each.
 - **Live overlay.** FPS, 1 % low, DPC/ISR time, interrupts per second and timer resolution in a click-through corner box (Ctrl+Shift+F10).
 - **Tuners (Pro).** Interrupt tuner (MSI mode, affinity, priority), Power tuner (A/B tests power-plan values), Tune everything.
 - **PC advisor and Hardware audit.** Finds what holds this PC back: RAM below its rated speed, PCIe link, BIOS settings, drivers, overlays.
@@ -50,7 +52,7 @@ SmartScreen can warn about a new, unsigned program. Click **More info → Run an
 | Home | Latency chain, live vitals, Optimize safely |
 | Tweaks | 14 categories: Privacy, Interface, Explorer & menus, System, Responsiveness, Gaming, Power Plan, Input & Latency, GPU & Devices, Internet & Network, Hardening, Tasks & Services, Command tweaks, Danger zone (Pro) |
 | Diagnostics | PC advisor, System scan, Hardware audit, System info, Boot times |
-| Measure & test | Latency, Benchmark, Measure, A/B test (Pro), Live overlay, Mouse polling |
+| Measure & test | Latency, Benchmark, Stutter finder, Measure, A/B test (Pro), Live overlay, Mouse polling |
 | Tune (Pro) | Tuning assistant, Interrupt tuner, Power tuner, Tune everything |
 | History | What changed, Results, Change history |
 | Clean & apps | Cleanup, Deep clean (Pro), Disk space, Uninstaller, Apps (UWP) (Pro), Startup, Scheduled tasks (Pro), Services (Pro) |
