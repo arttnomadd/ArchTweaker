@@ -6,6 +6,27 @@ Each version groups its changes under these headings, in this order (leave out t
 `### New features` · `### Tweaks` · `### Design` · `### Fixes` · `### Security` · `### Under the hood`.
 A short intro under the version title is fine. The What's new dialog filters by these headings.
 
+## 3.42.0: Pinned pages, every language fits
+
+### New features
+- **Pin pages to the top.** Right-click a page in the sidebar (or press the Menu key on it) and choose Pin to the top, or use "Pin or unpin this page" in Ctrl+K. Up to 6 pinned pages show under Home, with their counts.
+- **Tweak details on small screens.** When the window is too narrow to show the details panel next to the list, a click on a tweak or Enter opens it over the list. Esc or ✕ closes it. The arrow keys and the switches never open it.
+
+### Design
+- **Text fits in every language and on 1024 × 768 screens.** The header narrows the search box, then hides the preset picker, so it never covers the page title. Toolbars wrap to a second row. Status lines on Bake into ISO and Benchmark grow to show all their text. Hosts list cards wrap their source line. The restore-point box in the Apply bar has a shorter label, and drops it when the bar is full.
+- **One rule for text on coloured backgrounds.** Badges, pills, colour swatches and the Danger zone button pick white or dark text the same way. The Danger zone confirm button is now readable in the dark theme.
+
+### Fixes
+- **"listaas" and "listae".** The Hosts blocker note in Spanish and Italian doubled letters, because a short translated piece matched again inside a longer one. Each piece is now translated once.
+- **German Apply bar.** "Show log" is "Protokoll", so the button fits.
+
+### Under the hood
+- **Layout check in every language.** CI opens every page in English, Russian, German, Spanish and Italian and fails when a label, button or check box cuts its text off (ARCHTWEAKER_LAYOUT_AUDIT).
+- **Faster start.** The tweak list builds while the main window is prepared: first paint about 590 → 530 ms on the test PC.
+- **Measured and left out:** reading the slow tweak states on a second thread. It was slower (cold 681 → 743 ms, warm 48 → 69 ms), so one reader thread stays.
+- **Pages talk to the main window through a small interface (IShell).** Unit tests can put a fake in its place.
+- **Unit tests run in English** whatever language ArchTweaker is set to on the test PC.
+
 ## 3.41.0: German, Spanish and Italian
 
 ### New features
