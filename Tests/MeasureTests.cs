@@ -9,6 +9,22 @@ using ArchTweaker;
 
 static class MeasureTests
 {
+    // ---- 3.44: the health score's missing points ----
+    [Test] public static void Health_Missing_ListsTheBiggestGapsWithTheirPage()
+    {
+        var h = new HealthInfo { SpeedApplied = 50, SpeedTotal = 100, Drifted = 1, RestartPending = true, LastClean = DateTime.Now.AddDays(-30), DpcIsrPct = 0.5 };
+        h.Score = Health.Score(h);
+        var m = Health.Missing(h);
+        T.True(m[0].What == "speed tweaks" && m[0].Points == 25 && m[0].Page == "PC advisor", "speed first: 25 of 50 points");
+        T.True(m.Any(g => g.What == "clean up" && g.Points == 10 && g.Page == "Cleanup"), "clean up");
+        T.True(m.Any(g => g.What == "reset tweaks" && g.Points == 5), "one reset tweak costs 5");
+        T.True(m.Any(g => g.What == "restart" && g.Page == null), "restart has no page");
+        T.True(!m.Any(g => g.What == "driver load"), "low DPC/ISR load: no gap");
+        T.Eq(h.Score + m.Sum(g => g.Points), 100, "score plus missing points is 100");
+        var full = new HealthInfo { SpeedApplied = 10, SpeedTotal = 10, LastClean = DateTime.Now, DpcIsrPct = 0.1 };
+        T.True(Health.Missing(full).Count == 0, "nothing missing at 100");
+    }
+
     // ---- 3.43: Why is my PC slow right now? ----
     static SlowNow.Snap Calm() { return new SlowNow.Snap { CpuPct = 12, MemPct = 40, DiskPct = 5, PerfPct = 100, FreeMb = 9000, PlanId = Guid.NewGuid(), Plan = "Balanced" }; }
 

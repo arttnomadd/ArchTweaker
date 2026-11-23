@@ -53,8 +53,14 @@ namespace ArchTweaker
                 if (unknown)
                 {
                     using (var pen = new Pen(Gfx.Mix(Theme.Muted, under, 0.5), 1.5f * u)) g.DrawPath(pen, p);
-                    using (var b = new SolidBrush(Theme.Muted))
-                        for (int i = -1; i <= 1; i++) g.FillEllipse(b, r.X + r.Width / 2 + i * 6 * u - 1.5f * u, r.Y + r.Height / 2 - 1.5f * u, 3 * u, 3 * u);
+                    // 3.44: the three dots pulse one after another while the state is read (still when animations are off)
+                    double t = Motion.On ? Environment.TickCount / 360.0 : 0;
+                    for (int i = -1; i <= 1; i++)
+                    {
+                        double w = Motion.On ? 0.45 + 0.55 * Math.Max(0, Math.Cos(t - (i + 1) * 0.9)) : 1;
+                        using (var b = new SolidBrush(Gfx.Mix(under, Theme.Muted, w)))
+                            g.FillEllipse(b, r.X + r.Width / 2 + i * 6 * u - 1.5f * u, r.Y + r.Height / 2 - 1.5f * u, 3 * u, 3 * u);
+                    }
                     g.SmoothingMode = old; return;
                 }
                 Color edge = enabled ? (hover ? Theme.Text : Theme.Muted) : Gfx.Mix(Theme.Muted, under, 0.6);

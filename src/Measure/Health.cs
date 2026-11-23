@@ -39,5 +39,22 @@ namespace ArchTweaker
             if (h.DpcIsrPct >= 0 && h.DpcIsrPct < 2) s += 10; else if (h.DpcIsrPct < 0) s += 5;
             return (int)Math.Round(Math.Max(0, Math.Min(100, s)));
         }
+
+        // 3.44: where the missing points are, biggest first, with the page that wins them back. Same parts as Score.
+        public sealed class Gap { public int Points; public string What, Page; }
+        public static List<Gap> Missing(HealthInfo h)
+        {
+            var l = new List<Gap>();
+            if (h == null) return l;
+            int speed = h.SpeedTotal > 0 ? (int)Math.Round(50.0 * (h.SpeedTotal - h.SpeedApplied) / h.SpeedTotal) : 0;
+            if (speed > 0) l.Add(new Gap { Points = speed, What = "speed tweaks", Page = "PC advisor" });
+            int drift = 20 - Math.Max(0, 20 - 5 * h.Drifted);
+            if (drift > 0) l.Add(new Gap { Points = drift, What = "reset tweaks", Page = "What changed" });
+            if (h.RestartPending) l.Add(new Gap { Points = 10, What = "restart", Page = null });
+            if ((DateTime.Now - h.LastClean).TotalDays > 14) l.Add(new Gap { Points = 10, What = "clean up", Page = "Cleanup" });
+            if (h.DpcIsrPct >= 2) l.Add(new Gap { Points = 10, What = "driver load", Page = "Latency" });
+            else if (h.DpcIsrPct < 0) l.Add(new Gap { Points = 5, What = "driver load", Page = "Latency" });
+            return l.OrderByDescending(g => g.Points).ToList();
+        }
     }
 }

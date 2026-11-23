@@ -194,9 +194,15 @@ def test_apply_safe_preset_then_undo_everything(app):
     # 3.39: the preset ticks its tweaks once their states are read (in the background); wait for "Apply N changes"
     apply_btn = app.child_window(auto_id="applyChanges", control_type="Button")
     end = time.time() + 180
-    while time.time() < end and not apply_btn.window_text().startswith("Apply "):
+    # 3.44: the button shows only while changes are pending
+    def ready():
+        try:
+            return apply_btn.exists(timeout=0) and apply_btn.window_text().startswith("Apply ")
+        except Exception:
+            return False
+    while time.time() < end and not ready():
         time.sleep(1)
-    assert apply_btn.window_text().startswith("Apply "), "the preset ticked nothing: " + apply_btn.window_text()
+    assert ready(), "the preset ticked nothing (no Apply button)"
     apply_btn.click_input()
     review = _dialog(app, "Review changes")
     review.child_window(title_re=r"Apply \d+ changes?", control_type="Button").click_input()
@@ -219,8 +225,9 @@ def test_apply_safe_preset_then_undo_everything(app):
             time.sleep(0.5)
     assert confirm is not None, "the Undo everything confirmation did not open"
     confirm.click_input()
-    # Assert: the app is still alive and nothing is pending.
-    app.child_window(auto_id="applyChanges", control_type="Button").wait("visible", timeout=300)
+    # Assert: the app is still alive and nothing is pending (3.44: the Apply button hides when nothing is pending).
+    app.child_window(auto_id="applyChanges", control_type="Button").wait_not("visible", timeout=300)
+    app.child_window(title="Undo everything", control_type="Button").wait("enabled", timeout=300)
     assert app.is_visible()
 
 
@@ -337,7 +344,7 @@ def test_first_run_guide_can_be_skipped(app):
     # Assert: the guide closed, the choice is remembered and nothing was ticked.
     guide.wait_not("visible", timeout=10)
     assert _hkcu("SetupDone") == 1
-    assert app.child_window(auto_id="applyChanges", control_type="Button").exists(timeout=5)
+    assert not app.child_window(auto_id="applyChanges", control_type="Button").exists(timeout=2), "nothing was ticked, so there is nothing to apply"
 
 
 @pytest.mark.smoke
@@ -355,8 +362,9 @@ def test_tweak_page_opens_with_summary(app):
 def test_idle_buttons_are_hidden(app):
     # Assert: nothing pending and nothing applied in this session: Discard has nothing to do.
     assert not app.child_window(title="Discard changes", control_type="Button").exists(timeout=2)
-    # 3.33: with nothing pending the button reads "Nothing to apply"; its ID stays "applyChanges"
-    assert app.child_window(auto_id="applyChanges", control_type="Button").exists(timeout=5)
+    # 3.44: with nothing pending the Apply button is hidden too; Undo everything stays
+    assert not app.child_window(auto_id="applyChanges", control_type="Button").exists(timeout=2)
+    assert app.child_window(title="Undo everything", control_type="Button").exists(timeout=5)
 
 
 @pytest.mark.smoke

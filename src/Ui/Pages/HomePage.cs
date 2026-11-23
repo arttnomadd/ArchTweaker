@@ -228,14 +228,16 @@ namespace ArchTweaker
 
             var aHead = new Label { Text = "Quick actions", Font = Theme.Semi(12f), ForeColor = Theme.Strong, AutoSize = true };
             var actions = new FlowLayoutPanel { FlowDirection = FlowDirection.TopDown, WrapContents = false, BackColor = Theme.Bg, AutoSize = true };
-            Func<Button, Button> wide = b => { b.AutoSize = false; b.Width = 300; b.Height = 40; b.TextAlign = ContentAlignment.MiddleLeft; b.Margin = new Padding(0, 0, 0, 8); var fb = b as FocusButton; if (fb != null) fb.Chevron = true; return b; };
+            // 3.44: cards with a one-line description instead of a stack of plain buttons
+            Func<string, string, char, EventHandler, ActionCard> card = (t, d, gl, click) => new ActionCard(t, d, gl, click);
             // 3.33: the main action is on the score card at the top; here only the other one of the pair
-            actions.Controls.Add(wide(Mode.Lite ? Theme.Btn("Select the picks for this PC", delegate { MainForm.Instance.SelectAutoPreset(); }) : Theme.Btn("Optimize safely", delegate { MainForm.Instance.OptimizeSafely(); })));
-            actions.Controls.Add(wide(Theme.Btn("Measure Sleep(1) precision", delegate { Measure(); })));
-            actions.Controls.Add(wide(Theme.Btn("Why is my PC slow right now?", delegate { SlowNowDialog.Check(); })));   // 3.43
-            actions.Controls.Add(wide(Theme.Btn("See why: open PC advisor", delegate { AppShell.Current.ShowPage("PC advisor"); })));
-            actions.Controls.Add(wide(Theme.Btn("Scan the whole PC", delegate { AppShell.Current.ShowPage("System scan"); })));
-            actions.Controls.Add(wide(Theme.Btn("Why ArchTweaker?", delegate { WhyArchTweaker.Show(); })));   // 3.34
+            actions.Controls.Add(Mode.Lite ? card("Select the picks for this PC", "Ticks the tweaks that suit this PC", '\uE73E', delegate { MainForm.Instance.SelectAutoPreset(); })
+                                           : card("Optimize safely", "Undoes applied tweaks that didn't help here", '\uE73E', delegate { MainForm.Instance.OptimizeSafely(); }));
+            actions.Controls.Add(card("Why is my PC slow right now?", "A 2-second check with a fix for each finding", '\uEC4A', delegate { SlowNowDialog.Check(); }));   // 3.43
+            actions.Controls.Add(card("Measure Sleep(1) precision", "How exactly Windows wakes a waiting program", '\uE916', delegate { Measure(); }));
+            actions.Controls.Add(card("See why: open PC advisor", "What holds this PC back, and the fix", '\uE82F', delegate { AppShell.Current.ShowPage("PC advisor"); }));
+            actions.Controls.Add(card("Scan the whole PC", "Settings, drivers, services and startup in one pass", '\uE721', delegate { AppShell.Current.ShowPage("System scan"); }));
+            actions.Controls.Add(card("Why ArchTweaker?", "What it does that other tweakers don't", '\uE946', delegate { WhyArchTweaker.Show(); }));   // 3.34
             lastTest = new Label { ForeColor = Theme.Muted, Font = Theme.FS, AutoSize = false, Size = new Size(300, 60), Margin = new Padding(0, 4, 0, 0), UseMnemonic = false };
             actions.Controls.Add(lastTest);
 
@@ -260,7 +262,7 @@ namespace ArchTweaker
                 intro.Top = tiles.Bottom + Theme.S(20);
                 chain.Top = intro.Bottom + Theme.S(8);
                 chain.Width = w;
-                int colR = Theme.S(320), colL = Math.Max(Theme.S(360), w - colR - Theme.S(24));
+                int colR = Theme.S(350), colL = Math.Max(Theme.S(360), w - colR - Theme.S(24));
                 int sm = Theme.S(6);   // room for the spec sheet's surface edge and shadow
                 vHead.Location = new Point(0, chain.Bottom + Theme.S(24));
                 vitals.Location = new Point(sm, vHead.Bottom + Theme.S(10) + sm); vitals.Width = colL - sm * 2;

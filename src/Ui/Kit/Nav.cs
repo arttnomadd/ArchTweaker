@@ -143,25 +143,23 @@ namespace ArchTweaker
             Color ink = Theme.InkOn(Theme.Warn);
             TextRenderer.DrawText(g, "+" + n, Theme.FT, r, ink, TextFormatFlags.VerticalCenter | TextFormatFlags.HorizontalCenter | TextFormatFlags.NoPrefix);
         }
-        int PillWidth() { return Math.Max(Theme.S(36), TextRenderer.MeasureText(Count, Theme.FT, Size.Empty, TextFormatFlags.NoPadding).Width + Theme.S(12)); }
-        // applied/total: neutral pill, a 2 px accent bar for partial progress, solid accent when the whole page is applied
+        int PillWidth() { return TextRenderer.MeasureText(Count, Theme.FT, Size.Empty, TextFormatFlags.NoPadding).Width + Theme.S(19); }
+        // 3.44: applied/total as a small ring and plain numbers (it was a filled pill with a bar). The ring fills with
+        // the applied share and is solid "on" green when the whole page is applied; the numbers stay muted, so 14
+        // categories read as a calm column instead of 14 badges.
         void DrawPill(Graphics g, Rectangle r, int a, int n, Color under)
         {
             bool full = a >= n, none = a == 0;
             var old = g.SmoothingMode; g.SmoothingMode = SmoothingMode.AntiAlias;
-            using (var p = Gfx.Round(new RectangleF(r.X + 0.5f, r.Y + 0.5f, r.Width - 1, r.Height - 1), r.Height / 2f))
-            {
-                using (var b = new SolidBrush(full ? Theme.On : Gfx.Mix(under, Theme.Text, 0.08))) g.FillPath(b, p);
-                if (!full && !none)
-                {   // progress track under the numbers: muted full width, accent for the applied share
-                    int inset = Theme.S(6), y = r.Bottom - Theme.S(4), w = r.Width - inset * 2, h = Math.Max(2, Theme.S(2));
-                    using (var b = new SolidBrush(Gfx.Mix(under, Theme.Text, 0.22))) g.FillRectangle(b, r.X + inset, y, w, h);
-                    using (var b = new SolidBrush(Theme.Progress)) g.FillRectangle(b, r.X + inset, y, Math.Max(h, (int)Math.Round(w * (double)a / n)), h);
-                }
-            }
+            float d = Theme.S(11), cy = r.Y + r.Height / 2f, x0 = r.X + Theme.S(2);
+            var ring = new RectangleF(x0, cy - d / 2, d, d);
+            float pw = Math.Max(1.6f, 1.8f * Theme.Scale);
+            using (var pen = new Pen(Gfx.Mix(under, Theme.Text, 0.25), pw)) g.DrawEllipse(pen, ring);
+            if (full) using (var b = new SolidBrush(Theme.On)) g.FillEllipse(b, ring);
+            else if (!none) using (var pen = new Pen(Theme.Progress, pw)) g.DrawArc(pen, ring, -90, (float)(360.0 * a / n));
             g.SmoothingMode = old;
-            var tr = full || none ? r : new Rectangle(r.X, r.Y - Theme.S(2), r.Width, r.Height);   // lift the text above the track
-            TextRenderer.DrawText(g, Count, Theme.FT, tr, full ? Theme.OnInk : none ? Theme.Muted : Theme.Text, TextFormatFlags.VerticalCenter | TextFormatFlags.HorizontalCenter | TextFormatFlags.NoPrefix);
+            var tr = new Rectangle((int)(x0 + d + Theme.S(5)), r.Y, r.Right - (int)(x0 + d + Theme.S(5)), r.Height);
+            TextRenderer.DrawText(g, Count, Theme.FT, tr, active || hover ? Theme.Text : Theme.Muted, TextFormatFlags.VerticalCenter | TextFormatFlags.Left | TextFormatFlags.NoPrefix | TextFormatFlags.NoPadding);
         }
         // Up/Down walk the sidebar like a list; Enter/Space opens the page
         protected override bool IsInputKey(Keys k) { return k == Keys.Up || k == Keys.Down || base.IsInputKey(k); }

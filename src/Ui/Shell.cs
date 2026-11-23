@@ -196,7 +196,29 @@ namespace ArchTweaker
                 Color on = h != null && h.Score >= 80 ? Theme.Ok : Theme.Strong;
                 Gfx.Segments(g, scale, 20, now / 100.0, on, Gfx.Mix(fill, Theme.Text, 0.12));
                 if (h != null)
-                    TextRenderer.DrawText(g, L.F("{0} of {1} speed tweaks applied", h.SpeedApplied, h.SpeedTotal), Theme.FS, new Rectangle(pad, (int)scale.Bottom + Theme.S(8), leftW - pad * 2, Theme.S(18)), Theme.Muted, fill, TextFormatFlags.NoPrefix | TextFormatFlags.EndEllipsis);
+                {
+                    // 3.44: what the score counts, then the biggest missing points as links ("+26 speed tweaks")
+                    int ly = (int)scale.Bottom + Theme.S(8), lx = pad, lh = Theme.S(18), right = leftW - pad;
+                    var gaps = Health.Missing(h).Take(3).ToList();
+                    string lead = gaps.Count == 0 ? L.F("{0} of {1} speed tweaks applied", h.SpeedApplied, h.SpeedTotal) : L.T("Missing:");
+                    int w0 = TextRenderer.MeasureText(g, lead, Theme.FS, Size.Empty, TextFormatFlags.NoPrefix).Width;
+                    TextRenderer.DrawText(g, lead, Theme.FS, new Rectangle(lx, ly, Math.Min(w0 + Theme.S(2), right - lx), lh), Theme.Muted, fill, TextFormatFlags.NoPrefix | TextFormatFlags.EndEllipsis);
+                    lx += w0 + Theme.S(6);
+                    foreach (var gap in gaps)
+                    {
+                        string t = "+" + gap.Points + " " + L.T(gap.What);
+                        int tw = TextRenderer.MeasureText(g, t, Theme.FS, Size.Empty, TextFormatFlags.NoPrefix).Width;
+                        if (lx + tw > right) break;
+                        var tr = new Rectangle(lx, ly, tw + Theme.S(2), lh);
+                        string page = gap.Page;
+                        Action go2 = page != null ? (Action)(() => AppShell.Current.ShowPage(page)) : (gap.What == "restart" ? (Action)(() => MainForm.Instance.ShowRestartSummaryPublic()) : null);
+                        bool hotLink = go2 != null && hits.Count == hot;
+                        using (var f = new Font(Theme.FS, hotLink ? FontStyle.Underline : FontStyle.Regular))
+                            TextRenderer.DrawText(g, t, f, tr, go2 != null ? (hotLink ? Theme.Strong : Theme.AccentInk) : Theme.Muted, fill, TextFormatFlags.NoPrefix);
+                        if (go2 != null) hits.Add(Tuple.Create(tr, go2));
+                        lx += tw + Theme.S(12);
+                    }
+                }
             }
         }
         static Font linkFont;

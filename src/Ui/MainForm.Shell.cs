@@ -14,7 +14,7 @@ namespace ArchTweaker
         void ToggleLog()
         {
             logOpen = !logOpen; sessionLog = logOpen;
-            bottom.Height = Theme.S(logOpen ? 204 : 56); logToggle.Text = L.T(logOpen ? "Hide log" : "Show log"); logBar.Visible = logOpen;
+            FitBottom(); logToggle.Text = L.T(logOpen ? "Hide log" : "Show log"); logBar.Visible = logOpen;
             tailLine.Visible = !logOpen;
             if (logOpen) { logBox.SelectionStart = logBox.TextLength; logBox.ScrollToCaret(); }
         }

@@ -90,6 +90,8 @@ namespace ArchTweaker
             }
         }
         string titleText;
+        // 3.44: why the tweak can't apply here, on its own muted line under the title (it used to be glued to the title)
+        string noteText; List<string> noteL = new List<string>(); Rectangle noteR;
 
         public TweakRow(Tweak t)
         {
@@ -128,7 +130,22 @@ namespace ArchTweaker
         // 3.4: Danger zone rows can be read but not switched until the zone is unlocked for this session
         bool Locked { get { return T.Dangerous && !DangerZone.Unlocked; } }
         void OnDangerChanged() { if (IsDisposed) return; if (InvokeRequired) BeginInvoke((Action)Invalidate); else Invalidate(); }
-        protected override void Dispose(bool disposing) { if (disposing && T.Dangerous) DangerZone.Changed -= OnDangerChanged; base.Dispose(disposing); }
+        protected override void Dispose(bool disposing) { if (disposing) { Waiting(false); if (T.Dangerous) DangerZone.Changed -= OnDangerChanged; } base.Dispose(disposing); }
+
+        // 3.44: rows whose state is still being read repaint a few times a second, so their switch dots pulse
+        static readonly HashSet<TweakRow> waiting = new HashSet<TweakRow>();
+        static System.Windows.Forms.Timer pulse;
+        void Waiting(bool on)
+        {
+            if (on && Motion.On) waiting.Add(this); else waiting.Remove(this);
+            if (waiting.Count > 0 && pulse == null)
+            {
+                pulse = new System.Windows.Forms.Timer { Interval = 90 };
+                pulse.Tick += delegate { foreach (var r in waiting.ToList()) if (r.Visible && !r.IsDisposed) r.Invalidate(r.swR); };
+                pulse.Start();
+            }
+            else if (waiting.Count == 0 && pulse != null) { pulse.Stop(); pulse.Dispose(); pulse = null; }
+        }
         // 3.2: "Recommended" badge for the PC advisor's picks that are not applied yet
         bool recommended;
         public void SetRecommended(bool on)
@@ -167,7 +184,7 @@ namespace ArchTweaker
         }
         public void MarkUnavailable(string reason)
         {
-            available = false; titleText = L.T(T.Title) + "   (" + L.T(reason) + ")";
+            available = false; titleText = L.T(T.Title); noteText = L.T(reason);
             AccessibleDescription = "Unavailable: " + reason + ". " + A11yDesc(T); Cursor = Cursors.Default; Layout2(); Invalidate();
         }
         // applied == null: state not read yet (switch shows "checking")
@@ -175,6 +192,7 @@ namespace ArchTweaker
         {
             if (applied.HasValue || !state.HasValue) state = applied;   // a re-read keeps showing the last known state
             shown = pending ?? state ?? false;
+            Waiting(available && !state.HasValue);
             SetPendingChip(pending.HasValue);
             Invalidate(); AccessibilityNotifyClients(AccessibleEvents.StateChange, -1);
         }
@@ -220,8 +238,9 @@ namespace ArchTweaker
                 titleL = Wrap(titleText, Theme.FB, tW);
                 int tw0 = titleL.Count == 0 ? 0 : titleL.Max(l => TextRenderer.MeasureText(l, Theme.FB, Size.Empty, Line).Width);
                 titleR = new Rectangle(x, top, Math.Min(tW, tw0 + Theme.S(2)), Math.Max(1, titleL.Count) * Theme.FB.Height);
+                PlaceNote(x, tW);
                 descL = new List<string>(); gainL = new List<string>(); breakL = new List<string>(); offL = new List<string>(); descR = gainR = breakR = offR = Rectangle.Empty;
-                int hc = Math.Max(titleR.Bottom + Theme.S(12), swR.Bottom + Theme.S(11));
+                int hc = Math.Max((noteL.Count > 0 ? noteR.Bottom : titleR.Bottom) + Theme.S(12), swR.Bottom + Theme.S(11));
                 if (Height != hc) Height = hc;
                 return;
             }
@@ -231,7 +250,8 @@ namespace ArchTweaker
             titleR = new Rectangle(x, top, Math.Min(titleW, tw + Theme.S(2)), Math.Max(1, titleL.Count) * Theme.FB.Height);
             int textW = Math.Max(Theme.S(120), Width - x - right - Theme.S(6));
             descL = Wrap(L.T(T.Desc), Theme.FS, textW);
-            descR = new Rectangle(x, titleR.Bottom + Theme.S(4), textW, descL.Count * Theme.FS.Height + Theme.S(2));
+            PlaceNote(x, textW);
+            descR = new Rectangle(x, (noteL.Count > 0 ? noteR.Bottom : titleR.Bottom) + Theme.S(4), textW, descL.Count * Theme.FS.Height + Theme.S(2));
             int gy = descR.Bottom + Theme.S(6);
             // 3.6: what it switches off (neutral), then what it can break (a consequence, coloured by risk)
             offL = string.IsNullOrEmpty(T.Off) ? new List<string>() : Wrap(L.T("Turns off:") + " " + L.T(T.Off), Theme.FS, textW - Theme.S(14));
@@ -249,6 +269,12 @@ namespace ArchTweaker
             gainR = new Rectangle(gx, gy - Theme.S(1), gw, Math.Max(ws.Height, gainL.Count * Theme.FS.Height) + Theme.S(2));
             int h = Math.Max(Math.Max(wordR.Bottom, gainR.Bottom) + Theme.S(12), swR.Bottom + Theme.S(11));
             if (Height != h) Height = h;
+        }
+
+        void PlaceNote(int x, int w)
+        {
+            noteL = string.IsNullOrEmpty(noteText) ? new List<string>() : Wrap(noteText, Theme.FS, w);
+            noteR = noteL.Count == 0 ? Rectangle.Empty : new Rectangle(x, titleR.Bottom + Theme.S(2), w, noteL.Count * Theme.FS.Height + Theme.S(2));
         }
 
         // ---- paint
@@ -278,6 +304,7 @@ namespace ArchTweaker
             }
             Color tc = !available ? Theme.Muted : shown ? Theme.Strong : Theme.Text;
             DrawLines(g, titleL, Theme.FB, titleR, tc, bg);
+            if (noteL.Count > 0) DrawLines(g, noteL, Theme.FS, noteR, Theme.Muted, bg);
             for (int i = 0; i < chips.Count && i < chipR.Count; i++) Chip.Draw(g, chipR[i], chips[i].Key, chips[i].Value, bg);
             DrawLines(g, descL, Theme.FS, descR, Theme.Muted, bg);
             if (offL.Count > 0)

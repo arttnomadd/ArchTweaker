@@ -234,9 +234,16 @@ namespace ArchTweaker
             preset = new ComboBox { DropDownStyle = ComboBoxStyle.DropDownList, Width = 150, BackColor = Theme.Panel, ForeColor = Theme.Text, FlatStyle = FlatStyle.Flat, Margin = new Padding(0, 5, 6, 0) };
             preset.AccessibleName = "Preset"; preset.Items.AddRange(new object[] { Catalog.PRESET_AUTO, Catalog.PRESET_SAFE, Catalog.PRESET_GAMING, Catalog.PRESET_PRIVACY });
             preset.SelectedIndex = 0;
-            selectPreset = Theme.Btn("Select preset", delegate { SelectPreset(preset.SelectedItem.ToString()); });
+            selectPreset = Theme.Btn("Select", delegate { SelectPreset(preset.SelectedItem.ToString()); });
+            selectPreset.AccessibleName = "Select preset";   // 3.44: a short label in the header; the full name for screen readers and the tests
             // 3.10.4: View: the mouse opens the Appearance flyout; Enter/Space or a right-click opens the View menu
             var viewBtn = Theme.Btn("View", null); viewBtn.Margin = new Padding(0, 0, 14, 0); viewBtn.AccessibleName = "View options";
+            if (NavItem.IconFont != null)
+            {   // 3.44: an icon instead of the word, so the header has room for the page title
+                viewBtn.Text = "\uE771"; viewBtn.Tag = "notr"; viewBtn.AccessibleName = L.T("View options"); viewBtn.Font = new Font(NavItem.IconFont.FontFamily, 15f * Theme.Dpi / 96f, GraphicsUnit.Pixel);
+                viewBtn.Padding = new Padding(9, 2, 9, 2);
+                Tips.New().SetToolTip(viewBtn, L.T("View options"));
+            }
             viewButton = viewBtn;
             bool viewByMouse = false;
             viewBtn.MouseDown += delegate (object s2, MouseEventArgs me) { viewByMouse = me.Button == MouseButtons.Left; if (me.Button == MouseButtons.Right) ShowViewMenu(); };

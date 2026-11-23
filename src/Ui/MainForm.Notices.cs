@@ -88,6 +88,7 @@ namespace ArchTweaker
         // after work outside the apply loop (A/B test, re-assert): forget cached states and redraw
         public void RefreshAfterExternalChange() { StateCache.Clear(); RefreshAll(); UpdateCounts(); }
 
+        public void ShowRestartSummaryPublic() { ShowRestartSummary(); }   // 3.44: the Home score's "+10 restart" link
         void ShowRestartSummary()
         {
             int n = rebootTitles.Count;

@@ -4045,6 +4045,21 @@ Worth knowing	Gut zu wissen
 Fine	In Ordnung
 Open the fix	Lösung öffnen
 Checking what slows this PC right now…	Es wird geprüft, was diesen PC gerade bremst…
+Press	Drücken
+Ticks the tweaks that suit this PC	Markiert die Tweaks, die zu diesem PC passen
+Undoes applied tweaks that didn't help here	Macht angewendete Tweaks rückgängig, die hier nichts gebracht haben
+A 2-second check with a fix for each finding	Eine 2-Sekunden-Prüfung mit einer Lösung für jeden Fund
+How exactly Windows wakes a waiting program	Wie genau Windows ein wartendes Programm weckt
+What holds this PC back, and the fix	Was diesen PC bremst, und die Lösung
+Settings, drivers, services and startup in one pass	Einstellungen, Treiber, Dienste und Autostart in einem Durchgang
+What it does that other tweakers don't	Was es kann, das andere Tweaker nicht können
+Frame times with slow frames marked by cause	Frame-Zeiten, langsame Frames nach Ursache markiert
+speed tweaks	Tempo-Tweaks
+reset tweaks	zurückgesetzte Tweaks
+clean up	Bereinigung
+driver load	Treiberlast
+Missing:	Fehlt:
+restart	Neustart
 ";
     }
 }

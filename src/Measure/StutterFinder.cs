@@ -36,6 +36,7 @@ namespace ArchTweaker
         {
             public string Game; public int Frames; public double Secs, MedianMs, ThresholdMs;
             public List<Stutter> Stutters = new List<Stutter>();
+            public double[] AtSec = new double[0], FrameMs = new double[0];   // 3.44: every frame, for the timeline
             public string Error, TraceError;
             public int Count(Cause c) { return Stutters.Count(s => s.Kind == c); }
             // the cause behind most stutters (ties: the order of Cause), and its most frequent driver / program
@@ -68,6 +69,8 @@ namespace ArchTweaker
             r.MedianMs = sorted[sorted.Count / 2];
             r.ThresholdMs = Threshold(r.MedianMs);
             r.Secs = (frames[frames.Count - 1].Qpc - frames[0].Qpc) / qpcFreq;
+            r.AtSec = frames.Select(f => Math.Max(0, (f.Qpc - qpcStart) / qpcFreq)).ToArray();
+            r.FrameMs = frames.Select(f => f.Ms).ToArray();
             Func<double, long> ticks = sec => (long)(sec * qpcFreq);
             foreach (var f in frames.Where(f => f.Ms >= r.ThresholdMs))
             {

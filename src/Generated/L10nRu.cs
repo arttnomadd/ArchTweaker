@@ -4045,6 +4045,21 @@ Worth knowing	Стоит знать
 Fine	В порядке
 Open the fix	Открыть исправление
 Checking what slows this PC right now…	Проверяем, что сейчас замедляет ПК…
+Press	Нажать
+Ticks the tweaks that suit this PC	Отмечает твики, которые подходят этому ПК
+Undoes applied tweaks that didn't help here	Отменяет применённые твики, которые здесь не помогли
+A 2-second check with a fix for each finding	Проверка за 2 секунды с исправлением для каждой находки
+How exactly Windows wakes a waiting program	Насколько точно Windows будит ждущую программу
+What holds this PC back, and the fix	Что сдерживает этот ПК и как это исправить
+Settings, drivers, services and startup in one pass	Настройки, драйверы, службы и автозагрузка за один проход
+What it does that other tweakers don't	Что он умеет, чего не умеют другие твикеры
+Frame times with slow frames marked by cause	Время кадров, медленные кадры отмечены по причине
+speed tweaks	твики скорости
+reset tweaks	сброшенные твики
+clean up	очистка
+driver load	нагрузка драйверов
+Missing:	Не хватает:
+restart	перезагрузка
 ";
     }
 }

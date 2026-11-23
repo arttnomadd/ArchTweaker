@@ -51,6 +51,9 @@ namespace ArchTweaker
             // 3.2: buttons that can't do anything right now are hidden, not greyed out (Apply always stays: it's the main action)
             discardBtn.Visible = n > 0;
             undoLastBtn.Visible = History.HasLast;
+            // 3.44: with nothing pending the Apply button steps aside and the bar gets slimmer; it comes back with the count
+            applyBtn.Visible = n > 0;
+            FitBottom();
             // 3.12: pending count per page in the sidebar, and per section while the section is collapsed
             var byCat = Pending.Keys.GroupBy(t => t.Category).ToDictionary(g => g.Key, g => g.Count());
             foreach (var ni in navItems) { int c; ni.SetPend(byCat.TryGetValue(ni.Page, out c) ? c : 0); }
@@ -60,6 +63,18 @@ namespace ArchTweaker
             if (detTweak == null && current != null && Catalog.Categories.Contains(current) && details.Visible) ShowCategorySummary(current);
         }
 
+
+        // 3.44: the Apply bar is 56 px with changes pending, 44 px without (and 204 px with the log open)
+        void FitBottom()
+        {
+            if (bottom == null) return;
+            bool idle = Pending.Count == 0;
+            int v = Theme.S(idle && !logOpen ? 4 : 8);
+            var pad = new Padding(Theme.S(16), v, Theme.S(16), v);
+            if (bottom.Padding != pad) bottom.Padding = pad;
+            int h = Theme.S(logOpen ? 204 : idle ? 44 : 56);
+            if (bottom.Height != h) bottom.Height = h;
+        }
 
         public void SetPending(Tweak t, bool want)
         {
