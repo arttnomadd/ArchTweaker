@@ -89,6 +89,26 @@ static class L10nTests
         T.Eq(L.T("C:\\Windows\\Temp"), "C:\\Windows\\Temp", "data stays");
     }); }
 
+    // 3.42: a shorter piece must not match again inside a piece that is already translated
+    [Test] public static void Fragments_DoNotChainInsideTranslatedText()
+    {
+        string keep = L.Lang;
+        try
+        {
+            string en = "So the blocker can't break Windows Update, the network-status icon, Microsoft sign-in or its own list downloads: " + string.Join(", ", HostsEngine.Safety) + ".";
+            foreach (var code in new[] { "de", "es", "it", "ru" })
+            {
+                L.Use(code);
+                string t = L.T(en);
+                T.True(t != en, code + ": translated");
+                T.True(t.IndexOf("listaas", StringComparison.Ordinal) < 0 && t.IndexOf("listae", StringComparison.Ordinal) < 0, code + ": no doubled letters: " + t);
+                T.True(t.IndexOf('') < 0 && t.IndexOf('') < 0, code + ": no marker left");
+                T.True(t.Contains(HostsEngine.Safety.First()), code + ": domains kept");
+            }
+        }
+        finally { L.Use(keep); }
+    }
+
     [Test] public static void English_IsUntouched()
     {
         string keep = L.Lang; L.Use("en");

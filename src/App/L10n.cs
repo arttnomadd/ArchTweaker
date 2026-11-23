@@ -196,10 +196,16 @@ namespace ArchTweaker
                 string split = ApplyPatterns(s, false);   // joined message: translate each part
                 if (split != null && split != s) return split;
             }
-            string res = s; bool any = false;
+            // 3.42: each piece becomes a marker first, so a shorter piece never matches inside a translated one
+            // (Spanish "listas: " followed by the piece "s: " gave "listaas: ")
+            string res = s; var used = new List<string>();
             foreach (var f in fragments)
-                if (res.IndexOf(f.Key, StringComparison.Ordinal) >= 0) { res = res.Replace(f.Key, f.Value); any = true; }
-            if (any) return res;
+                if (res.IndexOf(f.Key, StringComparison.Ordinal) >= 0) { res = res.Replace(f.Key, "" + (char)(0xE100 + used.Count) + ""); used.Add(f.Value); }
+            if (used.Count > 0)
+            {
+                for (int i = 0; i < used.Count; i++) res = res.Replace("" + (char)(0xE100 + i) + "", used[i]);
+                return res;
+            }
             return ApplyPatterns(s, false) ?? s;
         }
 
