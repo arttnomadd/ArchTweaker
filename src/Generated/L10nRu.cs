@@ -3963,6 +3963,13 @@ Go back (Alt+Left)	Назад (Alt+Влево)
 Go forward (Alt+Right)	Вперёд (Alt+Вправо)
 Checking tweaks: {0} / {1}	Проверка твиков: {0} / {1}
 Restore point first	Сначала точка восстановления
+Pin to the top	Закрепить сверху
+Unpin from the top	Открепить
+Pinned	Закреплённые
+Unpinned: {0}	Откреплено: {0}
+Pinned to the top: {0}	Закреплено сверху: {0}
+{0} (pinned)	{0} (закреплено)
+Pin or unpin this page	Закрепить или открепить эту страницу
 ";
     }
 }

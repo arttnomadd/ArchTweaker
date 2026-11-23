@@ -111,10 +111,60 @@ namespace ArchTweaker
             factories[name] = factory;
             var b = new NavItem(name);
             b.Click += delegate { ShowPage(name); };
+            if (PinnedPages.CanPin(name)) b.ContextMenuStrip = PinMenu(name);   // 3.42: right-click or the Menu key
             navItems.Add(b); nav.Controls.Add(b);
             if (section != null) { sections[section].Add(b); itemSection[b] = section; }
         }
 
+
+        // ---- 3.42: pinned pages
+        FlowLayoutPanel navPanel;
+        readonly List<NavItem> pinItems = new List<NavItem>();
+
+        ContextMenuStrip PinMenu(string page)
+        {
+            var m = new ContextMenuStrip { Renderer = new CarbonMenuRenderer(), Font = Theme.F, BackColor = Theme.Panel, ForeColor = Theme.Text };
+            var item = new ToolStripMenuItem();
+            item.Click += delegate { TogglePin(page); };
+            m.Items.Add(item);
+            m.Opening += delegate { item.Text = L.T(PinnedPages.Load().Contains(page) ? "Unpin from the top" : "Pin to the top"); };
+            return m;
+        }
+
+        public void TogglePin(string page)
+        {
+            if (!PinnedPages.CanPin(page)) return;
+            bool was = PinnedPages.Load().Contains(page);
+            PinnedPages.Save(PinnedPages.Toggle(PinnedPages.Load(), page));
+            BuildPins();
+            SetSectionOpen("Pinned", true);
+            UpdateCounts();
+            Notify(L.F(was ? "Unpinned: {0}" : "Pinned to the top: {0}", L.T(page)), Toast.Kind.Ok);
+        }
+
+        // The pinned copies sit right under the "Pinned" header. They share the page's badge and highlight, and their
+        // UIA ID is "pin:<page>", so the real sidebar item keeps the page name as its ID.
+        void BuildPins()
+        {
+            if (navPanel == null || !headers.ContainsKey("Pinned")) return;
+            navPanel.SuspendLayout();
+            foreach (var old in pinItems) { navItems.Remove(old); itemSection.Remove(old); navPanel.Controls.Remove(old); old.Dispose(); }
+            pinItems.Clear(); sections["Pinned"].Clear();
+            int at = navPanel.Controls.GetChildIndex(headers["Pinned"]) + 1;
+            foreach (var p in PinnedPages.Load().Where(x => factories.ContainsKey(x)))
+            {
+                string page = p;
+                var b = new NavItem(page) { Name = "pin:" + page, AccessibleName = L.F("{0} (pinned)", L.T(page)) };
+                b.Click += delegate { ShowPage(page); };
+                b.ContextMenuStrip = PinMenu(page);
+                b.Active = page == current;
+                navPanel.Controls.Add(b); navPanel.Controls.SetChildIndex(b, at++);
+                pinItems.Add(b); navItems.Add(b); sections["Pinned"].Add(b); itemSection[b] = "Pinned";
+            }
+            headers["Pinned"].Visible = pinItems.Count > 0;
+            foreach (var b in pinItems) b.Visible = headers["Pinned"].Open || !IsHandleCreated;
+            navPanel.ResumeLayout(true);
+        }
 
         void OnSearch()
         {
@@ -284,6 +334,7 @@ namespace ArchTweaker
             for (int i = 0; i < L.Codes.Length; i++) { string c = L.Codes[i]; act("Language: " + L.Names[i], () => SetLanguage(c)); }
             act("Go back (Alt+Left)", () => GoBack());          // 3.40
             act("Go forward (Alt+Right)", () => GoForward());
+            act("Pin or unpin this page", () => TogglePin(current));   // 3.42
             act("Apply pending changes", () => { if (applyBtn.Enabled) ApplyPending(); });
             act("Undo last apply", () => UndoLast());
             act("Select the picks for this PC", () => SelectAutoPreset());

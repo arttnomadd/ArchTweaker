@@ -136,6 +136,8 @@ namespace ArchTweaker
                 nav.Controls.Add(pageFind);
             }
             AddNav(nav, null, "Home", () => new HomePage());
+            AddSection(nav, "Pinned");   // 3.42: filled by BuildPins once every page is known
+            navPanel = nav;
             AddSection(nav, "Tweaks");
             foreach (var c in Catalog.Categories) { string cc = c; AddNav(nav, "Tweaks", cc, () => new TweakPage(cc)); }
             // 3.12: four short groups instead of two long ones (Windows guidance: two levels, under ten items a group)
@@ -177,6 +179,7 @@ namespace ArchTweaker
             AddNav(nav, "Windows tools", "Hosts blocker", () => new HostsPage());
             AddNav(nav, "Windows tools", "Drivers", () => new DriversPage());
             AddNav(nav, "Windows tools", "Bake into ISO", () => new IsoPage());   // 3.19
+            BuildPins();
             foreach (var kv in headers) if (sections[kv.Key].Count == 0) kv.Value.Visible = false;   // 3.25: Lite hides a section whose pages are all Pro
             // 3.12: settings sit pinned under the scrolling list, as in Windows Settings and PowerToys
             var pin = new FlowLayoutPanel { Dock = DockStyle.Bottom, FlowDirection = FlowDirection.TopDown, WrapContents = false, AutoSize = true, BackColor = Theme.Side, Padding = new Padding(0, 6, 0, 0) };

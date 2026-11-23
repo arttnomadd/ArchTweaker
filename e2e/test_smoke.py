@@ -260,6 +260,57 @@ def test_layout_fits(app, request):
     assert not clips, "%d text(s) cut off:\n%s" % (len(clips), "\n".join(clips))
 
 
+def _menu_item(title, timeout=10):
+    """A context-menu item: the menu is a top-level popup window, so look on the desktop."""
+    from pywinauto import Desktop
+    end = time.time() + timeout
+    while time.time() < end:
+        spec = Desktop(backend="uia").window(control_type="Menu").child_window(title=title, control_type="MenuItem")
+        try:
+            if spec.exists(timeout=0.5):
+                return spec
+        except Exception:
+            pass
+        time.sleep(0.3)
+    return None
+
+
+@pytest.mark.smoke
+def test_pin_a_page_to_the_top_and_unpin_it(app):
+    """3.42: right-click a sidebar page, Pin to the top: a copy shows under Home; Unpin removes it again."""
+    import winreg
+    try:
+        # Arrange: the sidebar item, found through the page filter
+        box = app.child_window(auto_id="findPage", control_type="Edit")
+        box.wait("exists enabled", timeout=60)
+        box.set_edit_text("Latency")
+        item = app.child_window(auto_id="Latency", control_type="TabItem")
+        item.wait("exists visible enabled", timeout=30)
+        # Act: pin it
+        item.right_click_input()
+        pin = _menu_item("Pin to the top")
+        assert pin is not None, "the sidebar menu has no 'Pin to the top'"
+        pin.click_input()
+        # Assert: the pinned copy exists, with its own ID
+        pinned = app.child_window(auto_id="pin:Latency", control_type="TabItem")
+        pinned.wait("exists", timeout=10)
+        # Act: unpin from the copy
+        box.set_edit_text("")
+        pinned.wait("visible", timeout=10)
+        pinned.right_click_input()
+        unpin = _menu_item("Unpin from the top")
+        assert unpin is not None, "the pinned page's menu has no 'Unpin from the top'"
+        unpin.click_input()
+        # Assert
+        pinned.wait_not("exists", timeout=10)
+    finally:
+        try:
+            with winreg.OpenKey(winreg.HKEY_CURRENT_USER, r"Software\ArchTweaker", 0, winreg.KEY_SET_VALUE) as k:
+                winreg.DeleteValue(k, "PinnedPages")
+        except OSError:
+            pass
+
+
 # ---- 3.2 ----
 def _hkcu(name):
     import winreg

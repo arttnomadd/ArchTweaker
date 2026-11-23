@@ -3963,6 +3963,13 @@ Go back (Alt+Left)	Indietro (Alt+Sinistra)
 Go forward (Alt+Right)	Avanti (Alt+Destra)
 Checking tweaks: {0} / {1}	Controllo dei tweak: {0} / {1}
 Restore point first	Prima un punto di ripristino
+Pin to the top	Fissa in alto
+Unpin from the top	Rimuovi dall'alto
+Pinned	Fissate
+Unpinned: {0}	Non più fissata: {0}
+Pinned to the top: {0}	Fissata in alto: {0}
+{0} (pinned)	{0} (fissata)
+Pin or unpin this page	Fissa o rimuovi questa pagina
 ";
     }
 }

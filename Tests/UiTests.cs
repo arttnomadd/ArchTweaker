@@ -32,6 +32,24 @@ static class UiTests
         T.True(string.Join(" ", lines.ToArray()) == "one two three four five six seven eight nine ten", "no words lost");
     }
 
+    // 3.42: pinned pages
+    [Test] public static void PinnedPages_ToggleAndLimits()
+    {
+        var l = PinnedPages.Toggle(new string[0], "Latency");
+        T.True(l.SequenceEqual(new[] { "Latency" }), "pins");
+        l = PinnedPages.Toggle(l, "Privacy");
+        T.True(l.SequenceEqual(new[] { "Latency", "Privacy" }), "keeps the order");
+        l = PinnedPages.Toggle(l, "Latency");
+        T.True(l.SequenceEqual(new[] { "Privacy" }), "a second toggle unpins");
+        T.True(PinnedPages.Toggle(l, "Home").SequenceEqual(l), "Home is never pinned");
+        T.True(PinnedPages.Toggle(l, MainForm.SEARCH).SequenceEqual(l), "search results are never pinned");
+        var full = new List<string>();
+        for (int i = 0; i < PinnedPages.Max + 2; i++) full = PinnedPages.Toggle(full, "P" + i);
+        T.Eq(full.Count, PinnedPages.Max, "at most Max");
+        T.Eq(full[0], "P2", "the oldest pins make room");
+        T.True(PinnedPages.Clean(new[] { "A", "", "A", "Home", "B" }).SequenceEqual(new[] { "A", "B" }), "no blanks, duplicates or Home");
+    }
+
     // 3.42: one rule for text on a coloured fill
     [Test] public static void InkOn_PicksTheReadableInk()
     {
