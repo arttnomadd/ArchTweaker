@@ -153,6 +153,17 @@ static class AppTests
         T.False(Updater.SignatureOk(Signed.Replace("\"sig\": \"", "\"sig\": \"!!"), TestPub), "a sig that is not base64: refused, no crash");
     }
 
+    // 3.42.1: the published latest.json must verify with the key built into this exe. 3.39-3.42.0 shipped with a
+    // manifest signed by a key the exe no longer trusted, so the update check offered nothing for four releases.
+    [Test] public static void PublishedManifest_VerifiesWithTheBuiltInKey()
+    {
+        string root = TestHelp.RepoRoot();
+        if (TestHelp.SkipWithoutSources(root)) return;
+        string json = File.ReadAllText(Path.Combine(root, "latest.json"));
+        T.True(Updater.SignatureOk(json, Updater.PublicKeyXml), "latest.json is signed with the key in Updater.PublicKeyXml");
+        T.True(json.Contains("\"version\": \"" + Program.Version + "\""), "latest.json offers this version (" + Program.Version + "): sign it with tools/sign_manifest.py");
+    }
+
     [Test] public static void Manifest_SignedText_HasFixedFieldOrder()
     {
         T.Eq(Updater.SignedText("{\"url\":\"u\",\"version\":\"1.0\"}"), "archtweaker-manifest-v1\n1.0\n\nu\n\n\n\n", "fields in a fixed order, missing ones empty");

@@ -6,6 +6,13 @@ Each version groups its changes under these headings, in this order (leave out t
 `### New features` · `### Tweaks` · `### Design` · `### Fixes` · `### Security` · `### Under the hood`.
 A short intro under the version title is fine. The What's new dialog filters by these headings.
 
+## 3.42.1: New update-signing key
+
+Install this version by hand. 3.38.2 to 3.42.0 trust an update-signing key that is no longer available, so their update check can't offer 3.42.1. From 3.42.1 on, Tools & backup → Check for updates works again.
+
+### Security
+- **New update-signing key (RSA-3072).** The exe holds the new public key. The private key stays offline with the maintainer.
+
 ## 3.42.0: Pinned pages, every language fits
 
 ### New features

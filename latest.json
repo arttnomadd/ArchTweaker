@@ -1,8 +1,8 @@
 {
- "version": "3.38.2",
- "serial": "1794936270",
- "url": "https://github.com/arttnomadd/ArchTweaker/releases/download/v3.38.2/ArchTweaker.exe",
- "sha256": "9a520b621b1de6bf49dafbffe4f93ff481e338015027b98f92b99201334d0060",
- "notes": "New update-signing key. Install this version by hand.",
- "sig": "nklSInhesMFkJuacnrCkEv6dWGeNPVy75VrPW3RppyaTyhXlczfaz5Kgqlg450OlQIAyFwy+n02/Oz0ddIUkSVFUlx4okqz3mcH16y3LXsyn/9ai/uQ1iAqbb8+RhreCdY2UpSpvGwZ3p0UIAo2ChpXQv0rFlIQunP8mNRkwgd+LC2uXehz+0JKWuAWINh90wkeNImBFeotEsQuBjc4I/Zmjtjibz9naDCZRfNvH6vtMuJmX6gb2AO3R3MCdVcGpXTx68ZLYYen5zCNhtuyCbQZJTAdpxE/cHiz+M3I8JNKGwxaqR7laPXjZ7lh74CEx19jA2B/ADtRYow7gsjNV4EhW1NFyAMBx8yFjrRpU7eKu9lR4C6j4UH8RLxBxjLPs0HUuDXlTUlZ0siNTYbkpfmFPSWebiuOkEJ5P1vDl3rThmUEnge2PMwYejw5FArFX6Q52dq/rhW+hKpDVg5MFhUFfhhVZJlmpBI38Vdd66t4aliIvo18Q5xtZNNiyCc63"
+ "version": "3.42.1",
+ "serial": "1795420717",
+ "url": "https://github.com/arttnomadd/ArchTweaker/releases/download/v3.42.1/ArchTweaker.exe",
+ "sha256": "3b5a4f7210d5bd9c69d8f32aca79f7565855eaaa6cc9568879d293d13fa654bd",
+ "notes": "New update-signing key. Pinned pages, every language fits.",
+ "sig": "flYAsZlVuO5eoqdALK0lX8igvmk2lF23iRNdnQVGyFCTkSCcwRWG6+CkqChaWZBY3TlyGLyfLAC5/Qr/9z4jmZgLC2maKQg0pNG9xFDZmJ8zjFBSO8BRj/TfmzkRIjfgPi1IzELmy1Y6tNtLTyVFtqLLduMRxYlTRAaKeQEK3Aag36i7JDyguU6AalmTJn/Mu0D60u3CPj4alImWJhfV8JUvZ/hT7gGjYVeY6UiG2/7hNVZgEmocTY7S0Ocsi/mQ8FNal2FEcVKAscPgqd5NBdab/ZK11vEiV1mr/gkJB8VOWQu/eKK2L2zM647lLyeHHXd1zbjXALX040yIrh/0oZ2hFcxlfU0m20CIWYs4CdawocXT1j82Boizjv6melsMv5/He6GGWnEC3tN7EihV6bLHO3fC5X3jz8ZySQZJ7o0XnOcv9IVr1bZ146Hxjd0j/qa7ozQc4GVr77evTAe9hOv3ozHcDNuMrZJc63PdcNRBD2UDdlR2Qxo5zDYmz1t4"
 }

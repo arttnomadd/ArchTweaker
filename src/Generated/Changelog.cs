@@ -3,7 +3,14 @@ namespace ArchTweaker
 {
     public static class Changelog
     {
-        public const string Text = @"## 3.42.0: Pinned pages, every language fits
+        public const string Text = @"## 3.42.1: New update-signing key
+
+Install this version by hand. 3.38.2 to 3.42.0 trust an update-signing key that is no longer available, so their update check can't offer 3.42.1. From 3.42.1 on, Tools & backup → Check for updates works again.
+
+### Security
+- **New update-signing key (RSA-3072).** The exe holds the new public key. The private key stays offline with the maintainer.
+
+## 3.42.0: Pinned pages, every language fits
 
 ### New features
 - **Pin pages to the top.** Right-click a page in the sidebar (or press the Menu key on it) and choose Pin to the top, or use ""Pin or unpin this page"" in Ctrl+K. Up to 6 pinned pages show under Home, with their counts.
@@ -84,30 +91,15 @@ namespace ArchTweaker
 
 ### Under the hood
 - **The Windows UI tests pass again.** They opened pages before the sidebar was ready, read the page title before it changed, looked for pages that Lite mode hides, and used names that changed in 3.36 and 3.37. They now open a page by typing its name into ""Find a page"" and clicking the item, so closed or scrolled sections don't matter. They find dialogs under the main window, read the View menu from ArchTweaker's own process, run in Pro mode (one test checks what Lite hides), and use the current names. ""Find a page"" has a fixed UI Automation ID too. The Apply button has a fixed UI Automation ID, because its text changes (""Nothing to apply"", ""Apply 3 changes"").
+";
+        public const string All = @"## 3.42.1: New update-signing key
 
-## 3.38.3: Honest network grades, no silent failures in the safety paths
+Install this version by hand. 3.38.2 to 3.42.0 trust an update-signing key that is no longer available, so their update check can't offer 3.42.1. From 3.42.1 on, Tools & backup → Check for updates works again.
 
 ### Security
-- **Bake into ISO refuses an output folder it cannot check.** If Windows could not read the folder's attributes, the check for a link to another folder was skipped and the bake went on. Now the bake stops and asks for another folder.
-- **The cleaner's protected list keeps ""Microsoft Update Health Tools"".** If listing the Windows folders under Program Files failed, this fixed entry was dropped too. It is now added first, and the failure is logged.
+- **New update-signing key (RSA-3072).** The exe holds the new public key. The private key stays offline with the maintainer.
 
-### Fixes
-- **Bufferbloat no longer gives the worst line an A+.** When a line is very busy, many pings time out. The grade used only the pings that came back, and with none it counted 0 ms extra, so a line where every ping was lost while downloading got A+. A lost ping now counts as the 2-second timeout, so that line gets F. A few lost pings do not change the grade.
-- **No bufferbloat grade without a baseline.** If nothing answers the ping at rest (a firewall or the router blocks it), the test now says it can't grade the line, instead of showing a grade.
-- **A router that ignores ping is not blamed.** The network test said ""unstable between this PC and the router"" for any router that answers no ping, and many block ping. Such a router is now left out, and the internet test still counts. A router that answers some pings and drops others is still reported.
-- **A silent uninstall that hangs no longer blocks ArchTweaker for ever.** An uninstaller that runs without a window (a quiet uninstall or a silent MSI removal) is waited for 15 minutes at most. ArchTweaker then stops waiting and says so in the log. The uninstaller is not stopped, because stopping it half way can break the program it removes. An uninstaller with a window still waits for you.
-- **Failures that were dropped without a word are now in the log** (`archtweaker.log`): an undo-journal line that could not be read, a file whose permissions the ProgramData lock-down could not reset, the lock-down mark, the uninstaller's restore list and a leftover folder that was backed up but not fully removed, the old-snapshot prune, clearing the applied list, the recorded Windows build, and the saved update serial.
-
-### Design
-- **Custom colour schemes keep OK, warning and error text readable.** These colours were made with 3:1 contrast, but they are shown as text, which needs 4.5:1, as in the built-in schemes. With some colours (for example green #008040) the text was hard to read. They are now made with 4.5:1.
-
-### Under the hood
-- New tests for the parts that can lock you out or change a Windows image: Lite and Pro gating with the mode set by the test, every Pro-only page name exists in the sidebar, the Pro PIN refuses a damaged hash or wrong input, Bake into ISO refuses bad jobs before it touches the system, oscdimg import checks the file, and file names reach PowerShell only base64-encoded. More network tests: Fast Open with odd netsh output, and which drivers count as network drivers.
-- The accent contrast test used the Custom colour saved on the PC that ran it. It now sets its own colour.
-- **The Windows CI also builds against Microsoft's .NET Framework 4.5 reference assemblies**, so a call that stock 4.5 lacks fails the build, as the Linux IL audit does.
-- About 210 other empty `catch { }` blocks stay as they are. They are deliberate best-effort steps: listing folders the user cannot read, deleting temp files, setting TLS flags, and probes whose failure only means ""unknown"".
-";
-        public const string All = @"## 3.42.0: Pinned pages, every language fits
+## 3.42.0: Pinned pages, every language fits
 
 ### New features
 - **Pin pages to the top.** Right-click a page in the sidebar (or press the Menu key on it) and choose Pin to the top, or use ""Pin or unpin this page"" in Ctrl+K. Up to 6 pinned pages show under Home, with their counts.

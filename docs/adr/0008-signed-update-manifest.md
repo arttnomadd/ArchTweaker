@@ -46,6 +46,7 @@ overlay has the same trust root.
 ### Negative
 - Every release needs `sign_manifest.py` run with the private key. An unsigned latest.json makes every install refuse it.
 - Losing the private key means a new key and a manual download of a new exe (old exes trust only the old key).
+- This happened once: the 3.38.2 key was lost, and 3.42.1 ships a new key. Users of 3.38.2–3.42.0 install 3.42.1 by hand. A unit test (PublishedManifest_VerifiesWithTheBuiltInKey) now fails when latest.json does not verify with the key in the exe or does not offer the current version.
 
 ### Risks
 - A leaked private key is a full compromise of the update channel. Keep it offline, with a backup.
