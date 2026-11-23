@@ -294,7 +294,12 @@ namespace ArchTweaker
             catch { return false; }
             finally { Marshal.FreeHGlobal(p); }
         }
-        public static List<DriverStat> Run(int seconds, out string error)
+        public static List<DriverStat> Run(int seconds, out string error) { return Run(seconds, out error, null, null); }
+
+        // 3.43: spike gets every DPC / ISR of at least 250 µs as it happens: its end time (raw QPC, the same clock as
+        // Stopwatch.GetTimestamp and PresentMon --qpc_time), driver, length in µs and DPC (true) or ISR. The Stutter finder
+        // lines these up with slow frames. stop ends the trace early when set.
+        public static List<DriverStat> Run(int seconds, out string error, Action<long, string, double, bool> spike, ManualResetEvent stop)
         {
             error = null; Busy = false;
             int size; IntPtr props = Props(out size);
@@ -338,6 +343,7 @@ namespace ArchTweaker
                         DriverStat s;
                         if (!stats.TryGetValue(drv, out s)) stats[drv] = s = new DriverStat { Driver = drv };
                         if (us >= 500) { s.Over500++; if (us >= 1000) s.Over1000++; }
+                        if (spike != null && us >= 250) spike(end, drv, us, isDpc);
                         if (isDpc) { s.Dpcs++; s.DpcTotalUs += us; if (us > s.DpcMaxUs) s.DpcMaxUs = us; }
                         else { s.Isrs++; s.IsrTotalUs += us; if (us > s.IsrMaxUs) s.IsrMaxUs = us; }
                     }
@@ -355,7 +361,8 @@ namespace ArchTweaker
 
                 var stopper = new Thread(delegate ()
                 {
-                    if (done.WaitOne(seconds * 1000)) return;            // ProcessTrace already ended: don't touch the session
+                    if (stop != null) { if (WaitHandle.WaitAny(new WaitHandle[] { done, stop }, seconds * 1000) == 0) return; }
+                    else if (done.WaitOne(seconds * 1000)) return;            // ProcessTrace already ended: don't touch the session
                     int sz2; IntPtr p2 = Props(out sz2);
                     try { ControlTrace(session, KernelLogger, p2, EVENT_TRACE_CONTROL_STOP); } finally { Marshal.FreeHGlobal(p2); }
                 }) { IsBackground = true };

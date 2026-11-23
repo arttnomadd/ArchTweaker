@@ -177,6 +177,17 @@ namespace ArchTweaker
         // Capture `seconds` of presents for the given process name (e.g. "game.exe"). Returns null + reason on failure.
         public static FrameStats Capture(string processName, int seconds, out string error)
         {
+            var lines = CaptureLines(processName, seconds, false, null, out error);
+            if (lines == null) return null;
+            var fs = Parse(lines);
+            if (fs == null || fs.Frames < 5) { error = "Not enough frames captured for " + processName + "."; return null; }
+            return fs;
+        }
+
+        // 3.43: the raw CSV lines. qpc adds --qpc_time (PresentMon 2.x): TimeInQPC is then on the Stopwatch clock.
+        // started is called just before PresentMon runs, so frames can be placed in time when the QPC column is missing.
+        public static string[] CaptureLines(string processName, int seconds, bool qpc, Action started, out string error)
+        {
             error = null;
             try
             {
@@ -190,11 +201,12 @@ namespace ArchTweaker
                     // 3.18: PresentMon 2.x and newer use double-dash options; 1.x needs -no_top. Try the new form first.
                     string q = "\"" + processName + "\"";
                     string[] forms = {
-                        "--process_name " + q + " --timed " + seconds + " --terminate_after_timed --no_console_stats --stop_existing_session --session_name ArchTweaker --output_file \"" + csv + "\"",
+                        "--process_name " + q + " --timed " + seconds + " --terminate_after_timed --no_console_stats --stop_existing_session --session_name ArchTweaker" + (qpc ? " --qpc_time" : "") + " --output_file \"" + csv + "\"",
                         "-process_name " + q + " -timed " + seconds + " -terminate_after_timed -no_top -output_file \"" + csv + "\"" };
                     string outp = "";
                     foreach (var args in forms)
                     {
+                        if (started != null) started();
                         outp = Shell.Run(exe, args, true, (seconds + 20) * 1000);   // hard timeout so a stuck PresentMon can't hang the UI
                         if (File.Exists(csv)) break;
                     }
@@ -204,9 +216,7 @@ namespace ArchTweaker
                         error = "PresentMon produced no output (is PresentMon.exe present, and the game running?)" + (hint.Length > 0 ? " — " + hint : "");
                         return null;
                     }
-                    var fs = Parse(File.ReadAllLines(csv));
-                    if (fs == null || fs.Frames < 5) { error = "Not enough frames captured for " + processName + "."; return null; }
-                    return fs;
+                    return File.ReadAllLines(csv);
                 }
                 finally { try { File.Delete(csv); } catch { } }
             }

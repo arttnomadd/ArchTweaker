@@ -3970,6 +3970,81 @@ Unpinned: {0}	Откреплено: {0}
 Pinned to the top: {0}	Закреплено сверху: {0}
 {0} (pinned)	{0} (закреплено)
 Pin or unpin this page	Закрепить или открепить эту страницу
+{0} held a CPU for {1} ms.	{0} занял процессор на {1} мс.
+{0} started at that moment.	В этот момент запустился {0}.
+The disk was {0} % busy (busiest program: {1}).	Диск был занят на {0} % (больше всех: {1}).
+The disk was {0} % busy.	Диск был занят на {0} %.
+The CPU was {0} % busy (busiest program besides the game: {1}).	Процессор был загружен на {0} % (больше всех, кроме игры: {1}).
+The CPU was {0} % busy.	Процессор был загружен на {0} %.
+Nothing outside the game happened: the game itself (loading, shader compiling, streaming).	Вне игры ничего не происходило: причина в самой игре (загрузка, компиляция шейдеров, подгрузка).
+PresentMon caught too few frames. Is the game in the foreground and showing frames?	Записано слишком мало кадров. Игра на переднем плане и показывает кадры?
+{0} slow frames in {1} s ({2} frames, slow = over {3} ms).	Медленных кадров: {0} за {1} с (всего кадров: {2}; медленный = дольше {3} мс).
+No stutter: the frame pacing was even.	Подтормаживаний нет: кадры шли ровно.
+{0} matched a driver delay (mostly {1})	задержка драйвера: {0} (чаще всего {1})
+{0} a program starting (mostly {1})	запуск программы: {0} (чаще всего {1})
+{0} a busy disk	занятый диск: {0}
+{0} a busy CPU	загруженный процессор: {0}
+{0} had no outside cause	без внешней причины: {0}
+Most slow frames came with a long driver delay.	Большинство медленных кадров совпало с долгой задержкой драйвера.
+Update or reinstall that driver.	Обновите или переустановите этот драйвер.
+The Latency page and the Interrupt tuner can check it.	Проверить это можно на странице «Задержки» и в «Настройке прерываний».
+Programs that start during play cost frames. Check {0} on the Startup and Scheduled tasks pages.	Программы, которые запускаются во время игры, стоят кадров. Найдите {0} на страницах «Автозагрузка» и «Запланированные задачи».
+The disk was busy when frames were slow: Windows Search indexing, Windows Update, an antivirus scan or the game loading.	Во время медленных кадров диск был занят: индексирование Windows Search, Windows Update, проверка антивирусом или загрузка игры.
+Other programs used most of the CPU. Close them while you play (browsers, launchers, recording software).	Большую часть процессора заняли другие программы. Закрывайте их во время игры (браузеры, лаунчеры, программы записи).
+These slow frames come from the game itself. Windows tweaks can't fix them. A game or driver update, or lower settings, can.	Эти медленные кадры — от самой игры. Твики Windows их не исправят. Помочь может обновление игры или драйвера либо более низкие настройки.
+Choose the game first. It must be running.	Сначала выберите игру. Она должна быть запущена.
+PresentMon not found. Click Choose PresentMon.exe… on the Benchmark page.	PresentMon не найден. Нажмите «Выбрать PresentMon.exe…» на странице «Бенчмарк».
+Recording {0} for {1} s. Keep playing…	Запись {0}: {1} с. Продолжайте играть…
+Matching slow frames with drivers, programs and load…	Сопоставляем медленные кадры с драйверами, программами и нагрузкой…
+Recording length	Длительность записи
+Choose the running game	Выберите запущенную игру
+Frame	Кадр
+Cause	Причина
+What happened	Что произошло
+Record:	Запись:
+Find stutters	Найти подтормаживания
+Start the game, pick it here, click Find stutters and go back to the game. ArchTweaker records every frame, every long driver delay (DPC/ISR), every program that starts, and the CPU and disk load, all on one clock. Then it shows each slow frame with what happened at that moment. Needs PresentMon (see the Benchmark page).	Запустите игру, выберите её здесь, нажмите «Найти подтормаживания» и вернитесь в игру. ArchTweaker записывает каждый кадр, каждую долгую задержку драйвера (DPC/ISR), каждый запуск программы и нагрузку на процессор и диск — всё по одним часам. Затем показывает каждый медленный кадр и что происходило в тот момент. Нужен PresentMon (см. страницу «Бенчмарк»).
+No recording yet. Start the game, then click Find stutters.	Записей пока нет. Запустите игру и нажмите «Найти подтормаживания».
+Choose the game	Выберите игру
+Start the game first, click Refresh, then pick it in the list.	Сначала запустите игру, нажмите «Обновить» и выберите её в списке.
+Open the Benchmark page and click Choose PresentMon.exe… to add it.	Откройте страницу «Бенчмарк» и нажмите «Выбрать PresentMon.exe…», чтобы добавить его.
+Recording {0} for {1} s…	Запись {0}: {1} с…
+The recording stopped. The log has the details.	Запись прервалась. Подробности в журнале.
+The driver trace didn't run:	Задержки драйверов не записаны:
+No slow frames in this recording.	В этой записи нет медленных кадров.
+Open {0}	Открыть «{0}»
+Driver delay	Задержка драйвера
+Program started	Запуск программы
+Disk busy	Диск занят
+CPU busy	Процессор загружен
+The game	Сама игра
+Stutter finder	Поиск подтормаживаний
+Each slow frame with what happened at that moment	Каждый медленный кадр и что происходило в тот момент
+Windows Update is working in the background ({0}). The PC is slower until it finishes. Let it finish, or pause updates in Windows Settings.	В фоне работает Windows Update ({0}). Пока он не закончит, ПК работает медленнее. Дайте ему закончить или приостановите обновления в Параметрах Windows.
+Microsoft Defender is scanning ({0} uses {1} % CPU). It stops by itself. Defender doesn't scan a game folder that is in its exclusions.	Microsoft Defender выполняет проверку ({0} использует {1} % процессора). Она закончится сама. Папка игры в исключениях Defender не проверяется во время игры.
+Windows Search is indexing files ({0}). If you don't search inside files, its service can be turned off.	Windows Search индексирует файлы ({0}). Если вы не ищете по содержимому файлов, его службу можно отключить.
+Windows telemetry is collecting data ({0}).	Телеметрия Windows собирает данные ({0}).
+The CPU is {0} % busy. {1} uses {2} % of it.	Процессор загружен на {0} %. {1} использует {2} % из них.
+The CPU is {0} % busy.	Процессор загружен на {0} %.
+Memory is {0} % full ({1} MB free). {2} uses {3} MB. Close programs you don't need.	Память заполнена на {0} % (свободно {1} МБ). {2} использует {3} МБ. Закройте ненужные программы.
+Memory is {0} % full ({1} MB free). Close programs you don't need.	Память заполнена на {0} % (свободно {1} МБ). Закройте ненужные программы.
+The disk is {0} % busy. {1} reads and writes {2} MB/s.	Диск занят на {0} %. {1} читает и пишет {2} МБ/с.
+The disk is {0} % busy.	Диск занят на {0} %.
+The CPU runs at {0} % of its normal speed while it is busy: heat or a power limit holds it back.	Под нагрузкой процессор работает на {0} % от обычной скорости: его сдерживает перегрев или лимит мощности.
+Battery saver is on. It slows the CPU and background apps. Turn it off in the notification area or Windows Settings.	Включена экономия заряда. Она замедляет процессор и фоновые приложения. Отключите её в области уведомлений или в Параметрах Windows.
+The power plan is ""{0}"": it keeps the CPU slow on purpose.	Схема питания «{0}»: она намеренно замедляет процессор.
+Power saver	Экономия энергии
+The PC runs on battery. Windows saves power and runs slower. Plug in the charger for full speed.	ПК работает от батареи. Windows экономит энергию и работает медленнее. Подключите зарядку для полной скорости.
+Nothing is slowing this PC down right now: CPU {0} %, memory {1} %, disk {2} %.	Сейчас ничто не замедляет этот ПК: процессор {0} %, память {1} %, диск {2} %.
+The check stopped. The log has the details.	Проверка прервалась. Подробности в журнале.
+Why is my PC slow right now?	Почему мой ПК сейчас тормозит?
+What slows this PC at this moment, worst first. Select a line and click Open the fix, or double-click it.	Что замедляет этот ПК прямо сейчас, худшее сверху. Выберите строку и нажмите «Открыть исправление» или дважды щёлкните её.
+What ArchTweaker found	Что нашёл ArchTweaker
+Slows it	Замедляет
+Worth knowing	Стоит знать
+Fine	В порядке
+Open the fix	Открыть исправление
+Checking what slows this PC right now…	Проверяем, что сейчас замедляет ПК…
 ";
     }
 }

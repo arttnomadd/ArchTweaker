@@ -28,7 +28,7 @@ namespace ArchTweaker
             { "PC advisor", '\uE82F' }, { "System scan", '\uE9D9' }, { "Services", '\uE912' }, { "Apps (UWP)", '\uE71D' }, { "Startup", '\uE768' }, { "Scheduled tasks", '\uE823' }, { "Customize", '\uE771' },
             { "Cleanup", '\uE74D' }, { "Deep clean", '\uE74D' }, { "Uninstaller", '\uE738' }, { "Power settings", '\uE9E9' }, { "Context menu", '\uE8FD' },
             { "Hosts blocker", '\uE8F8' }, { "Measure", '\uE9D2' }, { "A/B test", '\uE8EF' }, { "Tools & backup", '\uE90F' }, { "Settings", '\uE713' }, { "System info", '\uE946' },
-            { "Latency", '\uEC4A' }, { "Benchmark", '\uE9D9' }, { "Drivers", '\uE964' }, { "What changed", '\uE81C' }, { "Change history", '\uE787' }, { "Disk space", '\uEDA2' },
+            { "Latency", '\uEC4A' }, { "Benchmark", '\uE9D9' }, { "Stutter finder", '\uE9F9' }, { "Drivers", '\uE964' }, { "What changed", '\uE81C' }, { "Change history", '\uE787' }, { "Disk space", '\uEDA2' },
             { "Tuning assistant", '\uE9D5' }, { "Live overlay", '\uE7B3' }, { "Interrupt tuner", '\uE950' }, { "Power tuner", '\uE945' }, { "Tune everything", '\uE768' }, { "Results", '\uE9D9' }, { "Mouse polling", '\uE962' }, { "Hardware audit", '\uE9F9' }, { "Boot times", '\uE7E8' }, { "Bake into ISO", '\uE958' },   // 3.19
         };
         static Font iconFont; static bool iconChecked;

@@ -54,6 +54,7 @@ namespace ArchTweaker
             { "Settings", "Language, colour scheme, notification icon, app mode and help" },
             { "Latency", "Live DPC and interrupt load per core, and the drivers that cause it" },
             { "Benchmark", "One click: frame times, driver latency and timer precision in one report" },
+            { "Stutter finder", "Each slow frame with what happened at that moment" },
             { "Tuning assistant", "Tests tweaks one by one on your game and keeps only the ones that helped" },
             { "Live overlay", "FPS, DPC and interrupt load live over your game" },
             { "Interrupt tuner", "Tests MSI mode, priority and CPU for each device and keeps what makes its driver faster" },
@@ -150,6 +151,7 @@ namespace ArchTweaker
             AddSection(nav, "Measure & test");   // 3.25: Analyse split in four
             AddNav(nav, "Measure & test", "Latency", () => new LatencyPage());
             AddNav(nav, "Measure & test", "Benchmark", () => new BenchmarkPage());   // 3.18
+            AddNav(nav, "Measure & test", "Stutter finder", () => new StutterPage());   // 3.43
             AddNav(nav, "Measure & test", "Measure", () => new MeasurePage());
             AddNav(nav, "Measure & test", "A/B test", () => new ABTestPage());
             AddNav(nav, "Measure & test", "Live overlay", () => new OverlayPage());   // 3.19

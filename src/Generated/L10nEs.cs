@@ -3970,6 +3970,81 @@ Unpinned: {0}	Ya no fijada: {0}
 Pinned to the top: {0}	Fijada arriba: {0}
 {0} (pinned)	{0} (fijada)
 Pin or unpin this page	Fijar o dejar de fijar esta página
+{0} held a CPU for {1} ms.	{0} ocupó una CPU durante {1} ms.
+{0} started at that moment.	{0} se inició en ese momento.
+The disk was {0} % busy (busiest program: {1}).	El disco estaba ocupado al {0} % (el programa que más lo usaba: {1}).
+The disk was {0} % busy.	El disco estaba ocupado al {0} %.
+The CPU was {0} % busy (busiest program besides the game: {1}).	La CPU estaba ocupada al {0} % (el programa que más la usaba, aparte del juego: {1}).
+The CPU was {0} % busy.	La CPU estaba ocupada al {0} %.
+Nothing outside the game happened: the game itself (loading, shader compiling, streaming).	No pasó nada fuera del juego: es el propio juego (carga, compilación de shaders, streaming).
+PresentMon caught too few frames. Is the game in the foreground and showing frames?	Se capturaron muy pocos fotogramas. ¿Está el juego en primer plano y mostrando imagen?
+{0} slow frames in {1} s ({2} frames, slow = over {3} ms).	Fotogramas lentos: {0} en {1} s (fotogramas en total: {2}; lento = más de {3} ms).
+No stutter: the frame pacing was even.	Sin tirones: los fotogramas llegaron de forma uniforme.
+{0} matched a driver delay (mostly {1})	retraso de un controlador: {0} (sobre todo {1})
+{0} a program starting (mostly {1})	inicio de un programa: {0} (sobre todo {1})
+{0} a busy disk	disco ocupado: {0}
+{0} a busy CPU	CPU ocupada: {0}
+{0} had no outside cause	sin causa externa: {0}
+Most slow frames came with a long driver delay.	La mayoría de los fotogramas lentos coincidieron con un retraso largo de un controlador.
+Update or reinstall that driver.	Actualiza o reinstala ese controlador.
+The Latency page and the Interrupt tuner can check it.	La página Latencia y el Ajustador de interrupciones pueden comprobarlo.
+Programs that start during play cost frames. Check {0} on the Startup and Scheduled tasks pages.	Los programas que se inician mientras juegas cuestan fotogramas. Revisa {0} en las páginas Inicio y Tareas programadas.
+The disk was busy when frames were slow: Windows Search indexing, Windows Update, an antivirus scan or the game loading.	El disco estaba ocupado cuando los fotogramas iban lentos: indexación de Windows Search, Windows Update, un análisis antivirus o el juego cargando.
+Other programs used most of the CPU. Close them while you play (browsers, launchers, recording software).	Otros programas usaron la mayor parte de la CPU. Ciérralos mientras juegas (navegadores, launchers, programas de grabación).
+These slow frames come from the game itself. Windows tweaks can't fix them. A game or driver update, or lower settings, can.	Estos fotogramas lentos vienen del propio juego. Los ajustes de Windows no pueden corregirlos. Una actualización del juego o del controlador, o una configuración más baja, sí.
+Choose the game first. It must be running.	Elige primero el juego. Tiene que estar abierto.
+PresentMon not found. Click Choose PresentMon.exe… on the Benchmark page.	No se encontró PresentMon. Haz clic en Elegir PresentMon.exe… en la página Benchmark.
+Recording {0} for {1} s. Keep playing…	Grabando {0} durante {1} s. Sigue jugando…
+Matching slow frames with drivers, programs and load…	Relacionando los fotogramas lentos con controladores, programas y carga…
+Recording length	Duración de la grabación
+Choose the running game	Elige el juego abierto
+Frame	Fotograma
+Cause	Causa
+What happened	Qué pasó
+Record:	Grabar:
+Find stutters	Buscar tirones
+Start the game, pick it here, click Find stutters and go back to the game. ArchTweaker records every frame, every long driver delay (DPC/ISR), every program that starts, and the CPU and disk load, all on one clock. Then it shows each slow frame with what happened at that moment. Needs PresentMon (see the Benchmark page).	Abre el juego, elígelo aquí, haz clic en Buscar tirones y vuelve al juego. ArchTweaker registra cada fotograma, cada retraso largo de un controlador (DPC/ISR), cada programa que se inicia y la carga de CPU y disco, todo con el mismo reloj. Después muestra cada fotograma lento con lo que pasó en ese momento. Necesita PresentMon (ver la página Benchmark).
+No recording yet. Start the game, then click Find stutters.	Aún no hay grabación. Abre el juego y haz clic en Buscar tirones.
+Choose the game	Elige el juego
+Start the game first, click Refresh, then pick it in the list.	Abre primero el juego, haz clic en Actualizar y elígelo en la lista.
+Open the Benchmark page and click Choose PresentMon.exe… to add it.	Abre la página Benchmark y haz clic en Elegir PresentMon.exe… para añadirlo.
+Recording {0} for {1} s…	Grabando {0} durante {1} s…
+The recording stopped. The log has the details.	La grabación se detuvo. El registro tiene los detalles.
+The driver trace didn't run:	No se registraron los retrasos de controladores:
+No slow frames in this recording.	No hay fotogramas lentos en esta grabación.
+Open {0}	Abrir {0}
+Driver delay	Retraso de controlador
+Program started	Programa iniciado
+Disk busy	Disco ocupado
+CPU busy	CPU ocupada
+The game	El juego
+Stutter finder	Buscador de tirones
+Each slow frame with what happened at that moment	Cada fotograma lento con lo que pasó en ese momento
+Windows Update is working in the background ({0}). The PC is slower until it finishes. Let it finish, or pause updates in Windows Settings.	Windows Update está trabajando en segundo plano ({0}). El PC va más lento hasta que termine. Deja que termine o pausa las actualizaciones en Configuración de Windows.
+Microsoft Defender is scanning ({0} uses {1} % CPU). It stops by itself. Defender doesn't scan a game folder that is in its exclusions.	Microsoft Defender está analizando ({0} usa el {1} % de la CPU). Se detiene solo. Una carpeta de juego en las exclusiones de Defender no se analiza mientras juegas.
+Windows Search is indexing files ({0}). If you don't search inside files, its service can be turned off.	Windows Search está indexando archivos ({0}). Si no buscas dentro de archivos, su servicio se puede desactivar.
+Windows telemetry is collecting data ({0}).	La telemetría de Windows está recopilando datos ({0}).
+The CPU is {0} % busy. {1} uses {2} % of it.	La CPU está ocupada al {0} %. {1} usa el {2} %.
+The CPU is {0} % busy.	La CPU está ocupada al {0} %.
+Memory is {0} % full ({1} MB free). {2} uses {3} MB. Close programs you don't need.	La memoria está llena al {0} % ({1} MB libres). {2} usa {3} MB. Cierra los programas que no necesites.
+Memory is {0} % full ({1} MB free). Close programs you don't need.	La memoria está llena al {0} % ({1} MB libres). Cierra los programas que no necesites.
+The disk is {0} % busy. {1} reads and writes {2} MB/s.	El disco está ocupado al {0} %. {1} lee y escribe {2} MB/s.
+The disk is {0} % busy.	El disco está ocupado al {0} %.
+The CPU runs at {0} % of its normal speed while it is busy: heat or a power limit holds it back.	La CPU funciona al {0} % de su velocidad normal mientras está ocupada: el calor o un límite de potencia la frenan.
+Battery saver is on. It slows the CPU and background apps. Turn it off in the notification area or Windows Settings.	El ahorro de batería está activado. Ralentiza la CPU y las apps en segundo plano. Desactívalo en el área de notificación o en Configuración de Windows.
+The power plan is ""{0}"": it keeps the CPU slow on purpose.	El plan de energía es «{0}»: mantiene la CPU lenta a propósito.
+Power saver	Economizador
+The PC runs on battery. Windows saves power and runs slower. Plug in the charger for full speed.	El PC funciona con batería. Windows ahorra energía y va más lento. Conecta el cargador para tener toda la velocidad.
+Nothing is slowing this PC down right now: CPU {0} %, memory {1} %, disk {2} %.	Ahora mismo nada ralentiza este PC: CPU {0} %, memoria {1} %, disco {2} %.
+The check stopped. The log has the details.	La comprobación se detuvo. El registro tiene los detalles.
+Why is my PC slow right now?	¿Por qué va lento mi PC ahora?
+What slows this PC at this moment, worst first. Select a line and click Open the fix, or double-click it.	Qué ralentiza este PC ahora mismo, lo peor primero. Selecciona una línea y haz clic en Abrir la solución, o haz doble clic en ella.
+What ArchTweaker found	Lo que encontró ArchTweaker
+Slows it	Lo ralentiza
+Worth knowing	Conviene saberlo
+Fine	Bien
+Open the fix	Abrir la solución
+Checking what slows this PC right now…	Comprobando qué ralentiza este PC ahora…
 ";
     }
 }

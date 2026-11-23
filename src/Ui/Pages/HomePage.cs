@@ -232,6 +232,7 @@ namespace ArchTweaker
             // 3.33: the main action is on the score card at the top; here only the other one of the pair
             actions.Controls.Add(wide(Mode.Lite ? Theme.Btn("Select the picks for this PC", delegate { MainForm.Instance.SelectAutoPreset(); }) : Theme.Btn("Optimize safely", delegate { MainForm.Instance.OptimizeSafely(); })));
             actions.Controls.Add(wide(Theme.Btn("Measure Sleep(1) precision", delegate { Measure(); })));
+            actions.Controls.Add(wide(Theme.Btn("Why is my PC slow right now?", delegate { SlowNowDialog.Check(); })));   // 3.43
             actions.Controls.Add(wide(Theme.Btn("See why: open PC advisor", delegate { AppShell.Current.ShowPage("PC advisor"); })));
             actions.Controls.Add(wide(Theme.Btn("Scan the whole PC", delegate { AppShell.Current.ShowPage("System scan"); })));
             actions.Controls.Add(wide(Theme.Btn("Why ArchTweaker?", delegate { WhyArchTweaker.Show(); })));   // 3.34

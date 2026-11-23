@@ -351,6 +351,7 @@ namespace ArchTweaker
             act("Go back (Alt+Left)", () => GoBack());          // 3.40
             act("Go forward (Alt+Right)", () => GoForward());
             act("Pin or unpin this page", () => TogglePin(current));   // 3.42
+            act("Why is my PC slow right now?", () => SlowNowDialog.Check());   // 3.43
             act("Apply pending changes", () => { if (applyBtn.Enabled) ApplyPending(); });
             act("Undo last apply", () => UndoLast());
             act("Select the picks for this PC", () => SelectAutoPreset());

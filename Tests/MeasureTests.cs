@@ -9,6 +9,123 @@ using ArchTweaker;
 
 static class MeasureTests
 {
+    // ---- 3.43: Why is my PC slow right now? ----
+    static SlowNow.Snap Calm() { return new SlowNow.Snap { CpuPct = 12, MemPct = 40, DiskPct = 5, PerfPct = 100, FreeMb = 9000, PlanId = Guid.NewGuid(), Plan = "Balanced" }; }
+
+    [Test] public static void SlowNow_CalmPc_SaysNothingSlowsIt()
+    {
+        var f = SlowNow.Analyze(Calm());
+        T.True(f.Count == 1 && f[0].Level == 0 && f[0].Text.Contains("Nothing is slowing"), "one 'fine' line: " + f[0].Text);
+    }
+
+    [Test] public static void SlowNow_BusyCpu_NamesTheProgram_NotWindowsJobs()
+    {
+        var s = Calm(); s.CpuPct = 96;
+        s.Procs.Add(new SlowNow.Proc { Name = "TiWorker", CpuPct = 40 });
+        s.Procs.Add(new SlowNow.Proc { Name = "chrome", CpuPct = 30 });
+        var f = SlowNow.Analyze(s);
+        T.True(f.Any(x => x.Level == 2 && x.Text.Contains("Windows Update")), "Windows Update is named");
+        var cpu = f.FirstOrDefault(x => x.Text.Contains("CPU is 96"));
+        T.True(cpu != null && cpu.Text.Contains("chrome.exe") && !cpu.Text.Contains("TiWorker"), "the busy-CPU line names the program, not the Windows job");
+        T.True(!f.Any(x => x.Level == 0), "no 'fine' line when something slows it");
+    }
+
+    [Test] public static void SlowNow_PowerSaverBatteryMemoryDiskThrottle_AreFound()
+    {
+        var s = Calm(); s.PlanId = SlowNow.PowerSaver; s.Plan = "Power saver"; s.MemPct = 94; s.FreeMb = 480; s.DiskPct = 99; s.CpuPct = 70; s.PerfPct = 45;
+        s.Procs.Add(new SlowNow.Proc { Name = "game", Mb = 6000 });
+        s.Procs.Add(new SlowNow.Proc { Name = "OneDrive", IoMbs = 80 });
+        var f = SlowNow.Analyze(s);
+        T.True(f.Count == 4 && f.All(x => x.Level == 2), "four problems, no fine line");
+        T.True(f.Any(x => x.Page == Cat.PowerPlan), "power saver: fix on the Power Plan page");
+        T.True(f.Any(x => x.Text.Contains("94") && x.Text.Contains("game.exe")), "memory names the biggest program");
+        T.True(f.Any(x => x.Text.Contains("OneDrive.exe")), "disk names the busiest program");
+        T.True(f.Any(x => x.Text.Contains("45")), "CPU held back");
+    }
+
+    [Test] public static void SlowNow_BatterySaver_IsAProblem_OnBatteryIsANote()
+    {
+        var s = Calm(); s.OnBattery = true;
+        var f = SlowNow.Analyze(s);
+        T.True(f.Any(x => x.Level == 1 && x.Text.Contains("battery")), "on battery: worth knowing");
+        s.BatterySaver = true;
+        T.True(SlowNow.Analyze(s).Any(x => x.Level == 2 && x.Text.Contains("Battery saver")), "battery saver: slows it");
+    }
+
+    // ---- 3.43: Stutter finder ----
+    const double F = 10000000;   // QPC ticks per second in these tests
+    static List<StutterFinder.FrameMark> Steady(int n, double ms, params int[] slowAt)
+    {
+        var l = new List<StutterFinder.FrameMark>(); long q = 0;
+        for (int i = 0; i < n; i++) { double m = slowAt.Contains(i) ? 50 : ms; q += (long)(m / 1000 * F); l.Add(new StutterFinder.FrameMark { Qpc = q, Ms = m }); }
+        return l;
+    }
+    static long At(List<StutterFinder.FrameMark> f, int i) { return f[i].Qpc; }
+
+    [Test] public static void Stutter_Threshold_IsTwoAndAHalfTimesTheMedianWithAFloor()
+    {
+        T.True(Math.Abs(StutterFinder.Threshold(4.17) - 12.17) < 0.01, "240 FPS: median + 8 ms");
+        T.True(Math.Abs(StutterFinder.Threshold(16.7) - 41.75) < 0.01, "60 FPS: 2.5 x median");
+    }
+
+    [Test] public static void Stutter_MatchesADriverDelayInTheSlowFrame()
+    {
+        var f = Steady(200, 4, 100);
+        var d = new List<StutterFinder.DpcMark> {
+            new StutterFinder.DpcMark { Qpc = At(f, 100) - (long)(0.020 * F), Driver = "nvlddmkm.sys", Us = 2100, Dpc = true },
+            new StutterFinder.DpcMark { Qpc = At(f, 30), Driver = "ndis.sys", Us = 900, Dpc = true } };   // far from any slow frame
+        var r = StutterFinder.Analyze(f, d, null, null, F, 0);
+        T.Eq(r.Stutters.Count, 1, "one slow frame");
+        T.True(r.Stutters[0].Kind == StutterFinder.Cause.Driver && r.Stutters[0].Who == "nvlddmkm.sys", "the NVIDIA DPC inside the slow frame is the cause");
+        T.True(r.Stutters[0].Text.Contains("2.1") || r.Stutters[0].Text.Contains("2,1"), "says how long: " + r.Stutters[0].Text);
+        T.True(r.Main == StutterFinder.Cause.Driver && StutterFinder.Advice(r) != null, "advice for the main cause");
+    }
+
+    [Test] public static void Stutter_ShortDpcsAndFarEventsDoNotCount()
+    {
+        var f = Steady(200, 4, 100);
+        var d = new List<StutterFinder.DpcMark> { new StutterFinder.DpcMark { Qpc = At(f, 100), Driver = "nvlddmkm.sys", Us = 300 } };   // under 500 µs
+        var p = new List<StutterFinder.ProcMark> { new StutterFinder.ProcMark { Qpc = At(f, 100) - (long)(3 * F), Name = "old.exe" } };   // 3 s earlier
+        var r = StutterFinder.Analyze(f, d, p, null, F, 0);
+        T.True(r.Stutters.Count == 1 && r.Stutters[0].Kind == StutterFinder.Cause.Game, "no outside cause: the game itself");
+    }
+
+    [Test] public static void Stutter_ProgramStart_DiskAndCpu_AreFoundInThatOrder()
+    {
+        var f = Steady(1200, 4, 100, 600, 1100);   // slow frames 2 s apart
+        var p = new List<StutterFinder.ProcMark> { new StutterFinder.ProcMark { Qpc = At(f, 100) - (long)(0.4 * F), Name = "MsMpEng.exe" } };
+        var l = new List<StutterFinder.LoadMark> {
+            new StutterFinder.LoadMark { Qpc = At(f, 600), DiskPct = 97, CpuPct = 40 },
+            new StutterFinder.LoadMark { Qpc = At(f, 1100), DiskPct = 10, CpuPct = 98, Top = "chrome.exe", TopPct = 30 } };
+        var r = StutterFinder.Analyze(f, null, p, l, F, 0);
+        T.Eq(r.Stutters.Count, 3, "three slow frames");
+        T.True(r.Stutters[0].Kind == StutterFinder.Cause.Program && r.Stutters[0].Who == "MsMpEng.exe", "program that started 0.4 s before");
+        T.True(r.Stutters[1].Kind == StutterFinder.Cause.Disk, "busy disk");
+        T.True(r.Stutters[2].Kind == StutterFinder.Cause.Cpu && r.Stutters[2].Who == "chrome.exe", "busy CPU, with the busiest program");
+        T.True(StutterFinder.Summary(r).StartsWith("3 slow frames"), "summary: " + StutterFinder.Summary(r));
+    }
+
+    [Test] public static void Stutter_EvenFramePacing_SaysSo()
+    {
+        var r = StutterFinder.Analyze(Steady(100, 6.9), null, null, null, F, 0);
+        T.True(r.Stutters.Count == 0 && StutterFinder.Summary(r).Contains("No stutter"), "no slow frames");
+        T.True(StutterFinder.Summary(StutterFinder.Analyze(Steady(5, 7), null, null, null, F, 0)).Contains("too few frames"), "too few frames");
+    }
+
+    [Test] public static void Stutter_ReadsPresentMonQpcAndSecondsColumns()
+    {
+        var qpc = new[] {
+            "Application,ProcessID,SwapChainAddress,PresentRuntime,SyncInterval,PresentFlags,AllowsTearing,PresentMode,TimeInQPC,MsBetweenSimulationStart,MsBetweenPresents",
+            "game.exe,1,0x1,DXGI,0,0,1,Hardware: Independent Flip,208661763391,NA,3.99",
+            "game.exe,1,0x2,DXGI,0,0,1,Composed: Flip,208661763500,NA,99",   // another swap chain (overlay): left out
+            "game.exe,1,0x1,DXGI,0,0,1,Hardware: Independent Flip,208661806462,NA,4.30" };
+        var a = StutterFinder.Frames(qpc, 0);
+        T.True(a.Count == 2 && a[0].Qpc == 208661763391 && Math.Abs(a[1].Ms - 4.30) < 1e-9, "QPC column, main swap chain only");
+        var secs = new[] { "Application,ProcessID,SwapChainAddress,TimeInSeconds,MsBetweenPresents", "g.exe,1,0x1,0.5,4", "g.exe,1,0x1,1.0,4" };
+        var b = StutterFinder.Frames(secs, 1000);
+        T.True(b.Count == 2 && b[1].Qpc == 1000 + System.Diagnostics.Stopwatch.Frequency, "seconds column placed after the PresentMon start");
+    }
+
     [Test] public static void ParseCsv_ComputesFpsAndLows()
     {
         string csv = System.IO.Path.GetTempFileName();
