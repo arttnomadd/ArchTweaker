@@ -9,13 +9,72 @@ using ArchTweaker;
 
 static class L10nTests
 {
-    [Test] public static void RussianPlurals()
+    [Test] public static void RussianPlurals() { TestHelp.Ru(delegate
     {
         T.Eq(L.Plural("1", new[] { "a", "b", "c" }), "a", "1");
         T.Eq(L.Plural("3", new[] { "a", "b", "c" }), "b", "3");
         T.Eq(L.Plural("11", new[] { "a", "b", "c" }), "c", "11");
         T.Eq(L.Plural("22", new[] { "a", "b", "c" }), "b", "22");
         T.Eq(L.Plural("25", new[] { "a", "b", "c" }), "c", "25");
+    }); }
+
+    // 3.41: German, Spanish and Italian use "one" only for exactly 1 (21 is plural there)
+    [Test] public static void OtherLanguages_OneOnlyForOne()
+    {
+        string keep = L.Lang;
+        try
+        {
+            foreach (var code in new[] { "de", "es", "it" })
+            {
+                L.Use(code);
+                T.Eq(L.Plural("1", new[] { "a", "b", "c" }), "a", code + " 1");
+                T.Eq(L.Plural("3", new[] { "a", "b", "c" }), "c", code + " 3");
+                T.Eq(L.Plural("21", new[] { "a", "b", "c" }), "c", code + " 21");
+                T.Eq(L.Plural("0", new[] { "a", "b", "c" }), "c", code + " 0");
+            }
+            L.Use("de");
+            T.Eq(L.T("1 tweaks · 0 applied"), "1 Tweak · 0 angewendet", "de singular pattern");
+            T.Eq(L.T("21 tweaks · 3 applied"), "21 Tweaks · 3 angewendet", "de plural pattern");
+            T.Eq(L.T("Apply changes"), "Änderungen anwenden", "de exact");
+            L.Use("es"); T.Eq(L.T("Apply changes"), "Aplicar cambios", "es exact");
+            L.Use("it"); T.Eq(L.T("Apply changes"), "Applica modifiche", "it exact");
+        }
+        finally { L.Use(keep); }
+    }
+
+    // 3.41: every generated table is a language, loads, and keeps the English placeholders on every line
+    [Test] public static void EveryTable_LoadsAndKeepsPlaceholders()
+    {
+        var slot = new Regex(@"\{(\d)(?:[,:][^}|]*)?\}");
+        var slotTo = new Regex(@"\{(\d)(?:[,:][^}|]*)?(?:\|[^}]*)?\}");
+        foreach (var code in new[] { "ru", "de", "es", "it" })
+        {
+            T.True(Array.IndexOf(L.Codes, code) >= 0, code + " listed in L.Codes");
+            string table = L.TableFor(code);
+            T.True(table != null && table.Length > 1000, code + " table present");
+            if (table == null) continue;
+            int lines = 0, bad = 0; string firstBad = null;
+            foreach (var raw in table.Split('\n'))
+            {
+                string line = raw.TrimEnd('\r'); int tab = line.IndexOf('\t');
+                if (line.Length == 0 || line[0] == '#' || tab <= 0) continue;
+                lines++;
+                string en = line.Substring(0, tab), to = line.Substring(tab + 1);
+                var a = slot.Matches(en).Cast<Match>().Select(m => m.Groups[1].Value).Distinct().OrderBy(x => x).ToArray();
+                var b = slotTo.Matches(to).Cast<Match>().Select(m => m.Groups[1].Value).Distinct().OrderBy(x => x).ToArray();
+                if (!a.SequenceEqual(b)) { bad++; if (firstBad == null) firstBad = en; }
+                foreach (Match pm in Regex.Matches(to, @"\{\d\|([^}]*)\}"))
+                    if (pm.Groups[1].Value.Split('|').Length != 3) { bad++; if (firstBad == null) firstBad = en; }
+            }
+            T.True(lines > 3000, code + " has the full table (" + lines + " lines)");
+            T.Eq(bad, 0, code + " placeholder mismatches, first: " + firstBad);
+            string keep = L.Lang;
+            try { L.Use(code); T.Eq(L.Lang, code, code + " loads"); T.True(L.T("Apply changes") != "Apply changes", code + " translates"); }
+            finally { L.Use(keep); }
+        }
+        T.Eq(L.Names[Array.IndexOf(L.Codes, "de")], "Deutsch", "de name");
+        T.Eq(L.Names[Array.IndexOf(L.Codes, "es")], "Español", "es name");
+        T.Eq(L.Names[Array.IndexOf(L.Codes, "it")], "Italiano", "it name");
     }
 
     [Test] public static void Translates_Exact_Pattern_Fragment_Lines() { TestHelp.Ru(delegate

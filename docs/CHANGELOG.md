@@ -6,6 +6,15 @@ Each version groups its changes under these headings, in this order (leave out t
 `### New features` · `### Tweaks` · `### Design` · `### Fixes` · `### Security` · `### Under the hood`.
 A short intro under the version title is fine. The What's new dialog filters by these headings.
 
+## 3.41.0: German, Spanish and Italian
+
+### New features
+- **German, Spanish and Italian.** Every page, dialog and tweak description is now also in Deutsch, Español and Italiano. Windows starts ArchTweaker in your display language when it is one of these. Settings → Language switches it at any time. The log file stays in English.
+
+### Under the hood
+- **Plurals per language.** Counts like "21 tweaks" pick the right word form: Russian keeps its one / few / many rules, and every other language uses the singular only for 1.
+- **Table checks.** A test loads every generated language table and checks the placeholders and plural forms on each line.
+
 ## 3.40.0: Faster refresh, back and forward
 
 ### New features

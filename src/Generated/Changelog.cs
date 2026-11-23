@@ -3,7 +3,16 @@ namespace ArchTweaker
 {
     public static class Changelog
     {
-        public const string Text = @"## 3.40.0: Faster refresh, back and forward
+        public const string Text = @"## 3.41.0: German, Spanish and Italian
+
+### New features
+- **German, Spanish and Italian.** Every page, dialog and tweak description is now also in Deutsch, Español and Italiano. Windows starts ArchTweaker in your display language when it is one of these. Settings → Language switches it at any time. The log file stays in English.
+
+### Under the hood
+- **Plurals per language.** Counts like ""21 tweaks"" pick the right word form: Russian keeps its one / few / many rules, and every other language uses the singular only for 1.
+- **Table checks.** A test loads every generated language table and checks the placeholders and plural forms on each line.
+
+## 3.40.0: Faster refresh, back and forward
 
 ### New features
 - **Back and forward between pages.** Alt+Left and Alt+Right, the back and forward buttons on a mouse, the browser keys on a keyboard, and ""Go back"" / ""Go forward"" in the command palette. ArchTweaker remembers the last 30 pages.
@@ -85,19 +94,17 @@ namespace ArchTweaker
 ### Fixes
 - **The cleaner never empties a whole base folder.** On Windows, Temp sits inside %LocalAppData%, so a cleaning rule could target the Temp folder itself. The check now refuses every base folder, even one inside another. The Windows CI found this; the Linux tests could not.
 - **Screen readers read the page title.** The title label had the accessible name ""pageTitle"", so a screen reader said ""pageTitle"" on every page. It now reads the page name. Sidebar items also get a UI Automation ID, so the Windows UI tests can find each page.
+";
+        public const string All = @"## 3.41.0: German, Spanish and Italian
 
-## 3.38.1: Home on GitHub
-
-ArchTweaker now has its public home at github.com/arttnomadd/ArchTweaker.
-
-### Fixes
-- **Update checks go to the real project.** The app read its update offer from a placeholder address. It now reads the signed `latest.json` from github.com/arttnomadd/ArchTweaker, and each new version comes from that project's Releases page.
-- **Release downloads are not blocked.** GitHub now sends release files from release-assets.githubusercontent.com. The updater and the manifest signer allow that GitHub address, so a self-update no longer stops with ""Redirected to a host that is not allowed"".
+### New features
+- **German, Spanish and Italian.** Every page, dialog and tweak description is now also in Deutsch, Español and Italiano. Windows starts ArchTweaker in your display language when it is one of these. Settings → Language switches it at any time. The log file stays in English.
 
 ### Under the hood
-- **The README explains the project in full:** download, requirements, safety and undo, updates and their signature, building on Windows and Linux, tests and the folder layout.
-";
-        public const string All = @"## 3.40.0: Faster refresh, back and forward
+- **Plurals per language.** Counts like ""21 tweaks"" pick the right word form: Russian keeps its one / few / many rules, and every other language uses the singular only for 1.
+- **Table checks.** A test loads every generated language table and checks the placeholders and plural forms on each line.
+
+## 3.40.0: Faster refresh, back and forward
 
 ### New features
 - **Back and forward between pages.** Alt+Left and Alt+Right, the back and forward buttons on a mouse, the browser keys on a keyboard, and ""Go back"" / ""Go forward"" in the command palette. ArchTweaker remembers the last 30 pages.

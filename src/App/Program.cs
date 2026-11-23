@@ -9,14 +9,14 @@ using System.Windows.Forms;
 [assembly: System.Reflection.AssemblyTitle("ArchTweaker")]
 [assembly: System.Reflection.AssemblyProduct("ArchTweaker")]
 [assembly: System.Reflection.AssemblyDescription("Windows 10/11 tweaking, cleanup and gaming optimization utility")]
-[assembly: System.Reflection.AssemblyVersion("3.40.0.0")]
-[assembly: System.Reflection.AssemblyFileVersion("3.40.0.0")]
+[assembly: System.Reflection.AssemblyVersion("3.41.0.0")]
+[assembly: System.Reflection.AssemblyFileVersion("3.41.0.0")]
 
 namespace ArchTweaker
 {
     public static class Program
     {
-        public const string Version = "3.40.0";
+        public const string Version = "3.41.0";
 
         public static ApplicationContext Ctx;
 

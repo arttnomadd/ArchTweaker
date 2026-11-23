@@ -228,12 +228,15 @@ namespace ArchTweaker
             return false;
         }
 
-        // Russian plural: one (1, 21, 31…), few (2-4, 22-24…), many (0, 5-20, 25-30…). Picks from "one|few|many".
+        // Plural forms "one|few|many". Russian (and other East Slavic tables): one (1, 21, 31…), few (2-4, 22-24…),
+        // many (0, 5-20, 25-30…). 3.41: every other language uses "one" for exactly 1 and "many" for any other number.
+        static readonly string[] SlavicPlural = { "ru", "uk", "be" };
         public static string Plural(string number, string[] forms)
         {
             if (forms.Length == 0) return "";
             long n; string digits = new string(number.Where(char.IsDigit).ToArray());
             if (!long.TryParse(digits, out n) || forms.Length < 3) return forms[0];
+            if (Active && Array.IndexOf(SlavicPlural, Lang) < 0) return n == 1 ? forms[0] : forms[forms.Length - 1];
             long m10 = n % 10, m100 = n % 100;
             if (m10 == 1 && m100 != 11) return forms[0];
             if (m10 >= 2 && m10 <= 4 && (m100 < 12 || m100 > 14)) return forms[1];
