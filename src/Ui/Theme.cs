@@ -43,6 +43,7 @@ namespace ArchTweaker
             if (a == null) AccentIndex = CarbonRed;   // a new install: Carbon dark with Carbon red
             object pr = Reg.Get(Hive.HKCU, @"Software\ArchTweaker", "Progress");
             int pri; if (pr != null && int.TryParse(pr.ToString(), out pri) && pri >= 0 && pri < ProgressNames.Length) ProgressIndex = pri;
+            if (pr == null) ProgressIndex = 1;   // 3.44: a new install: progress bars in the accent colour
             object pc = Reg.Get(Hive.HKCU, @"Software\ArchTweaker", "ProgressCustom");
             if (pc != null) { try { ProgressCustom = ColorTranslator.FromHtml(pc.ToString()); } catch { } }
             object cc = Reg.Get(Hive.HKCU, @"Software\ArchTweaker", "AccentCustom");
@@ -59,7 +60,8 @@ namespace ArchTweaker
             int tsi; if (ts != null && int.TryParse(ts.ToString(), out tsi) && tsi >= 0 && tsi < TextSizes.Length) TextSize = tsi;
             object scc = Reg.Get(Hive.HKCU, @"Software\ArchTweaker", "SchemeCustom");
             if (scc != null) { try { SchemeCustom = ColorTranslator.FromHtml(scc.ToString()); } catch { } }
-            int si = o == null ? 0 : SchemeFromKey(o.ToString());
+            // 3.44: a new install starts in the teal scheme (Custom, #008080) with the red accent; every choice can still be changed
+            int si = o == null ? CustomScheme : SchemeFromKey(o.ToString());
             // 3.29: once, the untouched old default red accent becomes Carbon red
             if (Reg.Get(Hive.HKCU, @"Software\ArchTweaker", "DesignV") == null)
             {
@@ -213,7 +215,7 @@ namespace ArchTweaker
         }
         // 3.10.2: Custom = one background colour you pick; SchemeMaker builds the rest of the palette from it
         public const int CustomScheme = 3;
-        public static readonly Color DefaultSchemeCustom = Color.FromArgb(0x1A, 0x1B, 0x2E);
+        public static readonly Color DefaultSchemeCustom = Color.FromArgb(0x00, 0x80, 0x80);   // 3.44: teal, the default look (was #1A1B2E)
         public static Color SchemeCustom = DefaultSchemeCustom;   // the colour picked
         public static Color SchemeCustomUsed;                     // the background after readability adjustments
         public static int Scheme;
