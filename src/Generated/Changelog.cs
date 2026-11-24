@@ -3,7 +3,34 @@ namespace ArchTweaker
 {
     public static class Changelog
     {
-        public const string Text = @"## 3.43.0: Stutter finder, and why the PC is slow right now
+        public const string Text = @"## 3.44.0: A calmer look, a stutter timeline and 6 new tweaks
+
+### Tweaks
+- **Turn off Sleep Study** (System). Windows stops recording the Sleep Study, a log of every sleep and wake. The autologger tweak only stopped its trace session; this turns the feature off (SleepStudyDisabled = 1).
+- **Kernel: don't track IO priority boosts** (Responsiveness). AlwaysTrackIoBoosting = 0. Marked undocumented and not in any preset: measure it before you keep it.
+- **Turn off biometrics (policy)** (Privacy). Switches off Windows Hello fingerprint and face sign-in by policy. Sign in with a PIN or password instead.
+- **Disable Windows Error Reporting (policy)** (Privacy). The policy version of the WER switch, which Windows Update doesn't reset. In the Privacy preset.
+- **Graphics: no VSync idle timeout** (GPU & Devices, Pro, experimental). VsyncIdleTimeout = 0. Undocumented: compare frame times on the A/B test page.
+- **Kernel: interrupt steering mode 2** (Input & Latency, Pro, experimental, Advanced). InterruptSteeringFlags = 2. Undocumented: check DPC latency and frame times before you keep it.
+- Each one writes a single registry value and deletes it again on undo. All six come from a cross-check of a popular ""10 registry tweaks"" video; three of its values were already in ArchTweaker.
+- **Left out on purpose:** PerfEnablePackageIdle = 1. The video says it keeps the CPU at full speed, but the value name says it allows package idle, the opposite.
+
+### Design
+- **New default look:** the teal scheme (#008080) with the red accent, and progress bars in the accent colour. Every new install starts with it. Existing installs keep the look they have, and View → Colour scheme still offers every scheme and accent.
+- **Stutter finder timeline.** The whole recording as a frame-time graph, the ""slow"" line, and a coloured dot on each slow frame by cause (driver, program, disk, CPU, the game), with a legend that counts them. Point at a dot to read what happened; click it to select its row.
+- **A slimmer Apply bar.** The Apply button shows only while changes are pending (""Apply 3 changes""). With nothing pending the bar is 44 px instead of 56, so every page has more room.
+- **Home quick actions are cards:** an icon, a title and one line that says what each action does. Descriptions wrap to two lines in longer languages.
+- **Health score: what's missing.** Under the score, the biggest missing points are links to the page that wins them back, for example ""+15 reset tweaks · +10 restart · +5 speed tweaks"".
+- **Calmer sidebar.** Applied counts (""30/32"") are a small progress ring with plain numbers instead of filled pills; the ring is solid green when a whole page is applied.
+- **Cleaner tweak rows.** Why a tweak doesn't apply here (""needs Google Chrome"", ""Windows 11 24H2 removes the Cortana app"") is now its own muted line under the title, not glued onto the title.
+- **Live ""checking"" switches.** While a tweak's state is being read, the three dots on its switch pulse. They stay still when Windows animations are off.
+- **A calmer header.** View is an icon button and ""Select preset"" is a short ""Select"", so the page title keeps its room. Screen readers still hear the full names.
+
+### Under the hood
+- **Checked in every language and at 1024 × 768:** the layout check finds no cut-off text on any page in English, Russian, German, Spanish or Italian.
+- **Tests:** unit tests for the health score's missing points; 4,161 unit tests in all.
+
+## 3.43.0: Stutter finder, and why the PC is slow right now
 
 ### New features
 - **Stutter finder** (Measure & test). Start a game, pick it, click Find stutters and keep playing for 30, 60 or 120 seconds. ArchTweaker records every frame (PresentMon), every driver delay of 250 µs or more (DPC/ISR), every program that starts, and the CPU and disk load, all on one clock. Then it lists each slow frame with what happened at that moment, for example ""NVIDIA graphics driver (nvlddmkm.sys) held a CPU for 2.1 ms"" or ""MsMpEng.exe started at that moment"", and says what to do about the main cause. A slow frame takes 2.5 × the median frame time and at least 8 ms more.
@@ -66,28 +93,35 @@ Install this version by hand. 3.38.2 to 3.42.0 trust an update-signing key that 
 - **Refreshing the tweak states is about 2 seconds faster on PCs with an NVIDIA card.** The 9 NVIDIA tweaks each opened a driver-settings session and loaded the whole profile database again. Reads now share one session for 3 seconds, and a change closes it first. Measured on one PC: 1,960 ms → 125 ms for the 9 reads, and 1,950 ms → 21 ms for a repeat read of all 281 tweaks.
 - **The first read of all tweaks does the fast registry checks first.** The checks that start a program or call a driver come last, so the shared PowerShell probe (about 2.5 seconds, started at launch) is ready when they need it, instead of the reader waiting on it early.
 - **Home reads the active power plan from the Windows power API** instead of starting powercfg.exe and reading its text, which also differs between Windows languages.
-
-## 3.39.0: Measured verdicts, Scheduled tasks, Customize
-
-### New features
-- **Every measured tweak says what it did on this PC.** Besides the green ""Proven"" chip, a row now shows **No gain here** or **Worse here** when an A/B test or the Tuning assistant measured it with at least 3 runs each. Results from fewer runs stay in the details panel only.
-- **""Optimize safely"" also undoes what didn't help.** Applied tweaks that measured no gain or a loss on this PC are undone in the same go. The confirmation says how many, and the log lists them.
-- **New page: Scheduled tasks** (Clean & apps, Pro). Every task on the PC, third-party first. Untick a task to disable it, or run it now. ArchTweaker records the state each task had before its first change, so ""Put back all"" and ""Undo everything"" restore it exactly. It never deletes a task. Disabling a Microsoft task asks once per session first.
-- **New page: Customize** (Windows tools, also in Lite). Taskbar alignment (Windows 11), search on the taskbar, seconds on the clock, where File Explorer opens, menu and hover delay, key repeat delay and speed, as drop-downs and number boxes. Each card says when the change takes effect. Every change goes into the undo journal, so ""Put back all"" and ""Undo everything"" restore what Windows had.
-- **The setup guide explains the best order:** drivers, then Windows Update until nothing is left, then Store app updates, then tweaks.
+";
+        public const string All = @"## 3.44.0: A calmer look, a stutter timeline and 6 new tweaks
 
 ### Tweaks
-- **Block ads and trackers with AdGuard DNS** (Internet & Network, moderate). AdGuard's public DNS blocks ad and tracker names for every app, with no hosts-file size limit. On Windows 11 ArchTweaker also registers its DNS-over-HTTPS address, so lookups are encrypted. Plain DNS stays as a fallback. Undo goes back to automatic DNS and removes the address. It can't be on together with ""Use Cloudflare DNS"". The Hosts blocker points to it when a list is very large.
+- **Turn off Sleep Study** (System). Windows stops recording the Sleep Study, a log of every sleep and wake. The autologger tweak only stopped its trace session; this turns the feature off (SleepStudyDisabled = 1).
+- **Kernel: don't track IO priority boosts** (Responsiveness). AlwaysTrackIoBoosting = 0. Marked undocumented and not in any preset: measure it before you keep it.
+- **Turn off biometrics (policy)** (Privacy). Switches off Windows Hello fingerprint and face sign-in by policy. Sign in with a PIN or password instead.
+- **Disable Windows Error Reporting (policy)** (Privacy). The policy version of the WER switch, which Windows Update doesn't reset. In the Privacy preset.
+- **Graphics: no VSync idle timeout** (GPU & Devices, Pro, experimental). VsyncIdleTimeout = 0. Undocumented: compare frame times on the A/B test page.
+- **Kernel: interrupt steering mode 2** (Input & Latency, Pro, experimental, Advanced). InterruptSteeringFlags = 2. Undocumented: check DPC latency and frame times before you keep it.
+- Each one writes a single registry value and deletes it again on undo. All six come from a cross-check of a popular ""10 registry tweaks"" video; three of its values were already in ArchTweaker.
+- **Left out on purpose:** PerfEnablePackageIdle = 1. The video says it keeps the CPU at full speed, but the value name says it allows package idle, the opposite.
 
-### Fixes
-- **The command palette (Ctrl+K) opens the page you name.** An exact page name now always comes first, ahead of tweaks and tools that contain the same words. The palette window also has a title, so screen readers announce it.
-- **Scheduled tasks never switches off ArchTweaker's own tasks** (boot guard, maintenance). They carry an ArchTweaker badge and are managed on Tools & backup.
+### Design
+- **New default look:** the teal scheme (#008080) with the red accent, and progress bars in the accent colour. Every new install starts with it. Existing installs keep the look they have, and View → Colour scheme still offers every scheme and accent.
+- **Stutter finder timeline.** The whole recording as a frame-time graph, the ""slow"" line, and a coloured dot on each slow frame by cause (driver, program, disk, CPU, the game), with a legend that counts them. Point at a dot to read what happened; click it to select its row.
+- **A slimmer Apply bar.** The Apply button shows only while changes are pending (""Apply 3 changes""). With nothing pending the bar is 44 px instead of 56, so every page has more room.
+- **Home quick actions are cards:** an icon, a title and one line that says what each action does. Descriptions wrap to two lines in longer languages.
+- **Health score: what's missing.** Under the score, the biggest missing points are links to the page that wins them back, for example ""+15 reset tweaks · +10 restart · +5 speed tweaks"".
+- **Calmer sidebar.** Applied counts (""30/32"") are a small progress ring with plain numbers instead of filled pills; the ring is solid green when a whole page is applied.
+- **Cleaner tweak rows.** Why a tweak doesn't apply here (""needs Google Chrome"", ""Windows 11 24H2 removes the Cortana app"") is now its own muted line under the title, not glued onto the title.
+- **Live ""checking"" switches.** While a tweak's state is being read, the three dots on its switch pulse. They stay still when Windows animations are off.
+- **A calmer header.** View is an icon button and ""Select preset"" is a short ""Select"", so the page title keeps its room. Screen readers still hear the full names.
 
 ### Under the hood
-- **The Windows UI tests pass on Windows Server 2022 and 2025**, including the Russian interface and ""apply the Recommended preset, then Undo everything"" on a throwaway VM. Device tweaks that find no device on the test VM are listed as expected in `tools/ci-selftest-known.txt`.
-- **A new language needs no code change.** Every `lang/<code>.tsv` becomes a language. Its `# name:` line gives the name in the language list, and Windows starts in that language when the display language matches. [docs/TRANSLATING.md](docs/TRANSLATING.md) explains the steps.
-";
-        public const string All = @"## 3.43.0: Stutter finder, and why the PC is slow right now
+- **Checked in every language and at 1024 × 768:** the layout check finds no cut-off text on any page in English, Russian, German, Spanish or Italian.
+- **Tests:** unit tests for the health score's missing points; 4,161 unit tests in all.
+
+## 3.43.0: Stutter finder, and why the PC is slow right now
 
 ### New features
 - **Stutter finder** (Measure & test). Start a game, pick it, click Find stutters and keep playing for 30, 60 or 120 seconds. ArchTweaker records every frame (PresentMon), every driver delay of 250 µs or more (DPC/ISR), every program that starts, and the CPU and disk load, all on one clock. Then it lists each slow frame with what happened at that moment, for example ""NVIDIA graphics driver (nvlddmkm.sys) held a CPU for 2.1 ms"" or ""MsMpEng.exe started at that moment"", and says what to do about the main cause. A slow frame takes 2.5 × the median frame time and at least 8 ms more.

@@ -6,6 +6,33 @@ Each version groups its changes under these headings, in this order (leave out t
 `### New features` · `### Tweaks` · `### Design` · `### Fixes` · `### Security` · `### Under the hood`.
 A short intro under the version title is fine. The What's new dialog filters by these headings.
 
+## 3.44.0: A calmer look, a stutter timeline and 6 new tweaks
+
+### Tweaks
+- **Turn off Sleep Study** (System). Windows stops recording the Sleep Study, a log of every sleep and wake. The autologger tweak only stopped its trace session; this turns the feature off (SleepStudyDisabled = 1).
+- **Kernel: don't track IO priority boosts** (Responsiveness). AlwaysTrackIoBoosting = 0. Marked undocumented and not in any preset: measure it before you keep it.
+- **Turn off biometrics (policy)** (Privacy). Switches off Windows Hello fingerprint and face sign-in by policy. Sign in with a PIN or password instead.
+- **Disable Windows Error Reporting (policy)** (Privacy). The policy version of the WER switch, which Windows Update doesn't reset. In the Privacy preset.
+- **Graphics: no VSync idle timeout** (GPU & Devices, Pro, experimental). VsyncIdleTimeout = 0. Undocumented: compare frame times on the A/B test page.
+- **Kernel: interrupt steering mode 2** (Input & Latency, Pro, experimental, Advanced). InterruptSteeringFlags = 2. Undocumented: check DPC latency and frame times before you keep it.
+- Each one writes a single registry value and deletes it again on undo. All six come from a cross-check of a popular "10 registry tweaks" video; three of its values were already in ArchTweaker.
+- **Left out on purpose:** PerfEnablePackageIdle = 1. The video says it keeps the CPU at full speed, but the value name says it allows package idle, the opposite.
+
+### Design
+- **New default look:** the teal scheme (#008080) with the red accent, and progress bars in the accent colour. Every new install starts with it. Existing installs keep the look they have, and View → Colour scheme still offers every scheme and accent.
+- **Stutter finder timeline.** The whole recording as a frame-time graph, the "slow" line, and a coloured dot on each slow frame by cause (driver, program, disk, CPU, the game), with a legend that counts them. Point at a dot to read what happened; click it to select its row.
+- **A slimmer Apply bar.** The Apply button shows only while changes are pending ("Apply 3 changes"). With nothing pending the bar is 44 px instead of 56, so every page has more room.
+- **Home quick actions are cards:** an icon, a title and one line that says what each action does. Descriptions wrap to two lines in longer languages.
+- **Health score: what's missing.** Under the score, the biggest missing points are links to the page that wins them back, for example "+15 reset tweaks · +10 restart · +5 speed tweaks".
+- **Calmer sidebar.** Applied counts ("30/32") are a small progress ring with plain numbers instead of filled pills; the ring is solid green when a whole page is applied.
+- **Cleaner tweak rows.** Why a tweak doesn't apply here ("needs Google Chrome", "Windows 11 24H2 removes the Cortana app") is now its own muted line under the title, not glued onto the title.
+- **Live "checking" switches.** While a tweak's state is being read, the three dots on its switch pulse. They stay still when Windows animations are off.
+- **A calmer header.** View is an icon button and "Select preset" is a short "Select", so the page title keeps its room. Screen readers still hear the full names.
+
+### Under the hood
+- **Checked in every language and at 1024 × 768:** the layout check finds no cut-off text on any page in English, Russian, German, Spanish or Italian.
+- **Tests:** unit tests for the health score's missing points; 4,161 unit tests in all.
+
 ## 3.43.0: Stutter finder, and why the PC is slow right now
 
 ### New features

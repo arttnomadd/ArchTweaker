@@ -1,4 +1,4 @@
-# ArchTweaker 3.43.0
+# ArchTweaker 3.44.0
 
 **Why ArchTweaker:** measured, not promised (A/B test any tweak on this PC and keep only the measured wins); exactly undoable; works offline with no account; one small program of about 6 MB (with five interface languages); open about every tweak's risk and evidence.
 
