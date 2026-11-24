@@ -56,7 +56,7 @@ namespace ArchTweaker
         internal static readonly string[] UndocumentedIds =
         {
             "fso", "gd_nv_p0", "gd_nv_hdcp", "gd_nv_misc", "gd_nv_dlss_latest", "gd_nv_dlss_indicator", "gd_amd_ulps", "gd_amd_lowlat",
-            "il_rawthrottle", "il_timers", "exp_serialtimer", "exp_latencytol", "pagingexec", "disp_iconcache", "gamebar", "rs_inputpreload", "gd_flip_composed",
+            "il_rawthrottle", "il_timers", "exp_serialtimer", "exp_latencytol", "pagingexec", "disp_iconcache", "gamebar", "rs_inputpreload", "gd_flip_composed", "rs_ioboost", "exp_vsyncidle", "exp_intsteer",
         };
 
         static void Validity()

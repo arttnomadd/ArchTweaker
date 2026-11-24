@@ -24,11 +24,11 @@ Data, backups and reports are in `C:\ProgramData\ArchTweaker\`.
 SmartScreen can warn about a new, unsigned program. Click **More info → Run anyway**, or build the exe yourself from this source (see [Build](#build)).
 
 - **What changed in each version:** [docs/CHANGELOG.md](docs/CHANGELOG.md) (also in the app: View → What's new).
-- **Every tweak with its expected gain:** [docs/TWEAKS.md](docs/TWEAKS.md) (281 tweaks).
+- **Every tweak with its expected gain:** [docs/TWEAKS.md](docs/TWEAKS.md) (287 tweaks).
 - **Design rules:** [docs/DESIGN.md](docs/DESIGN.md). **Architecture decisions:** [docs/adr/](docs/adr/).
 
 ## Features
-- **281 tweaks in 14 categories.** Each one reads its real state live, shows its risk, what it can break and its expected gain, and is undone exactly.
+- **287 tweaks in 14 categories.** Each one reads its real state live, shows its risk, what it can break and its expected gain, and is undone exactly.
 - **Measured verdicts on every row.** After an A/B test a tweak shows "Proven", "No gain here" or "Worse here" for this PC, and "Optimize safely" undoes the ones that did not help.
 - **Measure before you keep.** Latency (DPC/ISR), Benchmark with 1 % lows (PresentMon), A/B test and the Tuning assistant, which keeps a tweak only when a Welch's t-test shows at least a 1 % gain on your PC.
 - **Stutter finder.** While a game runs it records every frame, every long driver delay, every program that starts and the CPU and disk load on one clock, then shows each slow frame with what caused it ("NVIDIA graphics driver held a CPU for 2.1 ms").

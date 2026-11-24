@@ -4054,3 +4054,36 @@ clean up	pulizia
 driver load	carico dei driver
 Missing:	Mancano:
 restart	riavvio
+No Sleep Study logging in the background. Negligible speed effect.	Nessun registro Sleep Study in background. Effetto sulla velocità trascurabile.
+Unproven: less kernel bookkeeping when a thread waits on disk. Often within noise.	Non provato: meno contabilità del kernel quando un thread attende il disco. Spesso nel rumore di misura.
+Privacy only: Windows stops using fingerprint and face data.	Solo privacy: Windows smette di usare i dati di impronta e volto.
+Unproven: reports range from steadier frame pacing to no change.	Non provato: i resoconti vanno da un ritmo dei frame più regolare a nessun cambiamento.
+Unproven: can move interrupt work off busy cores, or onto the core the game uses.	Non provato: può spostare il lavoro degli interrupt dai core occupati, o sul core usato dal gioco.
+Turn off Sleep Study	Disattiva Sleep Study
+Windows stops recording the Sleep Study, a log of every sleep and wake of the PC. The autologger tweak stops only its trace session. This tweak turns the whole feature off.	Windows smette di registrare lo Sleep Study, un registro di ogni sospensione e riattivazione del PC. Il tweak degli autologger ferma solo la sua sessione di traccia; questo disattiva la funzione.
+Sleep Study recording.	La registrazione di Sleep Study.
+The sleep report (powercfg /sleepstudy) and some battery troubleshooters.	Il rapporto sulla sospensione (powercfg /sleepstudy) e alcuni strumenti di risoluzione dei problemi della batteria.
+Kernel: don't track IO priority boosts	Kernel: non tracciare gli aumenti di priorità per I/O
+AlwaysTrackIoBoosting = 0: the kernel stops keeping track of the priority boost a thread gets while it waits on disk or other IO. Seen in gaming tweak packs. Not documented.	AlwaysTrackIoBoosting = 0: il kernel smette di tracciare l'aumento di priorità che un thread riceve mentre attende il disco o altro I/O. Visto nei pacchetti di tweak per giochi. Non documentato.
+Kernel tracking of IO priority boosts.	Il tracciamento del kernel degli aumenti di priorità per I/O.
+Measure frame times on the A/B test page before keeping it.	Misura i tempi dei frame nella pagina Test A/B prima di tenerlo.
+Undocumented: the effect can differ between Windows builds.	Non documentato: l'effetto può cambiare tra le build di Windows.
+Turn off biometrics (policy)	Disattiva la biometria (criterio)
+Windows stops using fingerprint and face data. A policy turns off Windows Hello fingerprint and face sign-in.	Windows smette di usare i dati di impronta e volto: l'accesso di Windows Hello con impronta e volto viene disattivato tramite criterio.
+Windows Hello fingerprint and face recognition.	Il riconoscimento di impronta e volto di Windows Hello.
+Fingerprint and face sign-in. Sign in with a PIN or password instead.	L'accesso con impronta e volto. Accedi invece con un PIN o una password.
+Disable Windows Error Reporting (policy)	Disattiva Segnalazione errori di Windows (criterio)
+The policy version of the Windows Error Reporting switch. Windows and apps read it first, and Windows Update doesn't reset it.	La versione tramite criterio dell'interruttore di Segnalazione errori di Windows. Windows e le app la leggono per prima, e Windows Update non la ripristina.
+Graphics: no VSync idle timeout	Grafica: nessun timeout di inattività VSync
+VsyncIdleTimeout = 0: the graphics scheduler never stops the VSync interrupt when the screen is idle. Tweak guides claim steadier frame pacing. Not documented.	VsyncIdleTimeout = 0: lo scheduler grafico non ferma mai l'interrupt VSync quando lo schermo è inattivo. Le guide di tweak promettono un ritmo dei frame più regolare. Non documentato.
+The idle timeout of the VSync interrupt.	Il timeout di inattività dell'interrupt VSync.
+Experimental. Compare frame times on the A/B test page before keeping it.	Sperimentale. Confronta i tempi dei frame nella pagina Test A/B prima di tenerlo.
+Undocumented: slightly more power use at idle, and on some systems no effect at all.	Non documentato: un po' più di consumo a riposo, e su alcuni sistemi nessun effetto.
+Kernel: interrupt steering mode 2	Kernel: modalità di instradamento interrupt 2
+InterruptSteeringFlags = 2 changes how Windows spreads device interrupts across CPU cores. Tweak guides use it to keep interrupts off the core the game runs on. Not documented.	InterruptSteeringFlags = 2 cambia il modo in cui Windows distribuisce gli interrupt dei dispositivi tra i core della CPU. Le guide di tweak lo usano per tenere gli interrupt lontani dal core del gioco. Non documentato.
+Experimental. Measure DPC latency (Latency page) and frame times (A/B test) before keeping it. The Interrupt tuner sets per-device affinity in a documented way.	Sperimentale. Misura la latenza DPC (pagina Latenza) e i tempi dei frame (Test A/B) prima di tenerlo. L'Ottimizzatore interrupt imposta l'affinità per dispositivo in modo documentato.
+Windows' default way of spreading interrupts across cores.	La distribuzione predefinita degli interrupt tra i core di Windows.
+Undocumented: on some systems interrupts land on fewer cores, which raises DPC latency and causes audio crackle.	Non documentato: su alcuni sistemi gli interrupt finiscono su meno core, il che alza la latenza DPC e provoca crepitii audio.
+Seen in tweak packs (Stix Tweaks video, 2026). No Microsoft documentation and no published measurement.	Visto nei pacchetti di tweak (video di Stix Tweaks, 2026). Nessuna documentazione Microsoft e nessuna misura pubblicata.
+Seen in tweak packs. No Microsoft documentation and no published frame-time test.	Visto nei pacchetti di tweak. Nessuna documentazione Microsoft e nessun test dei tempi dei frame pubblicato.
+Seen in tweak packs. No Microsoft documentation. The Interrupt tuner sets device affinity in a documented way.	Visto nei pacchetti di tweak. Nessuna documentazione Microsoft. L'Ottimizzatore interrupt imposta l'affinità dei dispositivi in modo documentato.

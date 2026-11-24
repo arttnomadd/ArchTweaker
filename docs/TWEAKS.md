@@ -1,12 +1,12 @@
 # ArchTweaker tweak list
 
-Generated from the catalog of ArchTweaker 3.40.0 by `tools/DumpTweaks.cs`. Do not edit by hand.
+Generated from the catalog of ArchTweaker 3.43.0 by `tools/DumpTweaks.cs`. Do not edit by hand.
 
-281 tweaks. **Lite** = shown in Lite mode (safe, not experimental). **Pro** = shown only in Pro mode.
+287 tweaks. **Lite** = shown in Lite mode (safe, not experimental). **Pro** = shown only in Pro mode.
 Impact: **HIGH** = 5 %+ / GBs / seconds · **MEDIUM** = 1–5 % or clearly measurable latency · **LOW** = under 1 %, consistency or ms-level feel · **NONE** = privacy, appearance or convenience.
 The ranges are typical public-test results, not guarantees. The details pane in the app shows the same text, plus what each tweak turns off and can break.
 
-## Privacy (36)
+## Privacy (38)
 
 | Tweak | Mode | Risk | Impact | Expected gain |
 |---|---|---|---|---|
@@ -46,6 +46,8 @@ The ranges are typical public-test results, not guarantees. The details pane in 
 | Store apps can't read your files | Lite | Safe | NONE | Privacy only. |
 | Store apps can't read diagnostics, radios or capture without a border | Lite | Safe | NONE | Privacy only. |
 | Turn off background trace sessions (autologgers) | Lite | Safe | LOW | Less background disk writing and a few DPCs less. Mostly privacy. |
+| Turn off biometrics (policy) | Pro | Moderate | NONE | Privacy only: Windows stops using fingerprint and face data. |
+| Disable Windows Error Reporting (policy) | Lite | Safe | NONE | No crash-upload bursts. Negligible speed effect. |
 
 ## Interface (22)
 
@@ -97,7 +99,7 @@ The ranges are typical public-test results, not guarantees. The details pane in 
 | Larger icon cache (4096 icons) | Lite | Safe | NONE | No FPS effect. Fewer blank/redrawn icons in Explorer and the Start menu. |
 | No thumbs.db on network folders | Lite | Safe | NONE | No speed effect. No file locks or thumbs.db clutter on network shares. |
 
-## System (20)
+## System (21)
 
 | Tweak | Mode | Risk | Impact | Expected gain |
 |---|---|---|---|---|
@@ -120,9 +122,10 @@ The ranges are typical public-test results, not guarantees. The details pane in 
 | Don't archive unused apps | Lite | Safe | NONE | Apps start right away instead of re-downloading first. No speed effect otherwise. |
 | Store: no automatic app updates | Pro | Moderate | LOW | No Store downloads eating bandwidth or disk while you play. Nothing when nothing is updating. |
 | Stay on this Windows version | Pro | Moderate | NONE | No surprise feature upgrade (which resets many tweaks). No speed effect. |
+| Turn off Sleep Study | Lite | Safe | NONE | No Sleep Study logging in the background. Negligible speed effect. |
 | UAC: don't dim the desktop | Pro | Moderate | LOW | UAC prompts appear ≈0.5–1 s faster (no desktop switch). |
 
-## Responsiveness (21)
+## Responsiveness (22)
 
 | Tweak | Mode | Risk | Impact | Expected gain |
 |---|---|---|---|---|
@@ -147,6 +150,7 @@ The ranges are typical public-test results, not guarantees. The details pane in 
 | Stop broken-shortcut network search | Lite | Safe | LOW | Removes multi-second Explorer hangs when a shortcut's target has moved. No FPS effect. |
 | Enlarge the client DNS cache | Pro | Moderate | LOW | Slightly snappier repeat web lookups (served from the local cache for longer). No game-FPS effect. |
 | Re-enable automatic registry backups | Lite | Safe | NONE | No speed effect — a recovery/safety-net feature. Uses a little extra disk. |
+| Kernel: don't track IO priority boosts | Pro | Moderate | LOW | Unproven: less kernel bookkeeping when a thread waits on disk. Often within noise. |
 
 ## Gaming (15)
 
@@ -195,7 +199,7 @@ The ranges are typical public-test results, not guarantees. The details pane in 
 | No deep idle sleep (idle resiliency) | Pro | Moderate | LOW | Modern Standby PCs only: removes some wake-up delay after idle moments. Nothing on desktops without the setting. |
 | Power: lowest latency tolerance for devices and graphics *(experimental)* | Pro | Moderate | LOW | Unproven: can trim device wake-up delays. Often within noise. |
 
-## Input & Latency (9)
+## Input & Latency (10)
 
 | Tweak | Mode | Risk | Impact | Expected gain |
 |---|---|---|---|---|
@@ -205,11 +209,12 @@ The ranges are typical public-test results, not guarantees. The details pane in 
 | Kernel: spread timer expiry across cores | Pro | Moderate | LOW | Can move timer DPCs off core 0: smaller DPC spikes where core 0 is busy with device interrupts. Often no measurable change. |
 | Mouse acceleration off on the sign-in screen and for new users | Lite | Safe | NONE | Same pointer feel on the sign-in screen. No in-game effect. |
 | Kernel: serialize timer expiration *(experimental)* | Pro | Moderate | LOW | Unproven: reports range from smoother frame times to no change. |
+| Kernel: interrupt steering mode 2 *(experimental)* | Pro | Advanced | LOW | Unproven: can move interrupt work off busy cores, or onto the core the game uses. |
 | Background raw-mouse rate: 50 Hz (Windows 11) | Lite | Safe | NONE | Less CPU use by background apps with a 4000 or 8000 Hz mouse. Focused game: 0 ms. |
 | Kernel: reserve the E-cores (ReservedCpuSets) *(experimental)* | Pro | Advanced | LOW | Unproven: no published frame-time tests on hybrid CPUs. |
 | Timer coalescing interval: 0 *(experimental)* | Pro | Moderate | NONE | Unproven: no published frame-time gain. Measure scheduling jitter before you keep it. |
 
-## GPU & Devices (33)
+## GPU & Devices (34)
 
 | Tweak | Mode | Risk | Impact | Expected gain |
 |---|---|---|---|---|
@@ -243,6 +248,7 @@ The ranges are typical public-test results, not guarantees. The details pane in 
 | NVIDIA: always use the latest DLSS model | Pro | Moderate | NONE | Better image quality. ≈2–5 % less FPS than the old DLSS model at the same preset. |
 | NVIDIA: show the DLSS indicator in games | Lite | Safe | NONE | Diagnostic overlay only. |
 | AMD driver: Anti-Lag on, no clock deep sleep, no memory stutter *(experimental)* | Pro | Moderate | LOW | Unproven: steadier GPU clocks between frames. Anti-Lag lowers latency when the GPU is the limit. |
+| Graphics: no VSync idle timeout *(experimental)* | Pro | Moderate | LOW | Unproven: reports range from steadier frame pacing to no change. |
 | Audio devices: no idle power-down | Lite | Safe | NONE | No frame-time gain. Sound starts at once after silence. |
 | Audio enhancements off | Lite | Safe | NONE | No measurable speed effect expected. |
 | Audio threads get high scheduling priority | Lite | Safe | NONE | No measurable speed effect expected. |

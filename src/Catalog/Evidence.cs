@@ -83,6 +83,9 @@ namespace ArchTweaker
             { "exp_serialtimer", U("Reports conflict: one tester saw timers spread in WinDbg, another saw no effect on their build.") },
             { "exp_reserved_ecores", U("valleyofdoom found the value. No published frame-time tests on hybrid CPUs.") },
             { "dz_nv_rmpower", U("No NVIDIA documentation. Tweak packs write it to five keys because nobody knows which one the driver reads.") },
+            { "rs_ioboost", U("Seen in tweak packs (Stix Tweaks video, 2026). No Microsoft documentation and no published measurement.") },
+            { "exp_vsyncidle", U("Seen in tweak packs. No Microsoft documentation and no published frame-time test.") },
+            { "exp_intsteer", U("Seen in tweak packs. No Microsoft documentation. The Interrupt tuner sets device affinity in a documented way.") },
             { "il_queue", U("djdallmann: the value only sizes the input buffer. No latency measurement shows a gain.") },
         };
         public static Entry For(Tweak t) { Entry e; return t != null && Map.TryGetValue(t.Id, out e) ? e : null; }

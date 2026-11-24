@@ -213,7 +213,7 @@ namespace ArchTweaker
             foreach (var t in all)
             {
                 object[] g;
-                if (Gains.TryGetValue(t.Id, out g) || Gains15.TryGetValue(t.Id, out g) || GainsU.TryGetValue(t.Id, out g) || GainsR.TryGetValue(t.Id, out g) || GainsD.TryGetValue(t.Id, out g) || GainsV34.TryGetValue(t.Id, out g) || GainsV35.TryGetValue(t.Id, out g) || GainsV36.TryGetValue(t.Id, out g) || GainsV39.TryGetValue(t.Id, out g)) { t.Impact = (int)g[0]; t.Gain = (string)g[1]; }
+                if (Gains.TryGetValue(t.Id, out g) || Gains15.TryGetValue(t.Id, out g) || GainsU.TryGetValue(t.Id, out g) || GainsR.TryGetValue(t.Id, out g) || GainsD.TryGetValue(t.Id, out g) || GainsV34.TryGetValue(t.Id, out g) || GainsV35.TryGetValue(t.Id, out g) || GainsV36.TryGetValue(t.Id, out g) || GainsV39.TryGetValue(t.Id, out g) || GainsV44.TryGetValue(t.Id, out g)) { t.Impact = (int)g[0]; t.Gain = (string)g[1]; }
                 else { t.Impact = 0; t.Gain = "No measurable speed effect expected."; }
             }
         }

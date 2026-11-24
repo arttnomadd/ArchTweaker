@@ -77,6 +77,7 @@ namespace ArchTweaker
             AddV35();
             AddV36();
             AddV39();
+            AddV44();   // 3.44: Stix Tweaks video cross-check
             AddV315();
             AddV321();
             AddV324();   // 3.24: audio

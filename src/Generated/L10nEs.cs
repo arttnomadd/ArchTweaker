@@ -4060,6 +4060,39 @@ clean up	limpieza
 driver load	carga de controladores
 Missing:	Falta:
 restart	reinicio
+No Sleep Study logging in the background. Negligible speed effect.	Sin registro de Sleep Study en segundo plano. Efecto en la velocidad insignificante.
+Unproven: less kernel bookkeeping when a thread waits on disk. Often within noise.	Sin probar: menos contabilidad del kernel cuando un hilo espera al disco. A menudo dentro del ruido.
+Privacy only: Windows stops using fingerprint and face data.	Solo privacidad: Windows deja de usar los datos de huella y rostro.
+Unproven: reports range from steadier frame pacing to no change.	Sin probar: los informes van de un ritmo de fotogramas más estable a ningún cambio.
+Unproven: can move interrupt work off busy cores, or onto the core the game uses.	Sin probar: puede sacar el trabajo de interrupciones de los núcleos ocupados, o llevarlo al núcleo que usa el juego.
+Turn off Sleep Study	Desactivar Sleep Study
+Windows stops recording the Sleep Study, a log of every sleep and wake of the PC. The autologger tweak stops only its trace session. This tweak turns the whole feature off.	Windows deja de registrar el Sleep Study, un registro de cada suspensión y reactivación del PC. El ajuste de autologgers solo detiene su sesión de seguimiento; este desactiva la función.
+Sleep Study recording.	El registro de Sleep Study.
+The sleep report (powercfg /sleepstudy) and some battery troubleshooters.	El informe de suspensión (powercfg /sleepstudy) y algunos solucionadores de problemas de batería.
+Kernel: don't track IO priority boosts	Kernel: no seguir los aumentos de prioridad por E/S
+AlwaysTrackIoBoosting = 0: the kernel stops keeping track of the priority boost a thread gets while it waits on disk or other IO. Seen in gaming tweak packs. Not documented.	AlwaysTrackIoBoosting = 0: el kernel deja de seguir el aumento de prioridad que recibe un hilo mientras espera al disco u otra E/S. Visto en paquetes de ajustes para juegos. No documentado.
+Kernel tracking of IO priority boosts.	El seguimiento del kernel de los aumentos de prioridad por E/S.
+Measure frame times on the A/B test page before keeping it.	Mide los tiempos de fotograma en la página Prueba A/B antes de conservarlo.
+Undocumented: the effect can differ between Windows builds.	No documentado: el efecto puede variar entre compilaciones de Windows.
+Turn off biometrics (policy)	Desactivar la biometría (directiva)
+Windows stops using fingerprint and face data. A policy turns off Windows Hello fingerprint and face sign-in.	Windows deja de usar los datos de huella y rostro: el inicio de sesión de Windows Hello con huella y rostro se desactiva por directiva.
+Windows Hello fingerprint and face recognition.	El reconocimiento de huella y rostro de Windows Hello.
+Fingerprint and face sign-in. Sign in with a PIN or password instead.	El inicio de sesión con huella y rostro. Inicia sesión con un PIN o una contraseña.
+Disable Windows Error Reporting (policy)	Desactivar Informe de errores de Windows (directiva)
+The policy version of the Windows Error Reporting switch. Windows and apps read it first, and Windows Update doesn't reset it.	La versión por directiva del interruptor de Informe de errores de Windows. Windows y las apps la leen primero, y Windows Update no la restablece.
+Graphics: no VSync idle timeout	Gráficos: sin tiempo de espera de inactividad de VSync
+VsyncIdleTimeout = 0: the graphics scheduler never stops the VSync interrupt when the screen is idle. Tweak guides claim steadier frame pacing. Not documented.	VsyncIdleTimeout = 0: el programador de gráficos nunca detiene la interrupción de VSync cuando la pantalla está inactiva. Las guías de ajustes prometen un ritmo de fotogramas más estable. No documentado.
+The idle timeout of the VSync interrupt.	El tiempo de espera de inactividad de la interrupción de VSync.
+Experimental. Compare frame times on the A/B test page before keeping it.	Experimental. Compara los tiempos de fotograma en la página Prueba A/B antes de conservarlo.
+Undocumented: slightly more power use at idle, and on some systems no effect at all.	No documentado: un poco más de consumo en reposo, y en algunos sistemas ningún efecto.
+Kernel: interrupt steering mode 2	Kernel: modo de dirección de interrupciones 2
+InterruptSteeringFlags = 2 changes how Windows spreads device interrupts across CPU cores. Tweak guides use it to keep interrupts off the core the game runs on. Not documented.	InterruptSteeringFlags = 2 cambia cómo reparte Windows las interrupciones de los dispositivos entre los núcleos de la CPU. Las guías de ajustes lo usan para alejar las interrupciones del núcleo del juego. No documentado.
+Experimental. Measure DPC latency (Latency page) and frame times (A/B test) before keeping it. The Interrupt tuner sets per-device affinity in a documented way.	Experimental. Mide la latencia DPC (página Latencia) y los tiempos de fotograma (Prueba A/B) antes de conservarlo. El Ajustador de interrupciones fija la afinidad por dispositivo de forma documentada.
+Windows' default way of spreading interrupts across cores.	El reparto predeterminado de interrupciones entre núcleos de Windows.
+Undocumented: on some systems interrupts land on fewer cores, which raises DPC latency and causes audio crackle.	No documentado: en algunos sistemas las interrupciones caen en menos núcleos, lo que sube la latencia DPC y provoca chasquidos de audio.
+Seen in tweak packs (Stix Tweaks video, 2026). No Microsoft documentation and no published measurement.	Visto en paquetes de ajustes (vídeo de Stix Tweaks, 2026). Sin documentación de Microsoft ni mediciones publicadas.
+Seen in tweak packs. No Microsoft documentation and no published frame-time test.	Visto en paquetes de ajustes. Sin documentación de Microsoft ni pruebas de tiempos de fotograma publicadas.
+Seen in tweak packs. No Microsoft documentation. The Interrupt tuner sets device affinity in a documented way.	Visto en paquetes de ajustes. Sin documentación de Microsoft. El Ajustador de interrupciones fija la afinidad de los dispositivos de forma documentada.
 ";
     }
 }
