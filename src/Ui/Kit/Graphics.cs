@@ -66,6 +66,37 @@ namespace ArchTweaker
             for (int i = 0; i < n; i++)
                 using (var b = new SolidBrush(i < lit ? on : off)) g.FillRectangle(b, r.X + i * (w + gap), r.Y, w, r.Height);
         }
+        // 3.45: numbers that change in place (score count-up, sidebar counts) are drawn with every digit in a cell as wide
+        // as the font's widest digit, so "71" and "88" take the same room. Segoe UI Semibold and Bahnschrift draw "1"
+        // and "7" narrower, so the text after them shifted while the number changed. Measured: 77 vs 57 px for ten "1".
+        static readonly Dictionary<Font, float> digitW = new Dictionary<Font, float>();
+        const TextFormatFlags TabFlags = TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix;
+        // a glyph's advance: ten in a row, divided by ten (one glyph alone measures with its overhang and reads too wide)
+        static float Advance(char ch, Font f) { return TextRenderer.MeasureText(new string(ch, 10), f, Size.Empty, TabFlags).Width / 10f; }
+        public static float DigitWidth(Font f)
+        {
+            float w; if (digitW.TryGetValue(f, out w)) return w;
+            for (char d = '0'; d <= '9'; d++) w = Math.Max(w, Advance(d, f));
+            digitW[f] = w; return w;
+        }
+        static float CharWidth(char ch, Font f) { return ch >= '0' && ch <= '9' ? DigitWidth(f) : Advance(ch, f); }
+        public static int TabWidth(string s, Font f) { float w = 0; foreach (char ch in s ?? "") w += CharWidth(ch, f); return (int)Math.Ceiling(w); }
+        public static void DrawTab(Graphics g, string s, Font f, Point p, Color ink, Color back)
+        {
+            float x = p.X;
+            foreach (char ch in s ?? "")
+            {
+                float cell = CharWidth(ch, f), cw = Advance(ch, f);
+                TextRenderer.DrawText(g, ch.ToString(), f, new Point((int)Math.Round(x + (cell - cw) / 2), p.Y), ink, back, TabFlags);
+                x += cell;
+            }
+        }
+        // in a box: vertically centred, left-aligned or centred
+        public static void DrawTab(Graphics g, string s, Font f, Rectangle r, Color ink, bool center)
+        {
+            int w = TabWidth(s, f), h = TextRenderer.MeasureText("0", f, Size.Empty, TabFlags).Height;
+            DrawTab(g, s, f, new Point(center ? r.X + (r.Width - w) / 2 : r.X, r.Y + (r.Height - h) / 2), ink, Color.Empty);
+        }
         public static Color Mix(Color a, Color b, double t)
         {
             return Color.FromArgb((int)(a.R + (b.R - a.R) * t), (int)(a.G + (b.G - a.G) * t), (int)(a.B + (b.B - a.B) * t));
@@ -101,6 +132,23 @@ namespace ArchTweaker
             if (!timer.Enabled) { last = DateTime.UtcNow; timer.Start(); }
         }
         public static bool Running(Control c) { return items.ContainsKey(c); }
+        public static void Stop(Control c) { items.Remove(c); }
+        // 3.45: keyboard actions never animate (they repeat many times a day, and motion makes them feel late).
+        // A message filter notes whether the last input was a key or a mouse button; ByKeyboard is true for
+        // 400 ms after a key press that no mouse click followed.
+        static int keyAt = int.MinValue / 2; static bool lastKey;
+        public static bool ByKeyboard { get { return lastKey && unchecked(Environment.TickCount - keyAt) < 400; } }
+        public static void Watch() { Application.AddMessageFilter(new InputWatch()); }
+        sealed class InputWatch : IMessageFilter
+        {
+            public bool PreFilterMessage(ref Message m)
+            {
+                int w = m.Msg;
+                if (w == 0x100 || w == 0x104) { lastKey = true; keyAt = Environment.TickCount; }                 // WM_KEYDOWN, WM_SYSKEYDOWN
+                else if (w == 0x201 || w == 0x204 || w == 0x207 || w == 0x20B || w == 0xA1) lastKey = false;  // mouse buttons (client and title bar)
+                return false;
+            }
+        }
         static void Tick(object s, EventArgs e)
         {
             var now = DateTime.UtcNow; double dt = Math.Min(50, (now - last).TotalMilliseconds); last = now;
@@ -111,11 +159,11 @@ namespace ArchTweaker
             }
             if (items.Count == 0) timer.Stop();
         }
-        // knob position 0 (off) … 1 (on), 140 ms with ease-out, repainting only the switch
+        // knob position 0 (off) … 1 (on), 150 ms with ease-out, repainting only the switch; Space / Enter snap it
         public static void Slide(Control c, Func<float> get, Action<float> set, bool to, Rectangle area)
         {
             float target = to ? 1f : 0f;
-            if (!On || !c.IsHandleCreated || !c.Visible) { items.Remove(c); set(target); c.Invalidate(area); return; }
+            if (!On || ByKeyboard || !c.IsHandleCreated || !c.Visible) { items.Remove(c); set(target); c.Invalidate(area); return; }
             float from = get(); double t = 0, len = Theme.Ms.Small * Math.Abs(target - from);
             if (len < 1) { set(target); c.Invalidate(area); return; }
             Run(c, dt =>

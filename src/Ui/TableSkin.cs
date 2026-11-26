@@ -244,6 +244,7 @@ namespace ArchTweaker
         {
             if (t == null || t.OwnerDraw) return;
             t.OwnerDraw = true; t.BackColor = Theme.Panel; t.ForeColor = Theme.Text;
+            t.ReshowDelay = 0;   // 3.45: the first tip waits its InitialDelay; moving on to the next control of the same tip shows it at once
             t.Popup += (s, e) =>
             {
                 string text = t.GetToolTip(e.AssociatedControl) ?? "";

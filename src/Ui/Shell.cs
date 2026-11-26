@@ -99,13 +99,16 @@ namespace ArchTweaker
         }
         // 3.36: the page's one authored motion: the score counts up and the scale fills, ≈600 ms ease-out,
         // from the last value shown (0 the first time). Off when Windows animations are off.
-        double shown = -1;
+        // 3.45: the count from 0 plays once per session; a rebuilt strip (theme, language) starts at the last score,
+        // so later visits animate only a real change of the score.
+        double shown = -1; static double lastScore = -1;
         public void Set(HealthInfo info)
         {
             h = info;
             if (info != null)
             {
-                double from = shown < 0 ? 0 : shown, to = info.Score;
+                if (shown < 0 && lastScore >= 0) shown = lastScore;
+                double from = shown < 0 ? 0 : shown, to = info.Score; lastScore = to;
                 if (!Motion.On || !IsHandleCreated || Math.Abs(to - from) < 0.5) shown = to;
                 else
                 {
@@ -168,9 +171,11 @@ namespace ArchTweaker
                 double now = h == null ? 0 : (shown < 0 ? h.Score : shown);
                 string score = h == null ? "…" : ((int)Math.Round(now)).ToString(System.Globalization.CultureInfo.InvariantCulture);
                 var big = Theme.Num(38f); var small = Theme.Num(15f);
-                var bs = TextRenderer.MeasureText(g, score, big, Size.Empty, TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix);
+                var bs = new Size(Gfx.TabWidth(score, big), TextRenderer.MeasureText(g, "0", big, Size.Empty, TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix).Height);   // 3.45: a box as wide as even-width digits, so "/100" stays put while it counts
                 int ny = Theme.S(34);
-                TextRenderer.DrawText(g, score, big, new Point(pad - Theme.S(2), ny), h != null && h.Score >= 80 ? Theme.Ok : Theme.Strong, fill, TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix);
+                // natural glyphs, right-aligned in that box: no gap inside "71", and nothing after the number moves
+                int nw = TextRenderer.MeasureText(g, score, big, Size.Empty, TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix).Width;
+                TextRenderer.DrawText(g, score, big, new Point(pad - Theme.S(2) + bs.Width - nw, ny), h != null && h.Score >= 80 ? Theme.Ok : Theme.Strong, fill, TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix);
                 if (h != null)
                 {
                     var ss = TextRenderer.MeasureText(g, "/100", small, Size.Empty, TextFormatFlags.NoPadding);

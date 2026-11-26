@@ -21,12 +21,12 @@ namespace ArchTweaker
         {
             SetStyle(ControlStyles.UserPaint | ControlStyles.AllPaintingInWmPaint | ControlStyles.OptimizedDoubleBuffer | ControlStyles.ResizeRedraw, true);
             Visible = false; Cursor = Cursors.Hand; AccessibleRole = AccessibleRole.Alert; AccessibleName = "Result";
-            hide.Tick += delegate { hide.Stop(); Visible = false; };
+            hide.Tick += delegate { hide.Stop(); Dismiss(); };
             MouseClick += (s, e) =>
             {
                 if (e.Button != MouseButtons.Left) return;
                 if (action != null && actionR.Contains(e.Location)) { TryAction(); return; }
-                hide.Stop(); Visible = false;
+                hide.Stop(); Dismiss();
             };
             MouseMove += (s, e) => { bool h = action != null && actionR.Contains(e.Location); if (h != hoverAction) { hoverAction = h; Invalidate(); } };
             MouseLeave += delegate { if (hoverAction) { hoverAction = false; Invalidate(); } };
@@ -36,6 +36,7 @@ namespace ArchTweaker
         public void Show(string message, Kind k) { Show(message, k, null, null); }
         public void Show(string message, Kind k, string actText, Func<bool> act)
         {
+            Motion.Stop(this);   // 3.45: a running exit must not hide the new message
             text = message; kind = k; actionText = act != null ? actText : null; action = act; hoverAction = false;
             AccessibleName = message + (act != null ? " — " + actText + ": Ctrl+Z" : "");
             var sz = TextRenderer.MeasureText(message, Theme.F, new Size(Theme.S(360), 1000), TextFormatFlags.WordBreak | TextFormatFlags.NoPrefix);
@@ -52,6 +53,21 @@ namespace ArchTweaker
                 int y1 = Top, dy = Theme.S(16); double t = 0; Top = y1 + dy;
                 Motion.Run(this, dt => { t = Math.Min(1, t + dt / Theme.Ms.Small); double e = 1 - Math.Pow(1 - t, 3); Top = y1 + (int)Math.Round(dy * (1 - e)); return t >= 1; });
             }
+        }
+        // 3.45: leaving drops 8 px over 120 ms (ease-out, faster than the 150 ms entry), then hides; a new Show
+        // replaces the exit. Instant when Windows animations are off.
+        void Dismiss()
+        {
+            if (!Visible) return;
+            if (!Motion.On || !IsHandleCreated) { Visible = false; return; }
+            int y0 = Top, dy = Theme.S(8); double t = 0;
+            Motion.Run(this, dt =>
+            {
+                t = Math.Min(1, t + dt / 120.0); double e = 1 - Math.Pow(1 - t, 3);
+                Top = y0 + (int)Math.Round(dy * e);
+                if (t >= 1) { Visible = false; Top = y0; }
+                return t >= 1;
+            });
         }
         public event EventHandler Placed;     // the form positions the toast (bottom-right, above the Apply bar)
         protected override void OnPaint(PaintEventArgs e)
@@ -86,7 +102,7 @@ namespace ArchTweaker
         {
             if (!Visible || action == null) return false;
             if (!action()) return true;           // busy: the toast keeps its button
-            action = null; hide.Stop(); Visible = false; return true;
+            action = null; hide.Stop(); Dismiss(); return true;
         }
     }
 }

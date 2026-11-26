@@ -134,16 +134,16 @@ namespace ArchTweaker
         // 3.12: changes on this page that wait for Apply: an amber "+N" badge left of the applied count
         public int Pend;
         public void SetPend(int n) { if (n == Pend) return; Pend = n; Invalidate(); AccessibilityNotifyClients(AccessibleEvents.NameChange, -1); }
-        public static int PendWidth(int n) { return Math.Max(Theme.S(24), TextRenderer.MeasureText("+" + n, Theme.FT, Size.Empty, TextFormatFlags.NoPadding).Width + Theme.S(10)); }
+        public static int PendWidth(int n) { return Math.Max(Theme.S(24), Gfx.TabWidth("+" + n, Theme.FT) + Theme.S(10)); }
         public static void DrawPend(Graphics g, Rectangle r, int n)
         {
             var old = g.SmoothingMode; g.SmoothingMode = SmoothingMode.AntiAlias;
             using (var p = Gfx.Round(new RectangleF(r.X + 0.5f, r.Y + 0.5f, r.Width - 1, r.Height - 1), r.Height / 2f)) using (var b = new SolidBrush(Theme.Warn)) g.FillPath(b, p);
             g.SmoothingMode = old;
             Color ink = Theme.InkOn(Theme.Warn);
-            TextRenderer.DrawText(g, "+" + n, Theme.FT, r, ink, TextFormatFlags.VerticalCenter | TextFormatFlags.HorizontalCenter | TextFormatFlags.NoPrefix);
+            Gfx.DrawTab(g, "+" + n, Theme.FT, r, ink, true);   // 3.45: even-width digits
         }
-        int PillWidth() { return TextRenderer.MeasureText(Count, Theme.FT, Size.Empty, TextFormatFlags.NoPadding).Width + Theme.S(19); }
+        int PillWidth() { return Gfx.TabWidth(Count, Theme.FT) + Theme.S(19); }
         // 3.44: applied/total as a small ring and plain numbers (it was a filled pill with a bar). The ring fills with
         // the applied share and is solid "on" green when the whole page is applied; the numbers stay muted, so 14
         // categories read as a calm column instead of 14 badges.
@@ -159,7 +159,7 @@ namespace ArchTweaker
             else if (!none) using (var pen = new Pen(Theme.Progress, pw)) g.DrawArc(pen, ring, -90, (float)(360.0 * a / n));
             g.SmoothingMode = old;
             var tr = new Rectangle((int)(x0 + d + Theme.S(5)), r.Y, r.Right - (int)(x0 + d + Theme.S(5)), r.Height);
-            TextRenderer.DrawText(g, Count, Theme.FT, tr, active || hover ? Theme.Text : Theme.Muted, TextFormatFlags.VerticalCenter | TextFormatFlags.Left | TextFormatFlags.NoPrefix | TextFormatFlags.NoPadding);
+            Gfx.DrawTab(g, Count, Theme.FT, tr, active || hover ? Theme.Text : Theme.Muted, false);   // 3.45: "9/17" and "18/23" keep even-width digits
         }
         // Up/Down walk the sidebar like a list; Enter/Space opens the page
         protected override bool IsInputKey(Keys k) { return k == Keys.Up || k == Keys.Down || base.IsInputKey(k); }
@@ -180,6 +180,7 @@ namespace ArchTweaker
     // Collapsible sidebar section header.
     public class NavHeader : Control
     {
+        static readonly ToolTip headTips = Tips.New(new ToolTip { InitialDelay = 400 });
 
         public bool Open = true; bool hover;
         public int Pend;   // 3.12: pending changes in the section; shown while it is collapsed
@@ -190,7 +191,8 @@ namespace ArchTweaker
             SetStyle(ControlStyles.UserPaint | ControlStyles.AllPaintingInWmPaint | ControlStyles.OptimizedDoubleBuffer | ControlStyles.Selectable, true);
             Size = new Size(196, Theme.Slim ? 16 : 26); Margin = new Padding(0, Theme.Slim ? 6 : 8, 0, 2); Cursor = Cursors.Hand; TabStop = true;
             AccessibleRole = AccessibleRole.OutlineButton; AccessibleName = text;
-            if (Theme.Slim) { var tip = Tips.New(new ToolTip { InitialDelay = 400 }); tip.SetToolTip(this, L.T(text)); Disposed += delegate { tip.Dispose(); }; }
+            // 3.45: one shared tip for every header, so moving between headers shows the next name at once
+            if (Theme.Slim) { headTips.SetToolTip(this, L.T(text)); Disposed += delegate { headTips.SetToolTip(this, null); }; }
         }
         protected override void OnMouseEnter(EventArgs e) { hover = true; Invalidate(); base.OnMouseEnter(e); }
         protected override void OnMouseLeave(EventArgs e) { hover = false; Invalidate(); base.OnMouseLeave(e); }

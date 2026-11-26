@@ -27,15 +27,25 @@ namespace ArchTweaker
         protected override void OnLostFocus(EventArgs e) { keyDown = false; Invalidate(); base.OnLostFocus(e); }
         // the press shows while the left button is held over the button (leaving and coming back keeps it), or Space is held
         bool keyDown;
-        bool Pressed { get { return keyDown || down && hot; } }
+        // 3.45: a quick click still shows the press for at least 100 ms, so the button visibly answers
+        bool hold; int downAt; System.Windows.Forms.Timer holdTimer;
+        bool Pressed { get { return keyDown || hold || down && hot; } }
+        void HoldPress()
+        {
+            int left = 100 - unchecked(Environment.TickCount - downAt);
+            if (left <= 10 || !hot) return;
+            hold = true;
+            if (holdTimer == null) { holdTimer = new System.Windows.Forms.Timer(); holdTimer.Tick += delegate { holdTimer.Stop(); hold = false; Invalidate(); }; Disposed += delegate { holdTimer.Dispose(); }; }
+            holdTimer.Stop(); holdTimer.Interval = left; holdTimer.Start();
+        }
         protected override void OnMouseEnter(EventArgs e) { hot = true; Invalidate(); base.OnMouseEnter(e); }
         protected override void OnMouseLeave(EventArgs e) { hot = false; Invalidate(); base.OnMouseLeave(e); }
-        protected override void OnMouseDown(MouseEventArgs e) { if (e.Button == MouseButtons.Left) { down = true; Invalidate(); } base.OnMouseDown(e); }
-        protected override void OnMouseUp(MouseEventArgs e) { down = false; Invalidate(); base.OnMouseUp(e); }
+        protected override void OnMouseDown(MouseEventArgs e) { if (e.Button == MouseButtons.Left) { down = true; downAt = Environment.TickCount; Invalidate(); } base.OnMouseDown(e); }
+        protected override void OnMouseUp(MouseEventArgs e) { if (down) HoldPress(); down = false; Invalidate(); base.OnMouseUp(e); }
         protected override void OnMouseCaptureChanged(EventArgs e) { if (!Capture) down = false; Invalidate(); base.OnMouseCaptureChanged(e); }
         protected override void OnKeyDown(KeyEventArgs e) { if (e.KeyCode == Keys.Space && !keyDown) { keyDown = true; Invalidate(); } base.OnKeyDown(e); }
         protected override void OnKeyUp(KeyEventArgs e) { if (e.KeyCode == Keys.Space && keyDown) { keyDown = false; Invalidate(); } base.OnKeyUp(e); }
-        protected override void OnEnabledChanged(EventArgs e) { hot = down = keyDown = false; Invalidate(); base.OnEnabledChanged(e); }
+        protected override void OnEnabledChanged(EventArgs e) { hot = down = keyDown = hold = false; Invalidate(); base.OnEnabledChanged(e); }
         public override Size GetPreferredSize(Size proposed)
         {
             var s = base.GetPreferredSize(proposed);
@@ -56,14 +66,16 @@ namespace ArchTweaker
             Color edge = primary ? Gfx.Mix(fill, Color.Black, 0.18) : lead ? Theme.Accent : hot && Enabled ? Gfx.Mix(Theme.Line, Theme.Text, 0.25) : Theme.Line;
             var old = g.SmoothingMode; g.SmoothingMode = SmoothingMode.AntiAlias;
             float rad = Theme.S((float)Theme.Radius);
-            using (var p = Gfx.Round(new RectangleF(0, 0, Width, Height), rad)) using (var b = new SolidBrush(fill)) g.FillPath(b, p);
+            // 3.45: pressed, the shape sits 1 px in on every side (the desktop form of scale 0.97)
+            float inset = Pressed ? Math.Max(1f, Theme.S(1f)) : 0f;
+            using (var p = Gfx.Round(new RectangleF(inset, inset, Width - 2 * inset, Height - 2 * inset), rad)) using (var b = new SolidBrush(fill)) g.FillPath(b, p);
             if (Enabled && !Pressed && (primary || Theme.Dark) && Theme.ShadowA > 0)
             {   // light top edge: brighter on the accent, a whisper on neutral buttons
                 Color hi = primary ? Color.FromArgb(70, 255, 255, 255) : Color.FromArgb(Theme.Dark ? 26 : 0, 255, 255, 255);
                 using (var pen = new Pen(hi)) g.DrawLine(pen, rad, 0.5f, Width - rad, 0.5f);
             }
             float bw = lead ? Math.Max(1.5f, Theme.S(1.5f)) : 1f;
-            using (var p = Gfx.Round(new RectangleF(bw / 2, bw / 2, Width - bw, Height - bw), rad)) using (var pen = new Pen(edge, bw)) g.DrawPath(pen, p);
+            using (var p = Gfx.Round(new RectangleF(bw / 2 + inset, bw / 2 + inset, Width - bw - 2 * inset, Height - bw - 2 * inset), rad)) using (var pen = new Pen(edge, bw)) g.DrawPath(pen, p);
             g.SmoothingMode = old;
             var tr = new Rectangle(Padding.Left, 0, Width - Padding.Horizontal - (Chevron ? Theme.S(16) : 0), Height);
             if (Pressed) tr.Offset(0, 1);

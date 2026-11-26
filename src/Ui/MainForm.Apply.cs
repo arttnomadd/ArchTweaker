@@ -51,8 +51,11 @@ namespace ArchTweaker
             // 3.2: buttons that can't do anything right now are hidden, not greyed out (Apply always stays: it's the main action)
             discardBtn.Visible = n > 0;
             undoLastBtn.Visible = History.HasLast;
-            // 3.44: with nothing pending the Apply button steps aside and the bar gets slimmer; it comes back with the count
+            // 3.44: with nothing pending the Apply button steps aside; 3.45: the bar keeps its height, and the button
+            // fades in from the bar colour over 150 ms (no fade from the keyboard or with Windows animations off)
+            bool appear = n > 0 && !applyBtn.Visible;
             applyBtn.Visible = n > 0;
+            if (appear) FadeIn(applyBtn);
             FitBottom();
             // 3.12: pending count per page in the sidebar, and per section while the section is collapsed
             var byCat = Pending.Keys.GroupBy(t => t.Category).ToDictionary(g => g.Key, g => g.Count());
@@ -64,16 +67,31 @@ namespace ArchTweaker
         }
 
 
-        // 3.44: the Apply bar is 56 px with changes pending, 44 px without (and 204 px with the log open)
+        // 3.45: the Apply bar is 48 px whether or not changes are pending (204 px with the log open). In 3.44 it grew
+        // from 44 to 56 px at the first change, which moved the whole page under the mouse.
         void FitBottom()
         {
             if (bottom == null) return;
-            bool idle = Pending.Count == 0;
-            int v = Theme.S(idle && !logOpen ? 4 : 8);
+            int v = Theme.S(logOpen ? 8 : 4);
             var pad = new Padding(Theme.S(16), v, Theme.S(16), v);
             if (bottom.Padding != pad) bottom.Padding = pad;
-            int h = Theme.S(logOpen ? 204 : idle ? 44 : 56);
+            int h = Theme.S(logOpen ? 204 : 48);
             if (bottom.Height != h) bottom.Height = h;
+        }
+
+        // the primary button's colours blend from the bar to their real values, ease-out; Enabled changes repaint them
+        static void FadeIn(Button b)
+        {
+            if (!Motion.On || Motion.ByKeyboard || !b.IsHandleCreated) return;
+            Color bg = b.BackColor, fg = b.ForeColor, under = b.Parent != null ? b.Parent.BackColor : Theme.Side;
+            double t = 0;
+            Motion.Run(b, dt =>
+            {
+                t = Math.Min(1, t + dt / Theme.Ms.Small); double k = 1 - Math.Pow(1 - t, 3);
+                if (!b.Visible) { b.BackColor = bg; b.ForeColor = fg; return true; }
+                b.BackColor = t >= 1 ? bg : Gfx.Mix(under, bg, k); b.ForeColor = t >= 1 ? fg : Gfx.Mix(under, fg, k);
+                return t >= 1;
+            });
         }
 
         public void SetPending(Tweak t, bool want)
@@ -326,16 +344,39 @@ namespace ArchTweaker
         public void OpenDetails(Tweak t)
         {
             ShowDetails(t);
+            if (detailsClosing) { Motion.Stop(details); detailsClosing = false; FitDetails(); }   // reopened mid-exit: snap back
             if (!DetailsDockable && detailsWanted && !detailsFloat)
             {
                 detailsFloat = true; FitDetails();
+                SlideDetails(true);
             }
         }
 
         public bool CloseFloatingDetails()
         {
             if (!detailsFloat) return false;
-            detailsFloat = false; FitDetails();
+            if (detailsClosing) return true;
+            if (!SlideDetails(false)) { detailsFloat = false; FitDetails(); }
+            return true;
+        }
+
+        // 3.45: the floating panel slides in from the right edge of the page over 200 ms (ease-out) and back out in
+        // 140 ms. Snaps from the keyboard (Enter, Esc) and with Windows animations off. Returns false when it didn't run.
+        // at the end FitDetails lays the panel out again, so a window resize during the slide can't leave it misplaced
+        bool detailsClosing;
+        bool SlideDetails(bool open)
+        {
+            if (details == null || !detailsFloat || !details.Visible || !Motion.On || Motion.ByKeyboard || !IsHandleCreated) return false;
+            int x1 = details.Left, edge = content.Right; double t = 0, len = open ? 200.0 : 140.0;
+            if (open) details.Left = edge; else detailsClosing = true;
+            Motion.Run(details, dt =>
+            {
+                if (!detailsFloat) { detailsClosing = false; return true; }
+                t = Math.Min(1, t + dt / len); double e = 1 - Math.Pow(1 - t, 3);
+                details.Left = open ? edge - (int)Math.Round((edge - x1) * e) : x1 + (int)Math.Round((edge - x1) * e);
+                if (t >= 1) { if (open) FitDetails(); else { detailsClosing = false; detailsFloat = false; FitDetails(); } }
+                return t >= 1;
+            });
             return true;
         }
 

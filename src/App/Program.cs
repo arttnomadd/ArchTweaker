@@ -9,14 +9,14 @@ using System.Windows.Forms;
 [assembly: System.Reflection.AssemblyTitle("ArchTweaker")]
 [assembly: System.Reflection.AssemblyProduct("ArchTweaker")]
 [assembly: System.Reflection.AssemblyDescription("Windows 10/11 tweaking, cleanup and gaming optimization utility")]
-[assembly: System.Reflection.AssemblyVersion("3.44.0.0")]
-[assembly: System.Reflection.AssemblyFileVersion("3.44.0.0")]
+[assembly: System.Reflection.AssemblyVersion("3.45.0.0")]
+[assembly: System.Reflection.AssemblyFileVersion("3.45.0.0")]
 
 namespace ArchTweaker
 {
     public static class Program
     {
-        public const string Version = "3.44.0";
+        public const string Version = "3.45.0";
 
         public static ApplicationContext Ctx;
 
@@ -41,6 +41,7 @@ namespace ArchTweaker
             try { System.Runtime.ProfileOptimization.SetProfileRoot(Paths.Root); System.Runtime.ProfileOptimization.StartProfile("startup.jitprofile"); } catch { }   // 3.6.4: faster starts after the first
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+            Motion.Watch();   // 3.45: keyboard-triggered changes snap instead of animating
 
             if (!new WindowsPrincipal(WindowsIdentity.GetCurrent()).IsInRole(WindowsBuiltInRole.Administrator))
             {

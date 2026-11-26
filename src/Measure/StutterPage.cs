@@ -174,6 +174,7 @@ namespace ArchTweaker
     {
         StutterFinder.Report r;
         StutterFinder.Stutter hot, sel;
+        float grow = 1f;   // 3.45: 0 → 1 over 100 ms (ease-out) while the pointed-at dot grows from 4.5 to 6 px
         readonly ToolTip tip = Tips.New(new ToolTip { InitialDelay = 100, AutoPopDelay = 15000 });
         public event Action<StutterFinder.Stutter> Picked;
         public StutterFinder.Stutter Selected { get { return sel; } set { sel = value; Invalidate(); } }
@@ -220,7 +221,7 @@ namespace ArchTweaker
             // slow frames, coloured by cause
             foreach (var s in r.Stutters)
             {
-                var pt = At(s.AtSec, s.Ms); float rad = (s == hot || s == sel ? 6f : 4.5f) * u;
+                var pt = At(s.AtSec, s.Ms); float rad = (s == sel ? 6f : s == hot ? 4.5f + 1.5f * grow : 4.5f) * u;
                 using (var b = new SolidBrush(StutterPage.CauseColor(s.Kind))) g.FillEllipse(b, pt.X - rad, pt.Y - rad, rad * 2, rad * 2);
                 if (s == sel) using (var pen = new Pen(Theme.Strong, 1.5f * u)) g.DrawEllipse(pen, pt.X - rad - 2 * u, pt.Y - rad - 2 * u, (rad + 2 * u) * 2, (rad + 2 * u) * 2);
             }
@@ -254,6 +255,8 @@ namespace ArchTweaker
             if (n != hot)
             {
                 hot = n; Invalidate(); Cursor = n != null ? Cursors.Hand : Cursors.Default;
+                if (n != null && Motion.On) { grow = 0f; double t = 0; Motion.Run(this, dt => { t = Math.Min(1, t + dt / 100.0); grow = (float)(1 - Math.Pow(1 - t, 3)); Invalidate(); return t >= 1; }); }
+                else grow = 1f;
                 if (n == null) tip.Hide(this);
                 else tip.Show(StutterPage.CauseName(n.Kind) + " · " + n.Ms.ToString("0.0") + " ms" + Environment.NewLine + n.Text, this, e.X + 14, e.Y + 14);
             }

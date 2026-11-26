@@ -262,7 +262,7 @@ namespace ArchTweaker
             EventHandler follow = delegate
             {
                 float to = pageTitle.Right + Theme.S(4), from = underline;
-                if (!Motion.On || from <= 0) { underline = to; strip.Invalidate(); return; }
+                if (!Motion.On || Motion.ByKeyboard || from <= 0) { Motion.Stop(strip); underline = to; strip.Invalidate(); return; }   // 3.45: keyboard page changes snap
                 double t = 0;
                 Motion.Run(strip, dt => { t = Math.Min(1, t + dt / Theme.Ms.Small); double e = 1 - Math.Pow(1 - t, 3); underline = (float)(from + (to - from) * e); strip.Invalidate(); return t >= 1; });
             };

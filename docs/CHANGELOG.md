@@ -6,6 +6,23 @@ Each version groups its changes under these headings, in this order (leave out t
 `### New features` · `### Tweaks` · `### Design` · `### Fixes` · `### Security` · `### Under the hood`.
 A short intro under the version title is fine. The What's new dialog filters by these headings.
 
+## 3.45.0: Motion that answers you and stays out of the way
+
+### Design
+- **The Apply bar no longer moves the page.** In 3.44 the bar grew from 44 to 56 px at the first change, so the whole list jumped under the mouse. It is now always 48 px. The Apply button fades in over 150 ms.
+- **Keyboard actions don't animate.** Page changes from Ctrl+K, Alt+Left or the arrow keys, Space on a switch, opening a sidebar section and Enter or Esc on the details panel now happen at once. Mouse clicks keep their short animation.
+- **The health score counts up once per session.** After that the number shows at once, and it moves only when the score really changes.
+- **Buttons and Home cards show the press.** Pressed, they sit 1 px in. A quick click still shows it for 100 ms, so you can see the app heard you.
+- **Toasts leave instead of vanishing.** A message drops 8 px over 120 ms, faster than it came in. A new message stops the exit.
+- **Faster tooltips.** The first tooltip still waits. Moving on to the next item shows its tooltip at once, in the sidebar too.
+- **The details panel slides in** from the right edge (200 ms) when the window is too narrow to dock it, and slides out in 140 ms.
+- **Numbers that change stay in place.** Sidebar counts such as "9/17" draw every digit at the same width, and "/100" next to the health score stays still while the score counts. Segoe UI Semibold and Bahnschrift draw "1" and "7" narrower, so text used to shift.
+- **Stutter finder timeline:** the dot under the mouse grows over 100 ms instead of jumping in size.
+
+### Under the hood
+- **One rule for motion:** `Motion.ByKeyboard` is true for 400 ms after a key press that no mouse click followed, and every transition checks it.
+- **Checked:** no cut-off text in any language; 4,161 unit tests pass.
+
 ## 3.44.0: A calmer look, a stutter timeline and 6 new tweaks
 
 ### Tweaks

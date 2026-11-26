@@ -72,7 +72,7 @@ namespace ArchTweaker
             h.Open = open; h.Invalidate();
             var items = sections[t];
             // 3.16: opening shows the pages one after another over 150 ms; closing is instant
-            if (!open || !Motion.On || !IsHandleCreated) { foreach (var i in items) i.Visible = open; return; }
+            if (!open || !Motion.On || Motion.ByKeyboard || !IsHandleCreated) { foreach (var i in items) i.Visible = open; return; }
             double el = 0;
             Motion.Run(h, dt =>
             {

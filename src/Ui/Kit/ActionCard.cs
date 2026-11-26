@@ -11,7 +11,7 @@ namespace ArchTweaker
     public class ActionCard : Control
     {
         readonly string title, desc; readonly char glyph;
-        bool hover, down;
+        bool hover, down, held; int downAt;
         public event EventHandler Activated;
 
         public ActionCard(string title, string desc, char glyph, EventHandler click)
@@ -30,10 +30,14 @@ namespace ArchTweaker
 
         protected override void OnMouseEnter(EventArgs e) { hover = true; Invalidate(); base.OnMouseEnter(e); }
         protected override void OnMouseLeave(EventArgs e) { hover = down = false; Invalidate(); base.OnMouseLeave(e); }
-        protected override void OnMouseDown(MouseEventArgs e) { if (e.Button == MouseButtons.Left) { down = true; Focus(); Invalidate(); } base.OnMouseDown(e); }
+        protected override void OnMouseDown(MouseEventArgs e) { if (e.Button == MouseButtons.Left) { down = true; downAt = Environment.TickCount; Focus(); Invalidate(); } base.OnMouseDown(e); }
         protected override void OnMouseUp(MouseEventArgs e)
         {
-            bool was = down; down = false; Invalidate();
+            bool was = down; down = false;
+            // 3.45: a quick click still shows the press for at least 100 ms
+            int left = 100 - unchecked(Environment.TickCount - downAt);
+            if (was && left > 10) { held = true; var t = new System.Windows.Forms.Timer { Interval = left }; t.Tick += delegate { t.Dispose(); held = false; if (!IsDisposed) Invalidate(); }; t.Start(); }
+            Invalidate();
             if (was && e.Button == MouseButtons.Left && ClientRectangle.Contains(e.Location)) Fire();
             base.OnMouseUp(e);
         }
@@ -60,8 +64,10 @@ namespace ArchTweaker
             g.Clear(Parent != null ? Parent.BackColor : Theme.Bg);
             float u = Height / 66f;
             var r = new RectangleF(0.5f, 0.5f, Width - 1.5f, Height - 3 * u);
-            Color fill = down ? Theme.Grid : hover ? Theme.PanelHover : Theme.Panel;
-            Gfx.Surface(g, r, fill, !down);
+            bool press = down || held;
+            Color fill = press ? Theme.Grid : hover ? Theme.PanelHover : Theme.Panel;
+            // 3.45: pressed, the card sits 1 px in on every side and loses its shadow (the desktop form of scale 0.97)
+            Gfx.Surface(g, press ? RectangleF.Inflate(r, -u, -u) : r, fill, !press);
             int x = (int)(14 * u);
             var icf = NavItem.IconFont;
             if (icf != null && glyph != '\0')

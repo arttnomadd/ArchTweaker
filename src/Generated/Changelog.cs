@@ -3,7 +3,24 @@ namespace ArchTweaker
 {
     public static class Changelog
     {
-        public const string Text = @"## 3.44.0: A calmer look, a stutter timeline and 6 new tweaks
+        public const string Text = @"## 3.45.0: Motion that answers you and stays out of the way
+
+### Design
+- **The Apply bar no longer moves the page.** In 3.44 the bar grew from 44 to 56 px at the first change, so the whole list jumped under the mouse. It is now always 48 px. The Apply button fades in over 150 ms.
+- **Keyboard actions don't animate.** Page changes from Ctrl+K, Alt+Left or the arrow keys, Space on a switch, opening a sidebar section and Enter or Esc on the details panel now happen at once. Mouse clicks keep their short animation.
+- **The health score counts up once per session.** After that the number shows at once, and it moves only when the score really changes.
+- **Buttons and Home cards show the press.** Pressed, they sit 1 px in. A quick click still shows it for 100 ms, so you can see the app heard you.
+- **Toasts leave instead of vanishing.** A message drops 8 px over 120 ms, faster than it came in. A new message stops the exit.
+- **Faster tooltips.** The first tooltip still waits. Moving on to the next item shows its tooltip at once, in the sidebar too.
+- **The details panel slides in** from the right edge (200 ms) when the window is too narrow to dock it, and slides out in 140 ms.
+- **Numbers that change stay in place.** Sidebar counts such as ""9/17"" draw every digit at the same width, and ""/100"" next to the health score stays still while the score counts. Segoe UI Semibold and Bahnschrift draw ""1"" and ""7"" narrower, so text used to shift.
+- **Stutter finder timeline:** the dot under the mouse grows over 100 ms instead of jumping in size.
+
+### Under the hood
+- **One rule for motion:** `Motion.ByKeyboard` is true for 400 ms after a key press that no mouse click followed, and every transition checks it.
+- **Checked:** no cut-off text in any language; 4,161 unit tests pass.
+
+## 3.44.0: A calmer look, a stutter timeline and 6 new tweaks
 
 ### Tweaks
 - **Turn off Sleep Study** (System). Windows stops recording the Sleep Study, a log of every sleep and wake. The autologger tweak only stopped its trace session; this turns the feature off (SleepStudyDisabled = 1).
@@ -76,25 +93,25 @@ Install this version by hand. 3.38.2 to 3.42.0 trust an update-signing key that 
 ### Under the hood
 - **Plurals per language.** Counts like ""21 tweaks"" pick the right word form: Russian keeps its one / few / many rules, and every other language uses the singular only for 1.
 - **Table checks.** A test loads every generated language table and checks the placeholders and plural forms on each line.
+";
+        public const string All = @"## 3.45.0: Motion that answers you and stays out of the way
 
-## 3.40.0: Faster refresh, back and forward
-
-### New features
-- **Back and forward between pages.** Alt+Left and Alt+Right, the back and forward buttons on a mouse, the browser keys on a keyboard, and ""Go back"" / ""Go forward"" in the command palette. ArchTweaker remembers the last 30 pages.
-- **Recent pages first in the command palette.** Ctrl+K with nothing typed lists the 5 pages you used last at the top.
-- **Home counts while it reads the tweaks:** ""Checking tweaks: 120 / 281"" instead of a still message.
-
-### Fixes
-- **Pages stay open while a list loads.** Reading apps, tasks, services, drivers, power plans, the PC advisor and other lists no longer turns the sidebar off. Only Apply, Undo and other changes still wait.
-- **The details panel stays on medium windows.** It narrows from 370 to 260 pixels before it hides, so windows of about 1,050 pixels and wider keep it (before: about 1,160).
-- **Disk space follows High Contrast.** The chart uses the system colours when Windows High Contrast is on.
+### Design
+- **The Apply bar no longer moves the page.** In 3.44 the bar grew from 44 to 56 px at the first change, so the whole list jumped under the mouse. It is now always 48 px. The Apply button fades in over 150 ms.
+- **Keyboard actions don't animate.** Page changes from Ctrl+K, Alt+Left or the arrow keys, Space on a switch, opening a sidebar section and Enter or Esc on the details panel now happen at once. Mouse clicks keep their short animation.
+- **The health score counts up once per session.** After that the number shows at once, and it moves only when the score really changes.
+- **Buttons and Home cards show the press.** Pressed, they sit 1 px in. A quick click still shows it for 100 ms, so you can see the app heard you.
+- **Toasts leave instead of vanishing.** A message drops 8 px over 120 ms, faster than it came in. A new message stops the exit.
+- **Faster tooltips.** The first tooltip still waits. Moving on to the next item shows its tooltip at once, in the sidebar too.
+- **The details panel slides in** from the right edge (200 ms) when the window is too narrow to dock it, and slides out in 140 ms.
+- **Numbers that change stay in place.** Sidebar counts such as ""9/17"" draw every digit at the same width, and ""/100"" next to the health score stays still while the score counts. Segoe UI Semibold and Bahnschrift draw ""1"" and ""7"" narrower, so text used to shift.
+- **Stutter finder timeline:** the dot under the mouse grows over 100 ms instead of jumping in size.
 
 ### Under the hood
-- **Refreshing the tweak states is about 2 seconds faster on PCs with an NVIDIA card.** The 9 NVIDIA tweaks each opened a driver-settings session and loaded the whole profile database again. Reads now share one session for 3 seconds, and a change closes it first. Measured on one PC: 1,960 ms → 125 ms for the 9 reads, and 1,950 ms → 21 ms for a repeat read of all 281 tweaks.
-- **The first read of all tweaks does the fast registry checks first.** The checks that start a program or call a driver come last, so the shared PowerShell probe (about 2.5 seconds, started at launch) is ready when they need it, instead of the reader waiting on it early.
-- **Home reads the active power plan from the Windows power API** instead of starting powercfg.exe and reading its text, which also differs between Windows languages.
-";
-        public const string All = @"## 3.44.0: A calmer look, a stutter timeline and 6 new tweaks
+- **One rule for motion:** `Motion.ByKeyboard` is true for 400 ms after a key press that no mouse click followed, and every transition checks it.
+- **Checked:** no cut-off text in any language; 4,161 unit tests pass.
+
+## 3.44.0: A calmer look, a stutter timeline and 6 new tweaks
 
 ### Tweaks
 - **Turn off Sleep Study** (System). Windows stops recording the Sleep Study, a log of every sleep and wake. The autologger tweak only stopped its trace session; this turns the feature off (SleepStudyDisabled = 1).
